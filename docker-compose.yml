@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  service.rss2:
+    build: .
+    container_name: rss2
+    ports:
+      - 8090:8090
+    networks:
+      - rss2
+
+networks:
+  rss2:
+    driver: bridge
