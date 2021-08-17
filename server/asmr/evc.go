@@ -27,7 +27,7 @@ type Asmr struct {
 var (
 	URL = "https://www.2evc.cn/voiceAppserver//common/sortType?voiceType=1&orderType=0&curPage=1&pageSize=302&cvId=8"
 	// 机器性能不行，不要开太大，否则502
-	LIMIT = 1
+	LIMIT = 2
 )
 
 // 直接用iina播放url，chrome返回302无法播放
@@ -120,7 +120,7 @@ func parseDetail(url string) Asmr {
 // 获取音频的真实url
 func originAudioUrl(fileSource string) string {
 
-	jsFile := "./public/resource/js/voice.js"
+	jsFile := "./public/js/voice.js"
 	bytes, err := ioutil.ReadFile(jsFile)
 	if err != nil {
 		glog.Error(err.Error())

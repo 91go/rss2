@@ -5,7 +5,6 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
-	"net/http"
 )
 
 func RequestGet(url string) []byte {
@@ -23,7 +22,8 @@ func RequestGet(url string) []byte {
 	//	return nil
 	//}
 	//return body
-	resp, err := http.Get(url)
+	client := CreateClient()
+	resp, err := client.Get(url)
 	if err != nil {
 		fmt.Printf("httpGet url : %v , error : %v\n", url, err)
 		return nil

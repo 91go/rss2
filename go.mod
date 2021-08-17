@@ -11,7 +11,6 @@ require (
 	github.com/gorilla/feeds v1.1.1
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/mattn/go-isatty v0.0.13 // indirect
-	github.com/qiniu/iconv v1.2.0
 	github.com/robertkrimen/otto v0.0.0-20210614181706-373ff5438452
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/stretchr/testify v1.7.0
