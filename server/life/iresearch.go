@@ -3,7 +3,8 @@ package life
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/91go/rss2/utils"
+	"github.com/91go/gofc/fchttp"
+	"github.com/91go/gofc/fctime"
 	"github.com/bitly/go-simplejson"
 	"github.com/gogf/gf/net/ghttp"
 	"github.com/gogf/gf/os/glog"
@@ -53,12 +54,15 @@ func IResearchRss(request *ghttp.Request) {
 		log.Fatal(err)
 	}
 
-	request.Response.WriteXmlExit(atom)
+	err = request.Response.WriteXmlExit(atom)
+	if err != nil {
+		return
+	}
 }
 
 func crawlIResearch() []IResearch {
 
-	body := utils.RequestGet(BaseUrl)
+	body := fchttp.RequestGet(BaseUrl)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
 		glog.Errorf("list加载失败 %v", err)
@@ -67,13 +71,13 @@ func crawlIResearch() []IResearch {
 
 	iResearch := []IResearch{}
 	rows, err := res.Get("List").Array()
-	for _, row := range rows[0:2] {
+	for _, row := range rows[0:LIMIT] {
 		if each, ok := row.(map[string]interface{}); ok {
 			id := each["NewsId"].(json.Number).String()
 			detail := parseDetail(id)
 			iResearch = append(iResearch, IResearch{
 				Title:    each["Title"].(string),
-				Time:     utils.TransTime2(each["Uptime"].(string)),
+				Time:     fctime.TransTime2(each["Uptime"].(string)),
 				Url:      each["VisitUrl"].(string),
 				Describe: each["Content"].(string),
 				Pics:     detail,
@@ -85,7 +89,7 @@ func crawlIResearch() []IResearch {
 
 func parseDetail(id string) (ret string) {
 	url := fmt.Sprintf(DetailUrl, id)
-	body := utils.RequestGet(url)
+	body := fchttp.RequestGet(url)
 	res, _ := simplejson.NewJson(body)
 	total, _ := res.Get("List").GetIndex(0).Get("PagesCount").Int()
 

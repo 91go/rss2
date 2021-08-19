@@ -1,3 +1,5 @@
+github.com/91go/gofc v0.0.0-20210819144701-7c01d20416bb h1:dKbsVdOSx/NvgpLzrirWdEnw779jy30w3nsHjIWYIG0=
+github.com/91go/gofc v0.0.0-20210819144701-7c01d20416bb/go.mod h1:liy0IA+lwbXcDxh6gU7hg6fClq1j3sgeRyGRkF6Wv00=
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/PuerkitoBio/goquery v1.7.1 h1:oE+T06D+1T7LNrn91B4aERsRIeCLJ/oPSa6xB9FPnz4=

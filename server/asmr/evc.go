@@ -3,7 +3,8 @@ package asmr
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/91go/rss2/utils"
+	"github.com/91go/gofc/fchttp"
+	"github.com/91go/gofc/fctime"
 	"github.com/bitly/go-simplejson"
 	"github.com/gogf/gf/net/ghttp"
 	"github.com/gogf/gf/os/glog"
@@ -52,15 +53,21 @@ func EvcRss(request *ghttp.Request) {
 	atom, err := feed.ToAtom()
 	if err != nil {
 		glog.Error(err)
-		request.Response.WriteXmlExit(atom)
+		err := request.Response.WriteXmlExit(atom)
+		if err != nil {
+			return
+		}
 	}
 
-	request.Response.WriteXmlExit(atom)
+	err = request.Response.WriteXmlExit(atom)
+	if err != nil {
+		return
+	}
 }
 
 //
 func parseRequest() []Asmr {
-	body := utils.RequestGet(URL)
+	body := fchttp.RequestGet(URL)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
 		glog.Errorf("list加载失败 %v", err)
@@ -97,7 +104,7 @@ func parseRequest() []Asmr {
 
 // 解析详情页
 func parseDetail(url string) Asmr {
-	body := utils.RequestGet(url)
+	body := fchttp.RequestGet(url)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
 		glog.Errorf("detail加载失败 %v", err)
@@ -105,7 +112,7 @@ func parseDetail(url string) Asmr {
 	}
 	each, err := res.Get("data").Map()
 	fileSrc := each["fileSrc"]
-	createTime, err := utils.MsToTime(each["createDate"].(json.Number).String())
+	createTime, err := fctime.MsToTime(each["createDate"].(json.Number).String())
 	if err != nil {
 		glog.Errorf("trans time error%v", err.Error())
 	}

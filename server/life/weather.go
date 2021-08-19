@@ -2,6 +2,7 @@ package life
 
 import (
 	"fmt"
+	"github.com/91go/gofc"
 	"github.com/91go/rss2/utils"
 	"github.com/gogf/gf/net/ghttp"
 	"github.com/gorilla/feeds"
@@ -112,7 +113,10 @@ func WeatherRss(request *ghttp.Request) {
 		log.Fatal(err)
 	}
 
-	request.Response.WriteXmlExit(atom)
+	err = request.Response.WriteXmlExit(atom)
+	if err != nil {
+		return
+	}
 }
 
 func crawl(city string) Warm {
@@ -120,7 +124,7 @@ func crawl(city string) Warm {
 	parts := getParts()
 	weather := GetWeather(city)
 	parts["weather"] = weather
-	html := utils.GenerateHTML(HTML, parts)
+	html := gofc.GenerateHTML(HTML, parts)
 
 	return Warm{
 		Code: city,
