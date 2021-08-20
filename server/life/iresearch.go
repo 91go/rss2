@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/91go/gofc/fchttp"
-	"github.com/91go/gofc/fctime"
 	"github.com/bitly/go-simplejson"
 	"github.com/gogf/gf/net/ghttp"
 	"github.com/gogf/gf/os/glog"
@@ -16,7 +15,7 @@ import (
 var (
 	BaseUrl   = "https://www.iresearch.com.cn/api/products/GetReportList?classId=&fee=0&date=&lastId=&pageSize=9"
 	DetailUrl = "https://www.iresearch.com.cn/api/Detail/reportM?id=%s&isfree=0"
-	LIMIT     = 6
+	LIMIT     = 1
 )
 
 type IResearch struct {
@@ -36,6 +35,7 @@ func IResearchRss(request *ghttp.Request) {
 		Link:    &feeds.Link{Href: res[0].Url},
 		Author:  &feeds.Author{Name: ""},
 		Created: res[0].Time,
+		Updated: res[0].Time,
 	}
 	for _, value := range res {
 
@@ -46,6 +46,7 @@ func IResearchRss(request *ghttp.Request) {
 			Description: fmt.Sprintf("%s%s", value.Describe, value.Pics),
 			Author:      &feeds.Author{Name: ""},
 			Created:     value.Time,
+			Updated:     value.Time,
 		})
 	}
 
@@ -75,9 +76,10 @@ func crawlIResearch() []IResearch {
 		if each, ok := row.(map[string]interface{}); ok {
 			id := each["NewsId"].(json.Number).String()
 			detail := parseDetail(id)
+
 			iResearch = append(iResearch, IResearch{
 				Title:    each["Title"].(string),
-				Time:     fctime.TransTime2(each["Uptime"].(string)),
+				Time:     transTime(each["Uptime"].(string)),
 				Url:      each["VisitUrl"].(string),
 				Describe: each["Content"].(string),
 				Pics:     detail,
@@ -100,4 +102,10 @@ func parseDetail(id string) (ret string) {
 	}
 
 	return ret
+}
+
+func transTime(str string) time.Time {
+	//local, _ := time.LoadLocation("Local")
+	tt, _ := time.Parse("2006/1/02 15:04:05", str)
+	return tt
 }
