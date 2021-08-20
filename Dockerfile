@@ -9,11 +9,14 @@ ENV GO111MODULE=on \
 WORKDIR /build
 COPY go.mod .
 COPY go.sum .
+# 需要里面的js文件
+ADD public .
 RUN go mod download
 COPY . .
 RUN go build -o rss2 .
 
 FROM scratch
 COPY --from=builder /build/rss2 /
+COPY --from=builder /build/public /public
 EXPOSE 8090
 CMD ["/rss2"]

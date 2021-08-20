@@ -46,7 +46,7 @@ func EvcRss(request *ghttp.Request) {
 		feed.Add(&feeds.Item{
 			Title:       value.Title,
 			Link:        &feeds.Link{Href: value.AudioUrl},
-			Description: value.Desc,
+			Description: fmt.Sprintf("%s\n%s", value.AudioUrl, value.Desc),
 			Created:     value.CreateTime,
 		})
 	}
