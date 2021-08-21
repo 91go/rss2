@@ -1,20 +1,16 @@
 package asmr
 
 import (
+	"github.com/91go/rss2/server/asmr"
 	"github.com/gogf/gf/os/glog"
 	"github.com/robertkrimen/otto"
-	"io/ioutil"
 	"testing"
 )
 
 func TestVoice(t *testing.T) {
-	jsFile := "./voice.js"
-	bytes, err := ioutil.ReadFile(jsFile)
-	if err != nil {
-		glog.Error(err.Error())
-	}
+
 	vm := otto.New()
-	res, err := vm.Run(string(bytes))
+	res, err := vm.Run(asmr.VoiceJs())
 	if err != nil {
 		glog.Error(err.Error())
 	}
