@@ -1,14 +1,12 @@
 package life
 
 import (
-	"fmt"
 	"github.com/91go/gofc"
 	"github.com/91go/rss2/utils"
 	"github.com/gogf/gf/net/ghttp"
 	"github.com/gorilla/feeds"
 	"log"
 	"strings"
-	"sync"
 	"time"
 )
 
@@ -121,7 +119,8 @@ func WeatherRss(request *ghttp.Request) {
 
 func crawl(city string) Warm {
 
-	parts := getParts()
+	//parts := getParts()
+	parts := make(map[string]interface{})
 	weather := GetWeather(city)
 	parts["weather"] = weather
 	html := gofc.GenerateHTML(HTML, parts)
@@ -136,24 +135,24 @@ func crawl(city string) Warm {
 }
 
 // 聚合所有数据
-func getParts() map[string]interface{} {
-	wrapMap := map[string]func() interface{}{
-		"one": func() interface{} { return GetONE() },
-		//"poem": func() interface{} { return GetPoem() },
-	}
-
-	wg := sync.WaitGroup{}
-	parts := map[string]interface{}{}
-	for name, getPart := range wrapMap {
-		wg.Add(1)
-		go func(key string, fn func() interface{}) {
-			defer wg.Done()
-			parts[key] = fn()
-		}(name, getPart)
-	}
-	wg.Wait()
-	return parts
-}
+//func getParts() map[string]interface{} {
+//	wrapMap := map[string]func() interface{}{
+//		//"one": func() interface{} { return GetONE() },
+//		//"poem": func() interface{} { return GetPoem() },
+//	}
+//
+//	wg := sync.WaitGroup{}
+//	parts := map[string]interface{}{}
+//	for name, getPart := range wrapMap {
+//		wg.Add(1)
+//		go func(key string, fn func() interface{}) {
+//			defer wg.Done()
+//			parts[key] = fn()
+//		}(name, getPart)
+//	}
+//	wg.Wait()
+//	return parts
+//}
 
 const HTML = `
 <!DOCTYPE html>
@@ -166,7 +165,6 @@ const HTML = `
 </head>
 <body>
   <div style="max-width: 375px; margin: 20px auto;color:#444; font-size: 16px;">
-    <h3 >{{one.Date}}</h3>
     <h3 style="text-align: center">{{weather.City}}</h3>
     <br>
     <div style="padding: 0;width: 100%;">
@@ -177,16 +175,6 @@ const HTML = `
       <div><span style="color: #6e6e6e">空气：</span>{{weather.Air}}</div>
       <div><span style="color: #6e6e6e">限行：</span>{{weather.Limit}}</div>
       <div><span style="color: #6e6e6e">提示：</span>{{weather.Note}}</div>
-    </div>
-    <div style="text-align: center">
-      <div>{{poem.Title}}</div>
-      <div style="font-size: 12px">{{poem.Dynasty}} {{poem.Author}}</div>
-      <br>
-      <div>{{poem.Content}}</div>
-    </div>
-    <div>
-      <div><img width="100%" src="{{one.ImgURL}}"></div>
-      <div style="margin-top: 10px;line-height: 1.5">&emsp;&emsp;{{one.Sentence}}</div>
     </div>
   </div>
   <br><br>
@@ -225,19 +213,19 @@ func GetWeather(local string) Weather {
 }
 
 // GetONE data
-func GetONE() One {
-	url := "http://wufazhuce.com/"
-	doc := utils.FetchHTML(url)
-	wrap := doc.Find(".fp-one .carousel .item.active")
-	day := wrap.Find(".dom").Text()
-	monthYear := wrap.Find(".may").Text()
-	imgURL, _ := wrap.Find(".fp-one-imagen").Attr("src")
-	return One{
-		ImgURL:   imgURL,
-		Date:     fmt.Sprintf("%s %s", day, monthYear),
-		Sentence: wrap.Find(".fp-one-cita a").Text(),
-	}
-}
+//func GetONE() One {
+//	url := "http://wufazhuce.com/"
+//	doc := utils.FetchHTML(url)
+//	wrap := doc.Find(".fp-one .carousel .item.active")
+//	day := wrap.Find(".dom").Text()
+//	monthYear := wrap.Find(".may").Text()
+//	imgURL, _ := wrap.Find(".fp-one-imagen").Attr("src")
+//	return One{
+//		ImgURL:   imgURL,
+//		Date:     fmt.Sprintf("%s %s", day, monthYear),
+//		Sentence: wrap.Find(".fp-one-cita a").Text(),
+//	}
+//}
 
 // GetEnglish data
 //func GetEnglish() English {

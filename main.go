@@ -5,6 +5,7 @@ import (
 	"github.com/91go/rss2/server/code"
 	"github.com/91go/rss2/server/life"
 	"github.com/91go/rss2/server/porn"
+	"github.com/91go/rss2/server/video"
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/net/ghttp"
 )
@@ -37,5 +38,10 @@ func init() {
 		//group.GET("/dybz", porn.DybzRss)
 		group.GET("/ysk/{tag}", porn.YskRss)
 		group.GET("/dybz/{novel}", porn.DybzRss)
+	})
+
+	s.Group("/video", func(group *ghttp.RouterGroup) {
+		// 非vip腾讯视频
+		group.GET("/tencent/{tag}", video.TencentRss)
 	})
 }
