@@ -2,81 +2,58 @@ package porn
 
 import (
 	"fmt"
-	"github.com/91go/rss2/utils"
+	"github.com/91go/rss2/core"
 	query "github.com/PuerkitoBio/goquery"
 	"github.com/gogf/gf/net/ghttp"
 	"github.com/gogf/gf/text/gregex"
 	"github.com/gogf/gf/text/gstr"
-	"github.com/gorilla/feeds"
-	"log"
 	"strings"
 	"time"
 )
 
-type YskList struct {
-	// 详情url
-	url string
-	// title
-	title string
-	// time
-	time time.Time
-}
-
 var (
-	LIMIT = 1
+	LIMIT  = 1
+	YskUrl = "https://yskhd.com/archives/tag/"
 )
 
 func YskRss(request *ghttp.Request) {
 	tag := request.GetString("tag")
-	url := "https://yskhd.com/archives/tag/" + tag
+	url := fmt.Sprintf("%s%s", YskUrl, tag)
+
 	list := parseList(url)
 
-	feed := &feeds.Feed{
-		Title:   "优丝库——" + tag,
-		Link:    &feeds.Link{Href: url},
-		Author:  &feeds.Author{Name: tag},
-		Created: list[0].time,
-	}
-	for _, value := range list {
+	res := core.Rss(core.Feed{
+		Url:    url,
+		Title:  fmt.Sprintf("%s%s", "优丝库-", tag),
+		Author: tag,
+	}, list)
 
-		pics := parsePics(value.url)
-		feed.Add(&feeds.Item{
-			Title:       value.title,
-			Link:        &feeds.Link{Href: value.url},
-			Description: pics,
-			Author:      &feeds.Author{Name: tag},
-			Created:     value.time,
-			//Updated:     value.time,
-		})
-	}
-
-	atom, err := feed.ToAtom()
+	err := request.Response.WriteXmlExit(res)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
-
-	request.Response.WriteXmlExit(atom)
 }
 
 // 解析列表页
-func parseList(url string) []YskList {
-	doc := utils.FetchHTML(url)
+func parseList(url string) []core.Feed {
+	doc := core.FetchHTML(url)
 
 	total := doc.Find(".post").Size()
 	if total >= LIMIT {
 		total = LIMIT
 	}
 	wrap := doc.Find(".post").Slice(0, total)
-	ret := []YskList{}
+	ret := []core.Feed{}
 	wrap.Each(func(i int, selection *query.Selection) {
 		href, _ := selection.Find(".img").Find("a").Attr("href")
 		title, _ := selection.Find(".img").Find("a").Attr("title")
 		cover, _ := selection.Find(".img").Find("a").Find("img").Attr("src")
 
-		ret = append(ret, YskList{
-			url:   href,
-			title: title,
-			time:  sanitizeTime(cover),
+		ret = append(ret, core.Feed{
+			Url:      href,
+			Title:    title,
+			Time:     sanitizeTime(cover),
+			Contents: parsePics(href),
 		})
 	})
 
@@ -97,7 +74,7 @@ func sanitizeTime(url string) time.Time {
 
 // 解析详情页，获取所有图片
 func parsePics(url string) string {
-	doc := utils.FetchHTML(url)
+	doc := core.FetchHTML(url)
 	wrap := doc.Find(".gallery-fancy-item")
 	pics := []string{}
 	wrap.Each(func(i int, selection *query.Selection) {

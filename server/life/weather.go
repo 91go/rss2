@@ -2,7 +2,7 @@ package life
 
 import (
 	"github.com/91go/gofc"
-	"github.com/91go/rss2/utils"
+	"github.com/91go/rss2/core"
 	"github.com/gogf/gf/net/ghttp"
 	"github.com/gorilla/feeds"
 	"log"
@@ -34,52 +34,52 @@ type Weather struct {
 	Note     string
 }
 
-// One site info
-type One struct {
-	Date     string
-	ImgURL   string
-	Sentence string
-}
+//// One site info
+//type One struct {
+//	Date     string
+//	ImgURL   string
+//	Sentence string
+//}
+//
+//// English info
+//type English struct {
+//	ImgURL   string
+//	Sentence string
+//}
+//
+//// Poem info
+//type Poem struct {
+//	Title   string   `json:"title"`
+//	Dynasty string   `json:"dynasty"`
+//	Author  string   `json:"author"`
+//	Content []string `json:"content"`
+//}
 
-// English info
-type English struct {
-	ImgURL   string
-	Sentence string
-}
+//// PoemRes response data
+//type PoemRes struct {
+//	Status string `json:"status"`
+//	Data   struct {
+//		Origin Poem `json:"origin"`
+//	} `json:"data"`
+//}
+//
+//// Wallpaper data
+//type Wallpaper struct {
+//	Title  string
+//	ImgURL string
+//}
+//
+//// Trivia info
+//type Trivia struct {
+//	ImgURL      string
+//	Description string
+//}
 
-// Poem info
-type Poem struct {
-	Title   string   `json:"title"`
-	Dynasty string   `json:"dynasty"`
-	Author  string   `json:"author"`
-	Content []string `json:"content"`
-}
-
-// PoemRes response data
-type PoemRes struct {
-	Status string `json:"status"`
-	Data   struct {
-		Origin Poem `json:"origin"`
-	} `json:"data"`
-}
-
-// Wallpaper data
-type Wallpaper struct {
-	Title  string
-	ImgURL string
-}
-
-// Trivia info
-type Trivia struct {
-	ImgURL      string
-	Description string
-}
-
-// User for receive email
-type User struct {
-	Email string `json:"email"`
-	Local string `json:"local"`
-}
+//// User for receive email
+//type User struct {
+//	Email string `json:"email"`
+//	Local string `json:"local"`
+//}
 
 func WeatherRss(request *ghttp.Request) {
 
@@ -185,7 +185,7 @@ const HTML = `
 // GetWeather data
 func GetWeather(local string) Weather {
 	url := "https://tianqi.moji.com/weather/china/" + local
-	doc := utils.FetchHTML(url)
+	doc := core.FetchHTML(url)
 	wrap := doc.Find(".wea_info .left")
 	humidityDesc := strings.Split(wrap.Find(".wea_about span").Text(), " ")
 	humidity := "未知"
@@ -215,7 +215,7 @@ func GetWeather(local string) Weather {
 // GetONE data
 //func GetONE() One {
 //	url := "http://wufazhuce.com/"
-//	doc := utils.FetchHTML(url)
+//	doc := core.FetchHTML(url)
 //	wrap := doc.Find(".fp-one .carousel .item.active")
 //	day := wrap.Find(".dom").Text()
 //	monthYear := wrap.Find(".may").Text()
@@ -230,7 +230,7 @@ func GetWeather(local string) Weather {
 // GetEnglish data
 //func GetEnglish() English {
 //	url := "http://dict.eudic.net/home/dailysentence"
-//	doc := utils.FetchHTML(url)
+//	doc := core.FetchHTML(url)
 //	wrap := doc.Find(".containter .head-img")
 //	imgURL, _ := wrap.Find(".himg").Attr("src")
 //	return English{
@@ -244,10 +244,10 @@ func GetWeather(local string) Weather {
 //	url := "https://v2.jinrishici.com/one.json"
 //
 //	//buf := new(bytes.Buffer)
-//	//res := utils.Fetch(url)
+//	//res := core.Fetch(url)
 //	//buf.ReadFrom(res)
 //	//resByte := buf.Bytes()
-//	resByte := utils.RequestGet(url)
+//	resByte := core.RequestGet(url)
 //
 //	var resJSON PoemRes
 //	err := json.Unmarshal(resByte, &resJSON)

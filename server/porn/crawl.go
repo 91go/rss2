@@ -1,7 +1,7 @@
 package porn
 
 import (
-	"github.com/91go/rss2/utils"
+	"github.com/91go/rss2/core"
 	query "github.com/PuerkitoBio/goquery"
 	"log"
 	"strconv"
@@ -78,7 +78,7 @@ type Dybz struct {
 //}
 
 func GetNovel(url string) []Dybz {
-	doc := utils.FetchHTMLNotUtf8(url, "gbk")
+	doc := core.FetchHTMLNotUtf8(url, "gbk")
 
 	novelName := doc.Find("h1").Text()
 	author := doc.Find(".info").Text()
@@ -91,7 +91,7 @@ func GetNovel(url string) []Dybz {
 
 	for _, page := range pages {
 
-		detail := utils.FetchHTMLNotUtf8(page.Url, "gbk")
+		detail := core.FetchHTMLNotUtf8(page.Url, "gbk")
 		wrap := detail.Find(".list li")
 
 		wrap.Each(func(i int, selection *query.Selection) {
@@ -136,7 +136,7 @@ func ParsePages(doc *query.Document, url string) (pages []Page) {
 }
 
 func LatestNovel(url string) []Dybz {
-	doc := utils.FetchHTMLNotUtf8(url, "gbk")
+	doc := core.FetchHTMLNotUtf8(url, "gbk")
 
 	novelName := doc.Find("h1").Text()
 	author := doc.Find(".info").Text()

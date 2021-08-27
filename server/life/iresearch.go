@@ -4,11 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/91go/gofc/fchttp"
+	"github.com/91go/rss2/core"
 	"github.com/bitly/go-simplejson"
 	"github.com/gogf/gf/net/ghttp"
 	"github.com/gogf/gf/os/glog"
-	"github.com/gorilla/feeds"
-	"log"
 	"time"
 )
 
@@ -30,58 +29,38 @@ type IResearch struct {
 func IResearchRss(request *ghttp.Request) {
 	res := crawlIResearch()
 
-	feed := &feeds.Feed{
-		Title:   "艾瑞咨询——产业研究报告",
-		Link:    &feeds.Link{Href: res[0].Url},
-		Author:  &feeds.Author{Name: ""},
-		Created: res[0].Time,
-		Updated: res[0].Time,
-	}
-	for _, value := range res {
+	atom := core.Rss(core.Feed{
+		Title: "艾瑞咨询——产业研究报告",
+		Url:   BaseUrl,
+	}, res)
 
-		url := value.Url
-		feed.Add(&feeds.Item{
-			Title:       value.Title,
-			Link:        &feeds.Link{Href: url},
-			Description: fmt.Sprintf("%s%s", value.Describe, value.Pics),
-			Author:      &feeds.Author{Name: ""},
-			Created:     value.Time,
-			Updated:     value.Time,
-		})
-	}
-
-	atom, err := feed.ToAtom()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = request.Response.WriteXmlExit(atom)
+	err := request.Response.WriteXmlExit(atom)
 	if err != nil {
 		return
 	}
 }
 
-func crawlIResearch() []IResearch {
+func crawlIResearch() []core.Feed {
 
 	body := fchttp.RequestGet(BaseUrl)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
 		glog.Errorf("list加载失败 %v", err)
-		return []IResearch{}
+		return []core.Feed{}
 	}
 
-	iResearch := []IResearch{}
+	iResearch := []core.Feed{}
 	rows, err := res.Get("List").Array()
 	for _, row := range rows[0:LIMIT] {
 		if each, ok := row.(map[string]interface{}); ok {
 			id := each["NewsId"].(json.Number).String()
 			detail := parseDetail(id)
 
-			iResearch = append(iResearch, IResearch{
+			iResearch = append(iResearch, core.Feed{
 				Title:    each["Title"].(string),
 				Time:     transTime(each["Uptime"].(string)),
 				Url:      each["VisitUrl"].(string),
-				Describe: each["Content"].(string),
+				Contents: fmt.Sprintf("%s%s", each["Content"].(string), detail),
 				Pics:     detail,
 			})
 		}
@@ -89,6 +68,7 @@ func crawlIResearch() []IResearch {
 	return iResearch
 }
 
+// 详情
 func parseDetail(id string) (ret string) {
 	url := fmt.Sprintf(DetailUrl, id)
 	body := fchttp.RequestGet(url)
@@ -105,7 +85,7 @@ func parseDetail(id string) (ret string) {
 }
 
 func transTime(str string) time.Time {
-	//local, _ := time.LoadLocation("Local")
+
 	tt, _ := time.Parse("2006/1/02 15:04:05", str)
 	return tt
 }

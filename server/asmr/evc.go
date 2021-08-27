@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"github.com/91go/gofc/fchttp"
 	"github.com/91go/gofc/fctime"
+	"github.com/91go/rss2/core"
 	"github.com/bitly/go-simplejson"
 	"github.com/gogf/gf/net/ghttp"
 	"github.com/gogf/gf/os/glog"
-	"github.com/gorilla/feeds"
 	"github.com/robertkrimen/otto"
 	"time"
 )
@@ -25,55 +25,37 @@ type Asmr struct {
 }
 
 var (
-	URL = "https://www.2evc.cn/voiceAppserver//common/sortType?voiceType=1&orderType=0&curPage=1&pageSize=302&cvId=8"
+	NzURL = "https://www.2evc.cn/voiceAppserver//common/sortType?voiceType=1&orderType=0&curPage=1&pageSize=302&cvId=8"
 	// 机器性能不行，不要开太大，否则502
-	LIMIT = 2
+	LIMIT = 3
 )
 
 // 直接用iina播放url，chrome返回302无法播放
 func EvcRss(request *ghttp.Request) {
 
-	ret := parseRequest()
-	feed := &feeds.Feed{
-		Title:   "南征付费ASMR音频",
-		Link:    &feeds.Link{Href: URL},
-		Author:  &feeds.Author{Name: ""},
-		Created: ret[0].CreateTime,
-	}
+	ret := parseRequest(NzURL)
 
-	for _, value := range ret {
-		feed.Add(&feeds.Item{
-			Title:       value.Title,
-			Link:        &feeds.Link{Href: value.AudioUrl},
-			Description: fmt.Sprintf("%s\n%s", value.AudioUrl, value.Desc),
-			Created:     value.CreateTime,
-		})
-	}
-	atom, err := feed.ToAtom()
-	if err != nil {
-		glog.Error(err)
-		err := request.Response.WriteXmlExit(atom)
-		if err != nil {
-			return
-		}
-	}
+	res := core.Rss(core.Feed{
+		Title: "南征付费ASMR音频",
+		Url:   NzURL,
+	}, ret)
 
-	err = request.Response.WriteXmlExit(atom)
+	err := request.Response.WriteXmlExit(res)
 	if err != nil {
 		return
 	}
 }
 
 //
-func parseRequest() []Asmr {
-	body := fchttp.RequestGet(URL)
+func parseRequest(url string) []core.Feed {
+	body := fchttp.RequestGet(url)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
 		glog.Errorf("list加载失败 %v", err)
-		return []Asmr{}
+		return []core.Feed{}
 	}
 
-	asmr := []Asmr{}
+	asmr := []core.Feed{}
 	rows, err := res.Get("data").Get("pageData").Array()
 	rowws := rows[0:LIMIT]
 	for _, row := range rowws {
@@ -87,13 +69,11 @@ func parseRequest() []Asmr {
 			apiUrl := fmt.Sprintf("https://www.2evc.cn/voiceAppserver/voice/get?id=%d&telephone=undefined&cvId=8", origId)
 			detail := parseDetail(apiUrl)
 
-			asmr = append(asmr, Asmr{
-				Title:      each["name"].(string),
-				OriginId:   origId,
-				ApiUrl:     apiUrl,
-				Desc:       detail.Desc,
-				AudioUrl:   detail.AudioUrl,
-				CreateTime: detail.CreateTime,
+			asmr = append(asmr, core.Feed{
+				Title:    each["name"].(string),
+				Url:      detail.AudioUrl,
+				Contents: fmt.Sprintf("%s\n%s", detail.AudioUrl, detail.Desc),
+				Time:     detail.CreateTime,
 			})
 		}
 	}
