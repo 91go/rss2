@@ -57,6 +57,9 @@ func parseRequest(url string) []core.Feed {
 
 	asmr := []core.Feed{}
 	rows, err := res.Get("data").Get("pageData").Array()
+	if err != nil {
+		return []core.Feed{}
+	}
 	rowws := rows[0:LIMIT]
 	for _, row := range rowws {
 
@@ -90,6 +93,10 @@ func parseDetail(url string) Asmr {
 		return Asmr{}
 	}
 	each, err := res.Get("data").Map()
+	if err != nil {
+		glog.Errorf("detail加载失败 %v", err)
+		return Asmr{}
+	}
 	fileSrc := each["fileSrc"]
 	createTime, err := fctime.MsToTime(each["createDate"].(json.Number).String())
 	if err != nil {

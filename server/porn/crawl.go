@@ -9,26 +9,26 @@ import (
 	"time"
 )
 
-var (
-	novels = []string{}
-	latest = []string{
-		// 心路难平2
-		//"http://www.dybz88.com/22/22417/",
-		// 母上攻略
-		"https://www.dybz7.net/14/14247/",
-		// 新婚
-		"http://www.dybz88.com/11/11812/",
-		// 六朝燕歌行
-		"http://www.dybz88.com/6/6532/",
-		// 枕上余温
-		"http://www.dybz77.com/12/12057/",
-	}
-	search = []string{
-		// 逍遥小散仙
-		"http://www.dybz88.com/21/21845/",
-	}
-	base = "https://www.dybz7.net"
-)
+//var (
+//	novels = []string{}
+//	latest = []string{
+//		// 心路难平2
+//		//"http://www.dybz88.com/22/22417/",
+//		// 母上攻略
+//		"https://www.dybz7.net/14/14247/",
+//		// 新婚
+//		"http://www.dybz88.com/11/11812/",
+//		// 六朝燕歌行
+//		"http://www.dybz88.com/6/6532/",
+//		// 枕上余温
+//		"http://www.dybz77.com/12/12057/",
+//	}
+//	search = []string{
+//		// 逍遥小散仙
+//		"http://www.dybz88.com/21/21845/",
+//	}
+//	base = "https://www.dybz7.net"
+//)
 
 type Page struct {
 	//Page string
@@ -106,7 +106,7 @@ func GetNovel(url string) []Dybz {
 				NovelFlag:   flag,
 				NovelUrl:    url,
 				ChapterName: chapterName,
-				ChapterUrl:  base + chapterUrl,
+				//ChapterUrl:  base + chapterUrl,
 				ChapterFlag: flag2,
 				CreateTime:  time.Now().String(),
 				UpdateTime:  time.Now().String(),
@@ -158,7 +158,7 @@ func LatestNovel(url string) []Dybz {
 			NovelFlag:   flag,
 			NovelUrl:    url,
 			ChapterName: chapterName,
-			ChapterUrl:  base + chapterUrl,
+			//ChapterUrl:  base + chapterUrl,
 			ChapterFlag: flag2,
 			CreateTime:  time.Now().String(),
 			UpdateTime:  time.Now().String(),

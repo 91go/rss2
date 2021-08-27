@@ -51,6 +51,10 @@ func crawlIResearch() []core.Feed {
 
 	iResearch := []core.Feed{}
 	rows, err := res.Get("List").Array()
+	if err != nil {
+		glog.Errorf("detail加载失败 %v", err)
+		return []core.Feed{}
+	}
 	for _, row := range rows[0:LIMIT] {
 		if each, ok := row.(map[string]interface{}); ok {
 			id := each["NewsId"].(json.Number).String()

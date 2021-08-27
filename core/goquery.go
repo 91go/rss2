@@ -26,7 +26,8 @@ func FetchHTML(url string) *query.Document {
 		return nil
 	}
 	//doc, err := query.NewDocument(url)
-	doc, err := query.NewDocumentFromResponse(resp)
+	//doc, err := query.NewDocumentFromResponse(resp)
+	doc, err := query.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		log.Fatalf("Fetch html from %s error: %s", url, err)
 	}

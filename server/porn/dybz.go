@@ -52,7 +52,10 @@ func DybzRss(request *ghttp.Request) {
 		log.Fatal(err)
 	}
 
-	request.Response.WriteXmlExit(atom)
+	err = request.Response.WriteXmlExit(atom)
+	if err != nil {
+		return
+	}
 }
 
 func GetRssByTag(flag string) (gdb.Result, error) {
