@@ -47,36 +47,6 @@ type Dybz struct {
 	UpdateTime  string
 }
 
-//func CrawlLatest() {
-//
-//	if len(latest) == 0 {
-//		return
-//	}
-//	for _, url := range latest {
-//		glog.Infof("正在爬取: %s", url)
-//		novel := LatestNovel(url)
-//
-//		save, err := dao.Dybz.Data(novel).Insert()
-//		if err != nil {
-//			glog.Error("insert failed: ", err.Error())
-//			//return
-//		}
-//
-//		glog.Error("insert success, result: ", save)
-//	}
-//}
-
-//func CrawlLatestUrl(url string) {
-//	novel := LatestNovel(url)
-//
-//	save, err := dao.Dybz.Data(novel).Insert()
-//	if err != nil {
-//		glog.Error("insert failed: ", err.Error())
-//		//return
-//	}
-//	glog.Error("insert success, result: ", save)
-//}
-
 func GetNovel(url string) []Dybz {
 	doc := core.FetchHTMLNotUtf8(url, "gbk")
 

@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"github.com/91go/rss2/core"
 	query "github.com/PuerkitoBio/goquery"
-	"github.com/gogf/gf/net/ghttp"
+	"github.com/gin-gonic/gin"
 	"github.com/gogf/gf/text/gregex"
-	"github.com/gogf/gf/text/gstr"
 	"strings"
 	"time"
 )
@@ -16,8 +15,8 @@ var (
 	YskUrl = "https://yskhd.com/archives/tag/"
 )
 
-func YskRss(request *ghttp.Request) {
-	tag := request.GetString("tag")
+func YskRss(ctx *gin.Context) {
+	tag := ctx.GetString("tag")
 	url := fmt.Sprintf("%s%s", YskUrl, tag)
 
 	list := parseList(url)
@@ -28,10 +27,7 @@ func YskRss(request *ghttp.Request) {
 		Author: tag,
 	}, list)
 
-	err := request.Response.WriteXmlExit(res)
-	if err != nil {
-		return
-	}
+	ctx.Data(200, "application/xml; charset=utf-8", []byte(res))
 }
 
 // 解析列表页
@@ -64,7 +60,7 @@ func parseList(url string) []core.Feed {
 func sanitizeTime(url string) time.Time {
 	cut, _ := gregex.MatchString(".*/(.*)-", url)
 	s := cut[1]
-	trim := gstr.TrimRight(s, s[len(s)-3:])
+	trim := TrimRight(s, s[len(s)-3:])
 	parse, err := time.Parse("20060102150405", trim)
 	if err != nil {
 		return time.Time{}
@@ -95,4 +91,27 @@ func parsePics(url string) string {
 		ret += fmt.Sprintf("<img src=%s>", pic)
 	}
 	return ret
+}
+
+var (
+	// DefaultTrimChars are the characters which are stripped by Trim* functions in default.
+	DefaultTrimChars = string([]byte{
+		'\t', // Tab.
+		'\v', // Vertical tab.
+		'\n', // New line (line feed).
+		'\r', // Carriage return.
+		'\f', // New page.
+		' ',  // Ordinary space.
+		0x00, // NUL-byte.
+		0x85, // Delete.
+		0xA0, // Non-breaking space.
+	})
+)
+
+func TrimRight(str string, characterMask ...string) string {
+	trimChars := DefaultTrimChars
+	if len(characterMask) > 0 {
+		trimChars += characterMask[0]
+	}
+	return strings.TrimRight(str, trimChars)
 }

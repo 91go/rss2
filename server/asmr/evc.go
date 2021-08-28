@@ -7,9 +7,9 @@ import (
 	"github.com/91go/gofc/fctime"
 	"github.com/91go/rss2/core"
 	"github.com/bitly/go-simplejson"
-	"github.com/gogf/gf/net/ghttp"
-	"github.com/gogf/gf/os/glog"
+	"github.com/gin-gonic/gin"
 	"github.com/robertkrimen/otto"
+	"log"
 	"time"
 )
 
@@ -31,7 +31,7 @@ var (
 )
 
 // 直接用iina播放url，chrome返回302无法播放
-func EvcRss(request *ghttp.Request) {
+func EvcRss(ctx *gin.Context) {
 
 	ret := parseRequest(NzURL)
 
@@ -40,10 +40,7 @@ func EvcRss(request *ghttp.Request) {
 		Url:   NzURL,
 	}, ret)
 
-	err := request.Response.WriteXmlExit(res)
-	if err != nil {
-		return
-	}
+	ctx.Data(200, "application/xml; charset=utf-8", []byte(res))
 }
 
 //
@@ -51,7 +48,7 @@ func parseRequest(url string) []core.Feed {
 	body := fchttp.RequestGet(url)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
-		glog.Errorf("list加载失败 %v", err)
+		log.Printf("list加载失败 %v", err)
 		return []core.Feed{}
 	}
 
@@ -67,7 +64,7 @@ func parseRequest(url string) []core.Feed {
 
 			origId, err := each["id"].(json.Number).Int64()
 			if err != nil {
-				glog.Error("convert origId err %v", err)
+				log.Printf("convert origId err %v", err)
 			}
 			apiUrl := fmt.Sprintf("https://www.2evc.cn/voiceAppserver/voice/get?id=%d&telephone=undefined&cvId=8", origId)
 			detail := parseDetail(apiUrl)
@@ -89,18 +86,19 @@ func parseDetail(url string) Asmr {
 	body := fchttp.RequestGet(url)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
-		glog.Errorf("detail加载失败 %v", err)
+
+		log.Printf("detail加载失败 %v", err)
 		return Asmr{}
 	}
 	each, err := res.Get("data").Map()
 	if err != nil {
-		glog.Errorf("detail加载失败 %v", err)
+		log.Printf("detail加载失败 %v", err)
 		return Asmr{}
 	}
 	fileSrc := each["fileSrc"]
 	createTime, err := fctime.MsToTime(each["createDate"].(json.Number).String())
 	if err != nil {
-		glog.Errorf("trans time error%v", err.Error())
+		log.Printf("trans time error%v", err.Error())
 	}
 
 	return Asmr{
@@ -116,44 +114,18 @@ func originAudioUrl(fileSource string) string {
 	vm := otto.New()
 	_, err := vm.Run(VoiceJs())
 	if err != nil {
-		glog.Error(err.Error())
+		log.Println(err.Error())
 		return ""
 	}
 
 	hasOwn := "true"
 	call, err := vm.Call("unDecrypt", nil, fileSource, hasOwn)
 	if err != nil {
-		glog.Error(err.Error())
+		log.Println(err.Error())
 		return ""
 	}
 	return call.String()
 }
-
-// 下载音频
-//func DownloadAudio() {
-//	all, err := dao.Asmr.Fields("code", "title", "audio_url").Where("is_download", 0).All()
-//	if err != nil {
-//		return
-//	}
-//
-//	for _, url := range all {
-//		audioUrl := url.AudioUrl
-//		glog.Info(audioUrl)
-//		body := RequestGet(audioUrl)
-//
-//		err := ioutil.WriteFile(fmt.Sprintf("%s/%s.mp3", "/Users/luruiyang/Downloads/nz", url.Title), body, 0666)
-//		if err != nil {
-//			glog.Errorf("download failed: %s", audioUrl)
-//			return
-//		}
-//
-//		_, err = dao.Asmr.Where("code", url.Code).Data("is_download", 1).Update()
-//		if err != nil {
-//			glog.Errorf("update download flag error: %s", audioUrl)
-//		}
-//		glog.Infof("download success: %s", audioUrl)
-//	}
-//}
 
 func VoiceJs() string {
 	return `

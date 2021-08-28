@@ -6,8 +6,8 @@ import (
 	"github.com/91go/gofc/fchttp"
 	"github.com/91go/rss2/core"
 	"github.com/bitly/go-simplejson"
-	"github.com/gogf/gf/net/ghttp"
-	"github.com/gogf/gf/os/glog"
+	"github.com/gin-gonic/gin"
+	"log"
 	"time"
 )
 
@@ -26,18 +26,15 @@ type IResearch struct {
 }
 
 // [产业研究报告-艾瑞咨询](https://www.iresearch.com.cn/m/report.shtml)
-func IResearchRss(request *ghttp.Request) {
-	res := crawlIResearch()
+func IResearchRss(ctx *gin.Context) {
+	ret := crawlIResearch()
 
-	atom := core.Rss(core.Feed{
+	res := core.Rss(core.Feed{
 		Title: "艾瑞咨询——产业研究报告",
 		Url:   BaseUrl,
-	}, res)
+	}, ret)
 
-	err := request.Response.WriteXmlExit(atom)
-	if err != nil {
-		return
-	}
+	ctx.Data(200, "application/xml; charset=utf-8", []byte(res))
 }
 
 func crawlIResearch() []core.Feed {
@@ -45,14 +42,14 @@ func crawlIResearch() []core.Feed {
 	body := fchttp.RequestGet(BaseUrl)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
-		glog.Errorf("list加载失败 %v", err)
+		log.Printf("list加载失败 %v", err)
 		return []core.Feed{}
 	}
 
 	iResearch := []core.Feed{}
 	rows, err := res.Get("List").Array()
 	if err != nil {
-		glog.Errorf("detail加载失败 %v", err)
+		log.Printf("detail加载失败 %v", err)
 		return []core.Feed{}
 	}
 	for _, row := range rows[0:LIMIT] {

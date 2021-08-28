@@ -1,21 +1,36 @@
 package asmr
 
 import (
+	"github.com/91go/rss2/core"
 	"github.com/91go/rss2/server/asmr"
-	"github.com/gogf/gf/os/glog"
+	"github.com/91go/rss2/server/code"
+	"github.com/gin-gonic/gin"
 	"github.com/robertkrimen/otto"
+	"github.com/stretchr/testify/assert"
+	"log"
 	"testing"
 )
+
+func TestEvc(t *testing.T) {
+	uri := "/code/huangZ"
+	router := gin.Default()
+	router.GET(uri, code.HuangZRss)
+
+	_, err := core.Get(uri, router)
+	assert.Nil(t, err)
+	//assert.Len(t, )
+	//fmt.Println(string(res))
+}
 
 func TestVoice(t *testing.T) {
 
 	vm := otto.New()
 	res, err := vm.Run(asmr.VoiceJs())
 	if err != nil {
-		glog.Error(err.Error())
+		log.Println(err.Error())
 	}
 	t.Log(res)
-	//fileSource := "5ttp://8.210.46.21:9090/voice/60000013735.m20814p3"
+
 	fileSource := "5ttp://8.210.46.21:9090/voice/60000000765.m97973p3"
 	hasOwn := "true"
 	call, err := vm.Call("unDecrypt", nil, fileSource, hasOwn)

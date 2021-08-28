@@ -3,7 +3,7 @@ package life
 import (
 	"github.com/91go/gofc"
 	"github.com/91go/rss2/core"
-	"github.com/gogf/gf/net/ghttp"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/feeds"
 	"log"
 	"strings"
@@ -81,9 +81,9 @@ type Weather struct {
 //	Local string `json:"local"`
 //}
 
-func WeatherRss(request *ghttp.Request) {
+func WeatherRss(ctx *gin.Context) {
 
-	city := request.GetString("city")
+	city := ctx.GetString("city")
 
 	warm := crawl(city)
 
@@ -106,15 +106,12 @@ func WeatherRss(request *ghttp.Request) {
 		Updated:     warm.Time,
 	})
 
-	atom, err := feed.ToAtom()
+	res, err := feed.ToAtom()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = request.Response.WriteXmlExit(atom)
-	if err != nil {
-		return
-	}
+	ctx.Data(200, "application/xml; charset=utf-8", []byte(res))
 }
 
 func crawl(city string) Warm {

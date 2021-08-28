@@ -1,8 +1,10 @@
 package code
 
-import "github.com/gogf/gf/net/ghttp"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 // todo [No Headback](https://xargin.com/)
-func XarginRss(request *ghttp.Request) {
+func XarginRss(ctx *gin.Context) {
 
 }

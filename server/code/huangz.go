@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/91go/rss2/core"
 	query "github.com/PuerkitoBio/goquery"
-	"github.com/gogf/gf/net/ghttp"
+	"github.com/gin-gonic/gin"
 	"time"
 )
 
@@ -22,7 +22,7 @@ var (
 
 // 用来输出rss
 // 全文直出会timeout，所以只打出标题
-func HuangZRss(request *ghttp.Request) {
+func HuangZRss(ctx *gin.Context) {
 
 	ass := crawlHuangZ()
 
@@ -30,10 +30,7 @@ func HuangZRss(request *ghttp.Request) {
 		Title: "huangz——黄建宏redis博客",
 	}, ass)
 
-	err := request.Response.WriteXmlExit(res)
-	if err != nil {
-		return
-	}
+	ctx.Data(200, "application/xml; charset=utf-8", []byte(res))
 }
 
 // [huangz/blog — blog.huangz.me](https://blog.huangz.me/#)
@@ -49,8 +46,6 @@ func crawlHuangZ() []core.Feed {
 		title := selection.Find(".reference").Text()
 
 		fullUrl := fmt.Sprintf("%s%s", url, articleUrl)
-		//detail := core.FetchHTML(fullUrl)
-		//ctx := detail.Find(".body").Text()
 
 		param = append(param, core.Feed{
 			Author: "huangz",

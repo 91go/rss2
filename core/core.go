@@ -1,7 +1,6 @@
 package core
 
 import (
-	"github.com/gogf/gf/os/glog"
 	"github.com/gorilla/feeds"
 	"time"
 )
@@ -34,7 +33,7 @@ func Rss(summary Feed, items []Feed) string {
 
 	atom, err := feed.ToAtom()
 	if err != nil {
-		glog.Error(err)
+		return ""
 	}
 	return atom
 }
