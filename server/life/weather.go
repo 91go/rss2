@@ -1,23 +1,24 @@
 package life
 
 import (
+	"log"
+	"strings"
+	"time"
+
 	"github.com/91go/gofc"
 	"github.com/91go/rss2/core"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/feeds"
-	"log"
-	"strings"
-	"time"
 )
 
-var (
+const (
 	base = "https://tianqi.moji.com/weather/china/"
 )
 
 type Warm struct {
 	Code string
 	City string
-	Url  string
+	URL  string
 	Ctx  string
 	Time time.Time
 }
@@ -34,62 +35,15 @@ type Weather struct {
 	Note     string
 }
 
-//// One site info
-//type One struct {
-//	Date     string
-//	ImgURL   string
-//	Sentence string
-//}
-//
-//// English info
-//type English struct {
-//	ImgURL   string
-//	Sentence string
-//}
-//
-//// Poem info
-//type Poem struct {
-//	Title   string   `json:"title"`
-//	Dynasty string   `json:"dynasty"`
-//	Author  string   `json:"author"`
-//	Content []string `json:"content"`
-//}
-
-//// PoemRes response data
-//type PoemRes struct {
-//	Status string `json:"status"`
-//	Data   struct {
-//		Origin Poem `json:"origin"`
-//	} `json:"data"`
-//}
-//
-//// Wallpaper data
-//type Wallpaper struct {
-//	Title  string
-//	ImgURL string
-//}
-//
-//// Trivia info
-//type Trivia struct {
-//	ImgURL      string
-//	Description string
-//}
-
-//// User for receive email
-//type User struct {
-//	Email string `json:"email"`
-//	Local string `json:"local"`
-//}
-
+// WeatherRss 天气feed
 func WeatherRss(ctx *gin.Context) {
-
 	city := ctx.GetString("city")
 
 	warm := crawl(city)
 
 	feed := &feeds.Feed{
 		Title:       warm.City,
-		Link:        &feeds.Link{Href: warm.Url},
+		Link:        &feeds.Link{Href: warm.URL},
 		Description: warm.City,
 		Author:      &feeds.Author{Name: "", Email: ""},
 		Created:     warm.Time,
@@ -98,7 +52,7 @@ func WeatherRss(ctx *gin.Context) {
 
 	feed.Add(&feeds.Item{
 		Title:       warm.City,
-		Link:        &feeds.Link{Href: warm.Url},
+		Link:        &feeds.Link{Href: warm.URL},
 		Description: warm.City,
 		Author:      &feeds.Author{Name: "", Email: ""},
 		Content:     warm.Ctx,
@@ -115,8 +69,6 @@ func WeatherRss(ctx *gin.Context) {
 }
 
 func crawl(city string) Warm {
-
-	//parts := getParts()
 	parts := make(map[string]interface{})
 	weather := GetWeather(city)
 	parts["weather"] = weather
@@ -125,31 +77,31 @@ func crawl(city string) Warm {
 	return Warm{
 		Code: city,
 		City: weather.City,
-		Url:  base + city,
+		URL:  base + city,
 		Ctx:  html,
 		Time: time.Now(),
 	}
 }
 
 // 聚合所有数据
-//func getParts() map[string]interface{} {
-//	wrapMap := map[string]func() interface{}{
-//		//"one": func() interface{} { return GetONE() },
-//		//"poem": func() interface{} { return GetPoem() },
-//	}
+// func getParts() map[string]interface{} {
+// 	wrapMap := map[string]func() interface{}{
+// 		//"one": func() interface{} { return GetONE() },
+// 		//"poem": func() interface{} { return GetPoem() },
+// 	}
 //
-//	wg := sync.WaitGroup{}
-//	parts := map[string]interface{}{}
-//	for name, getPart := range wrapMap {
-//		wg.Add(1)
-//		go func(key string, fn func() interface{}) {
-//			defer wg.Done()
-//			parts[key] = fn()
-//		}(name, getPart)
-//	}
-//	wg.Wait()
-//	return parts
-//}
+// 	wg := sync.WaitGroup{}
+// 	parts := map[string]interface{}{}
+// 	for name, getPart := range wrapMap {
+// 		wg.Add(1)
+// 		go func(key string, fn func() interface{}) {
+// 			defer wg.Done()
+// 			parts[key] = fn()
+// 		}(name, getPart)
+// 	}
+// 	wg.Wait()
+// 	return parts
+// }
 
 const HTML = `
 <!DOCTYPE html>
@@ -190,7 +142,7 @@ func GetWeather(local string) Weather {
 		humidity = humidityDesc[1]
 	}
 
-	limitDesc := ([]rune)(wrap.Find(".wea_about b").Text())
+	limitDesc := []rune(wrap.Find(".wea_about b").Text())
 	limit := ""
 	if len(limitDesc) <= 4 {
 		limit = string(limitDesc)
@@ -208,53 +160,3 @@ func GetWeather(local string) Weather {
 		Note:     strings.ReplaceAll(wrap.Find(".wea_tips em").Text(), "。", ""),
 	}
 }
-
-// GetONE data
-//func GetONE() One {
-//	url := "http://wufazhuce.com/"
-//	doc := core.FetchHTML(url)
-//	wrap := doc.Find(".fp-one .carousel .item.active")
-//	day := wrap.Find(".dom").Text()
-//	monthYear := wrap.Find(".may").Text()
-//	imgURL, _ := wrap.Find(".fp-one-imagen").Attr("src")
-//	return One{
-//		ImgURL:   imgURL,
-//		Date:     fmt.Sprintf("%s %s", day, monthYear),
-//		Sentence: wrap.Find(".fp-one-cita a").Text(),
-//	}
-//}
-
-// GetEnglish data
-//func GetEnglish() English {
-//	url := "http://dict.eudic.net/home/dailysentence"
-//	doc := core.FetchHTML(url)
-//	wrap := doc.Find(".containter .head-img")
-//	imgURL, _ := wrap.Find(".himg").Attr("src")
-//	return English{
-//		ImgURL:   imgURL,
-//		Sentence: wrap.Find(".sentence .sect_en").Text(),
-//	}
-//}
-
-// GetPoem data
-//func GetPoem() Poem {
-//	url := "https://v2.jinrishici.com/one.json"
-//
-//	//buf := new(bytes.Buffer)
-//	//res := core.Fetch(url)
-//	//buf.ReadFrom(res)
-//	//resByte := buf.Bytes()
-//	resByte := core.RequestGet(url)
-//
-//	var resJSON PoemRes
-//	err := json.Unmarshal(resByte, &resJSON)
-//	if err != nil {
-//		log.Fatalf("Fetch json from %s error: %s", url, err)
-//	}
-//
-//	status := resJSON.Status
-//	if status != "success" {
-//		log.Fatalf("Get poem status %s, res: %s", status, resJSON)
-//	}
-//	return resJSON.Data.Origin
-//}

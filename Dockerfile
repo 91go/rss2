@@ -13,7 +13,7 @@ RUN go mod download
 COPY . .
 RUN go build -o rss2 .
 
-FROM scratch
+FROM scratch AS releaser
 COPY --from=builder /build/rss2 /
 EXPOSE 8090
 CMD ["/rss2"]

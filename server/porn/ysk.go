@@ -2,27 +2,27 @@ package porn
 
 import (
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/91go/rss2/core"
 	query "github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
 	"github.com/gogf/gf/text/gregex"
-	"strings"
-	"time"
 )
 
-var (
-	LIMIT  = 1
-	YskUrl = "https://yskhd.com/archives/tag/"
+const (
+	YskURL = "https://yskhd.com/archives/tag/"
 )
 
 func YskRss(ctx *gin.Context) {
 	tag := ctx.GetString("tag")
-	url := fmt.Sprintf("%s%s", YskUrl, tag)
+	url := fmt.Sprintf("%s%s", YskURL, tag)
 
 	list := parseList(url)
 
-	res := core.Rss(core.Feed{
-		Url:    url,
+	res := core.Rss(&core.Feed{
+		URL:    url,
 		Title:  fmt.Sprintf("%s%s", "优丝库-", tag),
 		Author: tag,
 	}, list)
@@ -35,8 +35,8 @@ func parseList(url string) []core.Feed {
 	doc := core.FetchHTML(url)
 
 	total := doc.Find(".post").Size()
-	if total >= LIMIT {
-		total = LIMIT
+	if total >= core.LimitItem {
+		total = core.LimitItem
 	}
 	wrap := doc.Find(".post").Slice(0, total)
 	ret := []core.Feed{}
@@ -46,7 +46,7 @@ func parseList(url string) []core.Feed {
 		cover, _ := selection.Find(".img").Find("a").Find("img").Attr("src")
 
 		ret = append(ret, core.Feed{
-			Url:      href,
+			URL:      href,
 			Title:    title,
 			Time:     sanitizeTime(cover),
 			Contents: parsePics(href),
@@ -93,9 +93,9 @@ func parsePics(url string) string {
 	return ret
 }
 
-var (
-	// DefaultTrimChars are the characters which are stripped by Trim* functions in default.
-	DefaultTrimChars = string([]byte{
+func TrimRight(str string, characterMask ...string) string {
+	//  characters which are stripped by Trim* functions in default.
+	trimChars := string([]byte{
 		'\t', // Tab.
 		'\v', // Vertical tab.
 		'\n', // New line (line feed).
@@ -106,10 +106,6 @@ var (
 		0x85, // Delete.
 		0xA0, // Non-breaking space.
 	})
-)
-
-func TrimRight(str string, characterMask ...string) string {
-	trimChars := DefaultTrimChars
 	if len(characterMask) > 0 {
 		trimChars += characterMask[0]
 	}

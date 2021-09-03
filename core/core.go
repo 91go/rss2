@@ -1,12 +1,13 @@
 package core
 
 import (
-	"github.com/gorilla/feeds"
 	"time"
+
+	"github.com/gorilla/feeds"
 )
 
 type Feed struct {
-	Url      string
+	URL      string
 	Title    string
 	Time     time.Time
 	Author   string
@@ -14,17 +15,21 @@ type Feed struct {
 	Pics     string
 }
 
-func Rss(summary Feed, items []Feed) string {
+const (
+	LimitItem = 4
+)
+
+func Rss(summary *Feed, items []Feed) string {
 	feed := &feeds.Feed{
 		Title:   summary.Title,
-		Link:    &feeds.Link{Href: summary.Url},
+		Link:    &feeds.Link{Href: summary.URL},
 		Author:  &feeds.Author{Name: summary.Author},
 		Created: items[0].Time,
 	}
 	for _, value := range items {
 		feed.Add(&feeds.Item{
 			Title:       value.Title,
-			Link:        &feeds.Link{Href: value.Url},
+			Link:        &feeds.Link{Href: value.URL},
 			Description: value.Contents,
 			Author:      &feeds.Author{Name: value.Author},
 			Created:     value.Time,

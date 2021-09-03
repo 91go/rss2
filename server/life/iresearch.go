@@ -3,24 +3,25 @@ package life
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/91go/gofc/fchttp"
 	"github.com/91go/rss2/core"
 	"github.com/bitly/go-simplejson"
 	"github.com/gin-gonic/gin"
-	"log"
-	"time"
 )
 
-var (
-	BaseUrl   = "https://www.iresearch.com.cn/api/products/GetReportList?classId=&fee=0&date=&lastId=&pageSize=9"
-	DetailUrl = "https://www.iresearch.com.cn/api/Detail/reportM?id=%s&isfree=0"
+const (
+	BaseURL   = "https://www.iresearch.com.cn/api/products/GetReportList?classId=&fee=0&date=&lastId=&pageSize=9"
+	DetailURL = "https://www.iresearch.com.cn/api/Detail/reportM?id=%s&isfree=0"
 	LIMIT     = 1
 )
 
 type IResearch struct {
 	Title    string
 	Time     time.Time
-	Url      string
+	URL      string
 	Describe string
 	Pics     string
 }
@@ -29,17 +30,16 @@ type IResearch struct {
 func IResearchRss(ctx *gin.Context) {
 	ret := crawlIResearch()
 
-	res := core.Rss(core.Feed{
+	res := core.Rss(&core.Feed{
 		Title: "艾瑞咨询——产业研究报告",
-		Url:   BaseUrl,
+		URL:   BaseURL,
 	}, ret)
 
 	ctx.Data(200, "application/xml; charset=utf-8", []byte(res))
 }
 
 func crawlIResearch() []core.Feed {
-
-	body := fchttp.RequestGet(BaseUrl)
+	body := fchttp.RequestGet(BaseURL)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
 		log.Printf("list加载失败 %v", err)
@@ -60,7 +60,7 @@ func crawlIResearch() []core.Feed {
 			iResearch = append(iResearch, core.Feed{
 				Title:    each["Title"].(string),
 				Time:     transTime(each["Uptime"].(string)),
-				Url:      each["VisitUrl"].(string),
+				URL:      each["VisitURL"].(string),
 				Contents: fmt.Sprintf("%s%s", each["Content"].(string), detail),
 				Pics:     detail,
 			})
@@ -71,7 +71,7 @@ func crawlIResearch() []core.Feed {
 
 // 详情
 func parseDetail(id string) (ret string) {
-	url := fmt.Sprintf(DetailUrl, id)
+	url := fmt.Sprintf(DetailURL, id)
 	body := fchttp.RequestGet(url)
 	res, _ := simplejson.NewJson(body)
 	total, _ := res.Get("List").GetIndex(0).Get("PagesCount").Int()
@@ -86,7 +86,6 @@ func parseDetail(id string) (ret string) {
 }
 
 func transTime(str string) time.Time {
-
 	tt, _ := time.Parse("2006/1/02 15:04:05", str)
 	return tt
 }

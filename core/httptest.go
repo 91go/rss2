@@ -3,9 +3,10 @@ package core
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http/httptest"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Get 根据特定请求uri，发起get请求返回响应
@@ -51,7 +52,7 @@ func PostForm(uri string, param map[string]string, router *gin.Engine) []byte {
 }
 
 // PostJson 根据特定请求uri和参数param，以Json形式传递参数，发起post请求返回响应
-func PostJson(uri string, param map[string]interface{}, router *gin.Engine) []byte {
+func PostJSON(uri string, param map[string]interface{}, router *gin.Engine) []byte {
 	// 将参数转化为json比特流
 	jsonByte, _ := json.Marshal(param)
 

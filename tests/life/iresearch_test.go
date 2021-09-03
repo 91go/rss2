@@ -8,7 +8,6 @@ import (
 
 // 字符串转time.Time
 func TestTime(t *testing.T) {
-
 	tt := TransTime3("2021/8/17 18:25:21")
 	fmt.Println(tt)
 }

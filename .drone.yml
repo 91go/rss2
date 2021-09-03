@@ -28,12 +28,12 @@ steps:
       - name: pkgdeps
         path: /go/pkg
     commands:
-      - go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.27.0
+      - go get github.com/golangci/golangci-lint/cmd/golangci-lint@latest
       - golangci-lint run
 
   - name: test
+    image: golang:latest
     pull: if-not-exists
-    image: golang:1.16
     environment:
       GO111MODULE: "on"
       GOPROXY: "https://goproxy.cn,direct"
@@ -42,10 +42,10 @@ steps:
       GOOS: "linux"
     depends_on:
       - helloworld
+    volumes:
+      - name: pkgdeps
+        path: /go/pkg
     commands:
-      - go version
-      - go env
-      - go mod tidy
       - go test ./tests/...
 
 #  - name: coverage
@@ -55,7 +55,24 @@ steps:
 #        from_secret: codecov-token
 #      files:
 #        - coverage.txt
-#
+
+  - name: build
+    image: golang:latest
+    pull: if-not-exists
+    environment:
+      GO111MODULE: "on"
+      GOPROXY: "https://goproxy.cn,direct"
+      GOSUMDB: "off"
+      CGO_ENABLED: "0"
+      GOOS: "linux"
+    depends_on:
+      - helloworld
+    volumes:
+      - name: pkgdeps
+        path: /go/pkg
+    commands:
+      - go build
+
 #  - name: publish
 #    image: docker/compose
 #    pull: if-not-exists
@@ -127,7 +144,6 @@ steps:
 #      status:
 #        - success
 #        - failure
-
 
 
 trigger:

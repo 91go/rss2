@@ -2,12 +2,13 @@ package porn
 
 import (
 	"fmt"
-	"github.com/gogf/gf/text/gregex"
-	"github.com/gogf/gf/text/gstr"
-	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/gogf/gf/text/gregex"
+	"github.com/gogf/gf/text/gstr"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestReplace(t *testing.T) {
@@ -21,12 +22,6 @@ func TestTime(t *testing.T) {
 	cut, _ := gregex.MatchString(".*/(.*)-", url)
 	t.Log(cut)
 	s := cut[1]
-	t.Log(s)
-	//parse, err := gtime.StrToTimeFormat(s, "2006-01-02 15:04:05")
-	//if err != nil {
-	//	return
-	//}
-	//t.Log(parse)
 
 	// 字符串转time
 	local, _ := time.LoadLocation("Local")
