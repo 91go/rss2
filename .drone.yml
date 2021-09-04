@@ -46,7 +46,7 @@ steps:
       - name: pkgdeps
         path: /go/pkg
     commands:
-      - go test ./tests/...
+      - go test ./server/...
 
 #  - name: coverage
 #    image: plugins/codecov

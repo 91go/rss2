@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/91go/gofc/fctime"
+	"github.com/gogf/gf/os/gtime"
 
 	query "github.com/PuerkitoBio/goquery"
 
@@ -20,11 +20,6 @@ const (
 	JiuSeBaseURL   = "https://jiuse911.com"
 	JiuSeAuthorURL = "https://jiuse911.com/author/"
 )
-
-// Hhonswifelonely
-// https://91porny.com/author/boshi18cm
-// 德川笑川
-// dpw666
 
 // JiuSeRss 91porny输出rss
 func JiuSeRss(ctx *gin.Context) {
@@ -77,5 +72,9 @@ func getCreateTime(text string) time.Time {
 	t = strings.Replace(t, "\n", "", -1)
 	t = strings.Replace(t, "&nbsp", "", -1)
 	t = strings.Replace(t, " ", "", -1)
-	return fctime.StrToTime(t, "")
+	format, err := gtime.StrToTimeFormat(t, "Y-m-d")
+	if err != nil {
+		return time.Time{}
+	}
+	return format.Time
 }
