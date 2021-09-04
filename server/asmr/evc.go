@@ -6,7 +6,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/91go/gofc/fchttp"
 	"github.com/91go/gofc/fctime"
 	"github.com/91go/rss2/core"
 	"github.com/bitly/go-simplejson"
@@ -26,10 +25,37 @@ type Asmr struct {
 }
 
 const (
-	NzURL = "https://www.2evc.cn/voiceAppserver//common/sortType?voiceType=1&orderType=0&curPage=1&pageSize=302&cvId=8"
+	NzURL   = "https://www.2evc.cn/voiceAppserver//common/sortType?voiceType=1&orderType=0&curPage=1&pageSize=302&cvId=8"
+	VoiceJs = `
+function unDecrypt(e, n) {
+    if ("h" == e.substr(0, 1)) return e;
+    function t(e, n, t, o) {
+        var r = e,
+            a = r.substring(0, n),
+            i = r.substring(t);
+        return a + o + i
+    }
+    var o = e.substring(41, 43),
+        r = e.substring(46, 48),
+        a = parseInt(e.substring(44, 45)),
+        i = ["8", "5", "1", "7", "3", "6", "9", "0", "2", "4"],
+        s = "";
+    i.forEach(function(e, n) {
+        a == e && (s = n)
+    }),
+        e = t(e, 0, 1, "h"),
+        e = t(e, 41, 43, r),
+        e = t(e, 46, 48, o),
+        e = t(e, 44, 45, s);
+    var c = "",
+        l = "";
+    return - 1 == e.indexOf("8.210.46.21") ? n ? (c = "http://149.129.87.151:9090/voice", l = e.substring(32)) : (e && (c = "http://149.129.87.151:9090/test"), l = e.substring(32).replace(/0/g, "1")) : n ? (c = "http://8.210.46.21:9090/voice", l = e.substring(29)) : (e && (c = "http://8.210.46.21:9090/test"), l = e.substring(29).replace(/0/g, "1")),
+    c + l
+}
+`
 )
 
-// 直接用iina播放url，chrome返回302无法播放
+// EvcRss 直接用iina播放url，chrome返回302无法播放
 func EvcRss(ctx *gin.Context) {
 	ret := parseRequest(NzURL)
 
@@ -38,12 +64,12 @@ func EvcRss(ctx *gin.Context) {
 		URL:   NzURL,
 	}, ret)
 
-	ctx.Data(200, "application/xml; charset=utf-8", []byte(res))
+	core.SendXML(ctx, res)
 }
 
 //
 func parseRequest(url string) []core.Feed {
-	body := fchttp.RequestGet(url)
+	body := core.RequestGet(url)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
 		log.Printf("list加载失败 %v", err)
@@ -81,7 +107,7 @@ func parseRequest(url string) []core.Feed {
 
 // 解析详情页
 func parseDetail(url string) Asmr {
-	body := fchttp.RequestGet(url)
+	body := core.RequestGet(url)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
 		log.Printf("detail加载失败 %v", err)
@@ -114,7 +140,7 @@ func originAudioURL(fileSource string) string {
 		return ""
 	}
 
-	hasOwn := "true"
+	const hasOwn = "true"
 	call, err := vm.Call("unDecrypt", nil, fileSource, hasOwn)
 	if err != nil {
 		log.Println(err.Error())
@@ -122,33 +148,3 @@ func originAudioURL(fileSource string) string {
 	}
 	return call.String()
 }
-
-const (
-	VoiceJs = `
-function unDecrypt(e, n) {
-    if ("h" == e.substr(0, 1)) return e;
-    function t(e, n, t, o) {
-        var r = e,
-            a = r.substring(0, n),
-            i = r.substring(t);
-        return a + o + i
-    }
-    var o = e.substring(41, 43),
-        r = e.substring(46, 48),
-        a = parseInt(e.substring(44, 45)),
-        i = ["8", "5", "1", "7", "3", "6", "9", "0", "2", "4"],
-        s = "";
-    i.forEach(function(e, n) {
-        a == e && (s = n)
-    }),
-        e = t(e, 0, 1, "h"),
-        e = t(e, 41, 43, r),
-        e = t(e, 46, 48, o),
-        e = t(e, 44, 45, s);
-    var c = "",
-        l = "";
-    return - 1 == e.indexOf("8.210.46.21") ? n ? (c = "http://149.129.87.151:9090/voice", l = e.substring(32)) : (e && (c = "http://149.129.87.151:9090/test"), l = e.substring(32).replace(/0/g, "1")) : n ? (c = "http://8.210.46.21:9090/voice", l = e.substring(29)) : (e && (c = "http://8.210.46.21:9090/test"), l = e.substring(29).replace(/0/g, "1")),
-    c + l
-}
-`
-)

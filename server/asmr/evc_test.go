@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/91go/rss2/core"
-	"github.com/91go/rss2/server/asmr"
 	"github.com/91go/rss2/server/code"
 	"github.com/gin-gonic/gin"
 	"github.com/robertkrimen/otto"
@@ -23,7 +22,7 @@ func TestEvc(t *testing.T) {
 
 func TestVoice(t *testing.T) {
 	vm := otto.New()
-	res, err := vm.Run(asmr.VoiceJs)
+	res, err := vm.Run(VoiceJs)
 	if err != nil {
 		log.Println(err.Error())
 	}

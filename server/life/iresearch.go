@@ -6,7 +6,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/91go/gofc/fchttp"
 	"github.com/91go/rss2/core"
 	"github.com/bitly/go-simplejson"
 	"github.com/gin-gonic/gin"
@@ -26,7 +25,7 @@ type IResearch struct {
 	Pics     string
 }
 
-// [产业研究报告-艾瑞咨询](https://www.iresearch.com.cn/m/report.shtml)
+// IResearchRss [产业研究报告-艾瑞咨询](https://www.iresearch.com.cn/m/report.shtml)
 func IResearchRss(ctx *gin.Context) {
 	ret := crawlIResearch()
 
@@ -35,11 +34,11 @@ func IResearchRss(ctx *gin.Context) {
 		URL:   BaseURL,
 	}, ret)
 
-	ctx.Data(200, "application/xml; charset=utf-8", []byte(res))
+	core.SendXML(ctx, res)
 }
 
 func crawlIResearch() []core.Feed {
-	body := fchttp.RequestGet(BaseURL)
+	body := core.RequestGet(BaseURL)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
 		log.Printf("list加载失败 %v", err)
@@ -72,7 +71,7 @@ func crawlIResearch() []core.Feed {
 // 详情
 func parseDetail(id string) (ret string) {
 	url := fmt.Sprintf(DetailURL, id)
-	body := fchttp.RequestGet(url)
+	body := core.RequestGet(url)
 	res, _ := simplejson.NewJson(body)
 	total, _ := res.Get("List").GetIndex(0).Get("PagesCount").Int()
 

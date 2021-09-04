@@ -12,15 +12,10 @@ import (
 
 func main() {
 	r := setupRouter()
-	if err := r.Run(); err != nil {
+	gin.SetMode(gin.DebugMode)
+
+	if err := r.Run(":8090"); err != nil {
 		fmt.Printf("startup service failed, err:%v \n", err)
-	}
-
-	gin.SetMode(gin.ReleaseMode)
-
-	err := r.Run(":8090")
-	if err != nil {
-		return
 	}
 }
 
@@ -39,7 +34,8 @@ func setupRouter() *gin.Engine {
 	life.GET("/weather", life2.WeatherRss)
 	// porn路由分组
 	porn := r.Group("/porn")
-	porn.GET("/ysk/{tag}", porn2.YskRss)
+	porn.GET("/ysk/:tag", porn2.YskRss)
+	porn.GET("/jiuse/:author", porn2.JiuSeRss)
 
 	return r
 }

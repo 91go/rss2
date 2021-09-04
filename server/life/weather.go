@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	base = "https://tianqi.moji.com/weather/china/"
+	base         = "https://tianqi.moji.com/weather/china/"
+	WeatherLimit = 4
 )
 
 type Warm struct {
@@ -37,7 +38,7 @@ type Weather struct {
 
 // WeatherRss 天气feed
 func WeatherRss(ctx *gin.Context) {
-	city := ctx.GetString("city")
+	city := ctx.Query("city")
 
 	warm := crawl(city)
 
@@ -65,12 +66,12 @@ func WeatherRss(ctx *gin.Context) {
 		log.Fatal(err)
 	}
 
-	ctx.Data(200, "application/xml; charset=utf-8", []byte(res))
+	core.SendXML(ctx, res)
 }
 
 func crawl(city string) Warm {
 	parts := make(map[string]interface{})
-	weather := GetWeather(city)
+	weather := getWeather(city)
 	parts["weather"] = weather
 	html := gofc.GenerateHTML(HTML, parts)
 
@@ -132,7 +133,7 @@ const HTML = `
 `
 
 // GetWeather data
-func GetWeather(local string) Weather {
+func getWeather(local string) Weather {
 	url := "https://tianqi.moji.com/weather/china/" + local
 	doc := core.FetchHTML(url)
 	wrap := doc.Find(".wea_info .left")
@@ -144,10 +145,10 @@ func GetWeather(local string) Weather {
 
 	limitDesc := []rune(wrap.Find(".wea_about b").Text())
 	limit := ""
-	if len(limitDesc) <= 4 {
+	if len(limitDesc) <= WeatherLimit {
 		limit = string(limitDesc)
 	} else {
-		limit = string(limitDesc[4:])
+		limit = string(limitDesc[WeatherLimit:])
 	}
 	return Weather{
 		City:     doc.Find("#search .search_default em").Text(),

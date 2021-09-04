@@ -13,16 +13,16 @@ const (
 	url = "https://blog.huangz.me/"
 )
 
-// 用来输出rss
+// HuangZRss 用来输出rss
 // 全文直出会timeout，所以只打出标题
 func HuangZRss(ctx *gin.Context) {
 	ass := crawlHuangZ()
 
 	res := core.Rss(&core.Feed{
-		Title: "huangz——黄建宏redis博客",
+		Title: "HuangZ-blog",
 	}, ass)
 
-	ctx.Data(200, "application/xml; charset=utf-8", []byte(res))
+	core.SendXML(ctx, res)
 }
 
 // [huangz/blog — blog.huangz.me](https://blog.huangz.me/#)

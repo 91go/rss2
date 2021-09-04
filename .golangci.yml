@@ -1,3 +1,4 @@
+# [Configuration | golangci-lint](https://golangci-lint.run/usage/configuration/)
 linters:
   disable-all: true
   enable:
@@ -8,7 +9,8 @@ linters:
     - dupl # 代码克隆监测工具
     - errcheck # 用于检查有error返回的函数，却没有做判断检查
     - exportloopref # 查看变量作用域，WARN [runner] The linter 'scopelint' is deprecated (since v1.39.0) due to: The repository of the linter has been deprecated by the owner.  Replaced by exportloopref.
-    - exhaustive
+    - exhaustive # 检查枚举switch语句的覆盖率
+    - exhaustivestruct # 检查struct的字段是否都已初始化
     - funlen # 检查长函数的linter，用来检查行数，默认限制60行和40个statement
     - gochecknoinits
     - goconst
@@ -23,7 +25,7 @@ linters:
     - govet # (vet, vetshadow): 检查go源代码并报告可疑结构，例如 Printf 调用，其参数与格式字符串不一致 # 用`vet`做变量覆盖检测，比如变量赋值、函数传参、函数返回值、遍历数据、struct初始化等场景，可以检查是否有读写锁隐式复制的情况(vet包含在golang默认工具套件)
     - ineffassign # 检测是否有未使用的代码、变量、常量、类型、结构体、函数、函数参数等
     - lll
-    - misspell
+    - misspell # 查找单词拼写错误
     - nakedret
 #    - noctx # [sonatard/noctx: noctx finds sending http request without context.Context.](https://github.com/sonatard/noctx)
     - nolintlint
@@ -148,6 +150,25 @@ linters-settings:
     initialisms: [ "ACL", "API", "ASCII", "CPU", "CSS", "DNS", "EOF", "GUID", "HTML", "HTTP", "HTTPS", "ID", "IP", "JSON", "QPS", "RAM", "RPC", "SLA", "SMTP", "SQL", "SSH", "TCP", "TLS", "TTL", "UDP", "UI", "GID", "UID", "UUID", "URI", "URL", "UTF8", "VM", "XML", "XMPP", "XSRF", "XSS" ]
     # https://staticcheck.io/docs/options#http_status_code_whitelist
     http-status-code-whitelist: [ "200", "400", "404", "500" ]
+
+  revive:
+    # see https://github.com/mgechev/revive#available-rules for details.
+    ignore-generated-header: true
+    severity: warning
+    rules:
+      - name: indent-error-flow
+        severity: warning
+      - name: add-constant
+        severity: warning
+        arguments:
+          - maxLitCount: "3"
+            allowStrs: '""'
+            allowInts: "0,1,2"
+            allowFloats: "0.0,0.,1.0,1.,2.0,2."
+
+  gosec:
+    excludes:
+      - G107 # http请求时不能使用动态url，关闭
 
 
 issues:

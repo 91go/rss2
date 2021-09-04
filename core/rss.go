@@ -16,15 +16,17 @@ type Feed struct {
 }
 
 const (
-	LimitItem = 4
+	LimitItem = 3
 )
 
+// Rss 输出rss
 func Rss(summary *Feed, items []Feed) string {
 	feed := &feeds.Feed{
 		Title:   summary.Title,
 		Link:    &feeds.Link{Href: summary.URL},
 		Author:  &feeds.Author{Name: summary.Author},
 		Created: items[0].Time,
+		// Updated: items[0].Time,
 	}
 	for _, value := range items {
 		feed.Add(&feeds.Item{
@@ -33,6 +35,7 @@ func Rss(summary *Feed, items []Feed) string {
 			Description: value.Contents,
 			Author:      &feeds.Author{Name: value.Author},
 			Created:     value.Time,
+			// Updated:     value.Time,
 		})
 	}
 

@@ -6,6 +6,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gogf/gf/os/gtime"
+
 	"github.com/gogf/gf/text/gregex"
 	"github.com/gogf/gf/text/gstr"
 	"github.com/stretchr/testify/assert"
@@ -28,7 +30,17 @@ func TestTime(t *testing.T) {
 	tt, _ := time.ParseInLocation("2006-01-02 15:04:05", "2017-06-20 18:16:15", local)
 	fmt.Println(tt)
 
-	trim := gstr.TrimRight(s, s[len(s)-3:])
+	trim := gstr.TrimRight(s, s[len(s)-TimeMillisecondDigit:])
 	tt2, _ := time.ParseInLocation("20060102150405", trim, local)
 	fmt.Println(tt2)
+}
+
+func Test_sanitizeTime(t *testing.T) {
+	toTime, err := gtime.StrToTimeFormat("20210430145102", "YmdHis")
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(toTime)
 }

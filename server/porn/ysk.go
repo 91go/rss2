@@ -5,6 +5,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gogf/gf/text/gstr"
+
+	"github.com/gogf/gf/os/gtime"
+
 	"github.com/91go/rss2/core"
 	query "github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
@@ -12,11 +16,14 @@ import (
 )
 
 const (
-	YskURL = "https://yskhd.com/archives/tag/"
+	// 优丝库tag的url
+	YskURL               = "https://yskhd.com/archives/tag/"
+	TimeMillisecondDigit = 3
 )
 
+// YskRss 优丝库rss [优丝库HD - 提供高清美女写真|丝袜美腿|美女私房|cosplay|美女街拍|4K写真，一站式浏览](https://yskhd.com/)
 func YskRss(ctx *gin.Context) {
-	tag := ctx.GetString("tag")
+	tag := ctx.Param("tag")
 	url := fmt.Sprintf("%s%s", YskURL, tag)
 
 	list := parseList(url)
@@ -27,7 +34,7 @@ func YskRss(ctx *gin.Context) {
 		Author: tag,
 	}, list)
 
-	ctx.Data(200, "application/xml; charset=utf-8", []byte(res))
+	core.SendXML(ctx, res)
 }
 
 // 解析列表页
@@ -41,9 +48,9 @@ func parseList(url string) []core.Feed {
 	wrap := doc.Find(".post").Slice(0, total)
 	ret := []core.Feed{}
 	wrap.Each(func(i int, selection *query.Selection) {
-		href, _ := selection.Find(".img").Find("a").Attr("href")
-		title, _ := selection.Find(".img").Find("a").Attr("title")
-		cover, _ := selection.Find(".img").Find("a").Find("img").Attr("src")
+		href, _ := selection.Find(".img").Find(core.LabelA).Attr("href")
+		title, _ := selection.Find(".img").Find(core.LabelA).Attr("title")
+		cover, _ := selection.Find(".img").Find(core.LabelA).Find("img").Attr("src")
 
 		ret = append(ret, core.Feed{
 			URL:      href,
@@ -60,12 +67,12 @@ func parseList(url string) []core.Feed {
 func sanitizeTime(url string) time.Time {
 	cut, _ := gregex.MatchString(".*/(.*)-", url)
 	s := cut[1]
-	trim := TrimRight(s, s[len(s)-3:])
-	parse, err := time.Parse("20060102150405", trim)
+
+	format, err := gtime.StrToTimeFormat(gstr.TrimRight(s, s[len(s)-TimeMillisecondDigit:]), "YmdHis")
 	if err != nil {
 		return time.Time{}
 	}
-	return parse
+	return format.Time
 }
 
 // 解析详情页，获取所有图片
@@ -74,7 +81,7 @@ func parsePics(url string) string {
 	wrap := doc.Find(".gallery-fancy-item")
 	pics := []string{}
 	wrap.Each(func(i int, selection *query.Selection) {
-		pic, _ := selection.Find("a").Attr("href")
+		pic, _ := selection.Find(core.LabelA).Attr("href")
 		pics = append(pics, pic)
 	})
 
@@ -91,23 +98,4 @@ func parsePics(url string) string {
 		ret += fmt.Sprintf("<img src=%s>", pic)
 	}
 	return ret
-}
-
-func TrimRight(str string, characterMask ...string) string {
-	//  characters which are stripped by Trim* functions in default.
-	trimChars := string([]byte{
-		'\t', // Tab.
-		'\v', // Vertical tab.
-		'\n', // New line (line feed).
-		'\r', // Carriage return.
-		'\f', // New page.
-		' ',  // Ordinary space.
-		0x00, // NUL-byte.
-		0x85, // Delete.
-		0xA0, // Non-breaking space.
-	})
-	if len(characterMask) > 0 {
-		trimChars += characterMask[0]
-	}
-	return strings.TrimRight(str, trimChars)
 }

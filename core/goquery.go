@@ -8,12 +8,16 @@ import (
 	query "github.com/PuerkitoBio/goquery"
 )
 
+const (
+	LabelA = "a"
+)
+
 // CreateClient a http
 func CreateClient() *http.Client {
 	return &http.Client{}
 }
 
-// 获取网页
+// FetchHTML 获取网页
 func FetchHTML(url string) *query.Document {
 	client := CreateClient()
 	resp, err := client.Get(url)
