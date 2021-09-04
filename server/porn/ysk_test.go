@@ -2,6 +2,7 @@ package porn
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -20,7 +21,8 @@ func TestReplace(t *testing.T) {
 }
 
 func TestTime(t *testing.T) {
-	url := "https://zzxcx.netzijin.cn/2021/06/20210618132842114-scaled.jpg"
+	// url := "https://zzxcx.netzijin.cn/2021/06/20210618132842114-scaled.jpg"
+	url := "https://youpai.netzijin.cn/2021/08/20210809142257765-scaled.jpg"
 	cut, _ := gregex.MatchString(".*/(.*)-", url)
 	t.Log(cut)
 	s := cut[1]
@@ -43,4 +45,33 @@ func Test_sanitizeTime(t *testing.T) {
 		return
 	}
 	fmt.Println(toTime)
+}
+
+func Test_sanitizeTime1(t *testing.T) {
+	type args struct {
+		url string
+	}
+	tests := []struct {
+		name string
+		args args
+		want time.Time
+	}{
+		{"", args{url: "https://youpai.netzijin.cn/2021/08/20210809144240113-scaled.jpg"}, transTime("20210809144240")},
+		{"", args{url: "https://youpai.netzijin.cn/2021/08/20210809142257765-scaled.jpg"}, transTime("20210809142257")},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := sanitizeTime(tt.args.url); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("sanitizeTime() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func transTime(ts string) time.Time {
+	toTime, err := gtime.StrToTimeFormat(ts, "YmdHis")
+	if err != nil {
+		return time.Time{}
+	}
+	return toTime.Time
 }

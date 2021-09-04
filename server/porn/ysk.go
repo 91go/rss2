@@ -67,8 +67,9 @@ func parseList(url string) []core.Feed {
 func sanitizeTime(url string) time.Time {
 	cut, _ := gregex.MatchString(".*/(.*)-", url)
 	s := cut[1]
+	ts := gstr.TrimRightStr(s, s[len(s)-TimeMillisecondDigit:])
 
-	format, err := gtime.StrToTimeFormat(gstr.TrimRight(s, s[len(s)-TimeMillisecondDigit:]), "YmdHis")
+	format, err := gtime.StrToTimeFormat(ts, "YmdHis")
 	if err != nil {
 		return time.Time{}
 	}
