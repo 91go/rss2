@@ -3,8 +3,14 @@ package asmr
 import (
 	"encoding/json"
 	"fmt"
-	"log"
+	"path/filepath"
 	"time"
+
+	"github.com/91go/rss2/utils"
+
+	"github.com/sirupsen/logrus"
+
+	"github.com/gogf/gf/os/gfile"
 
 	"github.com/91go/gofc/fctime"
 	"github.com/91go/rss2/core"
@@ -25,34 +31,7 @@ type Asmr struct {
 }
 
 const (
-	NzURL   = "https://www.2evc.cn/voiceAppserver//common/sortType?voiceType=1&orderType=0&curPage=1&pageSize=302&cvId=8"
-	VoiceJs = `
-function unDecrypt(e, n) {
-    if ("h" == e.substr(0, 1)) return e;
-    function t(e, n, t, o) {
-        var r = e,
-            a = r.substring(0, n),
-            i = r.substring(t);
-        return a + o + i
-    }
-    var o = e.substring(41, 43),
-        r = e.substring(46, 48),
-        a = parseInt(e.substring(44, 45)),
-        i = ["8", "5", "1", "7", "3", "6", "9", "0", "2", "4"],
-        s = "";
-    i.forEach(function(e, n) {
-        a == e && (s = n)
-    }),
-        e = t(e, 0, 1, "h"),
-        e = t(e, 41, 43, r),
-        e = t(e, 46, 48, o),
-        e = t(e, 44, 45, s);
-    var c = "",
-        l = "";
-    return - 1 == e.indexOf("8.210.46.21") ? n ? (c = "http://149.129.87.151:9090/voice", l = e.substring(32)) : (e && (c = "http://149.129.87.151:9090/test"), l = e.substring(32).replace(/0/g, "1")) : n ? (c = "http://8.210.46.21:9090/voice", l = e.substring(29)) : (e && (c = "http://8.210.46.21:9090/test"), l = e.substring(29).replace(/0/g, "1")),
-    c + l
-}
-`
+	NzURL = "https://www.2evc.cn/voiceAppserver//common/sortType?voiceType=1&orderType=0&curPage=1&pageSize=302&cvId=8"
 )
 
 // EvcRss 直接用iina播放url，chrome返回302无法播放
@@ -67,12 +46,11 @@ func EvcRss(ctx *gin.Context) {
 	core.SendXML(ctx, res)
 }
 
-//
 func parseRequest(url string) []core.Feed {
-	body := core.RequestGet(url)
+	body := utils.RequestGet(url)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
-		log.Printf("list加载失败 %v", err)
+		logrus.WithFields(utils.Fields(url, err)).Error("list加载失败")
 		return []core.Feed{}
 	}
 
@@ -86,7 +64,7 @@ func parseRequest(url string) []core.Feed {
 		if each, ok := row.(map[string]interface{}); ok {
 			origID, err := each["id"].(json.Number).Int64()
 			if err != nil {
-				log.Printf("convert origID err %v", err)
+				logrus.WithFields(utils.Fields(url, err)).Error("convert origID err")
 			}
 			apiURL := fmt.Sprintf("https://www.2evc.cn/voiceAppserver/voice/get?id=%d&telephone=undefined&cvId=8", origID)
 			detail := parseDetail(apiURL)
@@ -107,21 +85,28 @@ func parseRequest(url string) []core.Feed {
 
 // 解析详情页
 func parseDetail(url string) Asmr {
-	body := core.RequestGet(url)
+	body := utils.RequestGet(url)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
-		log.Printf("detail加载失败 %v", err)
+		logrus.WithFields(logrus.Fields{
+			"url": url,
+			"err": err,
+		}).Warn("详情页加载失败")
 		return Asmr{}
 	}
 	each, err := res.Get("data").Map()
 	if err != nil {
-		log.Printf("detail加载失败 %v", err)
+		logrus.WithFields(logrus.Fields{
+			"url": url,
+			"err": err,
+		}).Warn("详情页加载失败")
 		return Asmr{}
 	}
 	fileSrc := each["fileSrc"]
 	createTime, err := fctime.MsToTime(each["createDate"].(json.Number).String())
 	if err != nil {
-		log.Printf("trans time error%v", err.Error())
+		logrus.WithFields(utils.Fields(url, err)).Warn("trans time error")
+		return Asmr{}
 	}
 
 	return Asmr{
@@ -134,17 +119,28 @@ func parseDetail(url string) Asmr {
 // 获取音频的真实url
 func originAudioURL(fileSource string) string {
 	vm := otto.New()
-	_, err := vm.Run(VoiceJs)
+	_, err := vm.Run(getPublicFile())
 	if err != nil {
-		log.Println(err.Error())
+		logrus.WithFields(utils.Fields(fileSource, err)).Warn("otto parse js file failed")
 		return ""
 	}
 
 	const hasOwn = "true"
 	call, err := vm.Call("unDecrypt", nil, fileSource, hasOwn)
 	if err != nil {
-		log.Println(err.Error())
+		logrus.WithFields(utils.Fields(fileSource, err)).Warn("otto decrypt failed")
 		return ""
 	}
 	return call.String()
+}
+
+// voice.js
+func getPublicFile() string {
+	abs, err := filepath.Abs("./public/js/voice.js")
+	if err != nil {
+		logrus.WithFields(utils.Fields("", err)).Warn("voice.js not found")
+		return ""
+	}
+	contents := gfile.GetContents(abs)
+	return contents
 }

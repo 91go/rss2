@@ -1,13 +1,12 @@
 package asmr
 
 import (
-	"log"
 	"testing"
 
-	"github.com/91go/rss2/core"
+	"github.com/91go/rss2/utils"
+
 	"github.com/91go/rss2/server/code"
 	"github.com/gin-gonic/gin"
-	"github.com/robertkrimen/otto"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -16,26 +15,11 @@ func TestEvc(t *testing.T) {
 	router := gin.Default()
 	router.GET(uri, code.HuangZRss)
 
-	_, err := core.Get(uri, router)
+	_, err := utils.Get(uri, router)
 	assert.Nil(t, err)
 }
 
-func TestVoice(t *testing.T) {
-	vm := otto.New()
-	res, err := vm.Run(VoiceJs)
-	if err != nil {
-		log.Println(err.Error())
-	}
-	t.Log(res)
-
-	fileSource := "5ttp://8.210.46.21:9090/voice/60000000765.m97973p3"
-	hasOwn := "true"
-	call, err := vm.Call("unDecrypt", nil, fileSource, hasOwn)
-	if err != nil {
-		return
-	}
-	t.Log(call)
-}
+// todo 添加所有的httptest测试
 
 // func TestApiURL(t *testing.T) {
 // 	all, err := dao.Asmr.All()

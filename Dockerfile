@@ -7,14 +7,18 @@ ENV GO111MODULE=on \
     GOARCH=amd64
 
 WORKDIR /build
-# 安装ca-certificates，发送HTTPS请求
+
+# 安装ca-certificates，发送HTTPS请求，否则会报错"x509: certificate signed by unknown authority"
 RUN apk update && apk upgrade && apk add --no-cache ca-certificates
 RUN update-ca-certificates
+
+# 编译项目
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
 COPY . .
 RUN go build -o rss2 .
+
 
 FROM scratch AS releaser
 COPY --from=builder /build/rss2 /

@@ -13,7 +13,7 @@ linters:
 #    - exhaustivestruct # 检查struct的字段是否都已初始化
     - funlen # 检查长函数的linter，用来检查行数，默认限制60行和40个statement
     - gochecknoinits
-    - goconst
+    - goconst # 查找重复的字符串，这些字符串可以抽取成常量
     - gocritic
     - gocyclo # 用来检查函数的复杂度
     - gofmt # 检测代码是否都已经格式化, 默认情况下使用 -s 来检查代码是否简化
@@ -59,14 +59,15 @@ linters:
   # - wsl
 
 linters-settings:
-  depguard:
-    list-type: blacklist
-    packages:
-      # logging is allowed only by logutils.Log, logrus
-      # is allowed to use only in logutils package
-      - github.com/sirupsen/logrus
-    packages-with-error-message:
-      - github.com/sirupsen/logrus: "logging is allowed only by logutils.Log"
+#  depguard:
+#    list-type: blacklist
+#    packages:
+#      # logging is allowed only by logutils.Log, logrus
+#      # is allowed to use only in logutils package
+#      - github.com/sirupsen/logrus
+#    packages-with-error-message:
+#      # specify an error message to output when a blacklisted package is used
+#      - github.com/sirupsen/logrus: "logging is allowed only by logutils.Log"
   dupl:
     threshold: 100
   funlen:
@@ -127,7 +128,7 @@ linters-settings:
     disable-all: false
 
   lll:
-    line-length: 400 # todo 默认140，先改成400
+    line-length: 140
   maligned:
     suggest-new: true
   misspell:
@@ -165,10 +166,12 @@ linters-settings:
             allowStrs: '""'
             allowInts: "0,1,2"
             allowFloats: "0.0,0.,1.0,1.,2.0,2."
-
+  # [securego/gosec: Golang security checker](https://github.com/securego/gosec)
   gosec:
     excludes:
       - G107 # http请求时不能使用动态url，关闭
+      - G104 # 部分error不需要处理
+      - G307 # Deferring a method which returns an error
 
 
 issues:

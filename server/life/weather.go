@@ -1,9 +1,10 @@
 package life
 
 import (
-	"log"
 	"strings"
 	"time"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/91go/gofc"
 	"github.com/91go/rss2/core"
@@ -63,7 +64,10 @@ func WeatherRss(ctx *gin.Context) {
 
 	res, err := feed.ToAtom()
 	if err != nil {
-		log.Fatal(err)
+		logrus.WithFields(logrus.Fields{
+			"city": city,
+			"err":  err,
+		}).Warn("generate weather feed failed")
 	}
 
 	core.SendXML(ctx, res)

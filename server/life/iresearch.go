@@ -3,8 +3,13 @@ package life
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"time"
+
+	"github.com/91go/rss2/utils"
+
+	"github.com/sirupsen/logrus"
+
+	"github.com/gogf/gf/os/gtime"
 
 	"github.com/91go/rss2/core"
 	"github.com/bitly/go-simplejson"
@@ -38,17 +43,25 @@ func IResearchRss(ctx *gin.Context) {
 }
 
 func crawlIResearch() []core.Feed {
-	body := core.RequestGet(BaseURL)
+	body := utils.RequestGet(BaseURL)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
-		log.Printf("list加载失败 %v", err)
+		logrus.WithFields(logrus.Fields{
+			"url": BaseURL,
+			"err": err,
+		}).Warn("parse iresearch failed")
+
 		return []core.Feed{}
 	}
 
 	iResearch := []core.Feed{}
 	rows, err := res.Get("List").Array()
 	if err != nil {
-		log.Printf("detail加载失败 %v", err)
+		logrus.WithFields(logrus.Fields{
+			"url": BaseURL,
+			"err": err,
+		}).Warn("detail加载失败")
+
 		return []core.Feed{}
 	}
 	for _, row := range rows[0:LIMIT] {
@@ -59,11 +72,12 @@ func crawlIResearch() []core.Feed {
 			iResearch = append(iResearch, core.Feed{
 				Title:    each["Title"].(string),
 				Time:     transTime(each["Uptime"].(string)),
-				URL:      each["VisitURL"].(string),
+				URL:      each["VisitUrl"].(string),
 				Contents: fmt.Sprintf("%s%s", each["Content"].(string), detail),
 				Pics:     detail,
 			})
 		}
+		continue
 	}
 	return iResearch
 }
@@ -71,7 +85,7 @@ func crawlIResearch() []core.Feed {
 // 详情
 func parseDetail(id string) (ret string) {
 	url := fmt.Sprintf(DetailURL, id)
-	body := core.RequestGet(url)
+	body := utils.RequestGet(url)
 	res, _ := simplejson.NewJson(body)
 	total, _ := res.Get("List").GetIndex(0).Get("PagesCount").Int()
 
@@ -85,6 +99,13 @@ func parseDetail(id string) (ret string) {
 }
 
 func transTime(str string) time.Time {
-	tt, _ := time.Parse("2006/1/02 15:04:05", str)
-	return tt
+	format, err := gtime.StrToTimeFormat(str, "Y/n/d H:i:s")
+	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"time": str,
+			"err":  err,
+		}).Warn("transTime failed")
+		return time.Time{}
+	}
+	return format.Time
 }

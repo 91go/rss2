@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/feeds"
 )
 
+// Feed 通用Feed
 type Feed struct {
 	URL      string
 	Title    string
@@ -26,7 +27,6 @@ func Rss(summary *Feed, items []Feed) string {
 		Link:    &feeds.Link{Href: summary.URL},
 		Author:  &feeds.Author{Name: summary.Author},
 		Created: items[0].Time,
-		// Updated: items[0].Time,
 	}
 	for _, value := range items {
 		feed.Add(&feeds.Item{
@@ -35,7 +35,6 @@ func Rss(summary *Feed, items []Feed) string {
 			Description: value.Contents,
 			Author:      &feeds.Author{Name: value.Author},
 			Created:     value.Time,
-			// Updated:     value.Time,
 		})
 	}
 

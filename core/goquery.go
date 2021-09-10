@@ -1,9 +1,11 @@
 package core
 
 import (
-	"fmt"
-	"log"
 	"net/http"
+
+	"github.com/91go/rss2/utils"
+
+	"github.com/sirupsen/logrus"
 
 	query "github.com/PuerkitoBio/goquery"
 )
@@ -23,13 +25,14 @@ func FetchHTML(url string) *query.Document {
 	resp, err := client.Get(url)
 
 	if err != nil {
-		fmt.Println(err)
+		logrus.WithFields(utils.Fields(url, nil)).Error("http request failed")
 		return &query.Document{}
 	}
 
 	doc, err := query.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		log.Fatalf("Fetch html from %s error: %s", url, err)
+		logrus.WithFields(utils.Fields(url, err)).Error("goquery failed")
+		return &query.Document{}
 	}
 	defer resp.Body.Close()
 	return doc

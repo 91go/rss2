@@ -1,52 +1,110 @@
 package porn
 
-// func DybzRss(ctx *gin.Context) {
-//
-// 	novel := ctx.GetString("novel")
-//
-// 	list, err := GetRssByTag(novel)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-//
-// 	ass := list.List()
-// 	//if len(ass) == 0 {
-// 	//	CrawlLatestURL(novelURL)
-// 	//	//time.Sleep(time.Second * 20)
-// 	//}
-// 	feedCreateTime, _ := time.Parse("2006-01-02 15:04:05", ass[0]["create_time"].(string))
-//
-// 	feed := &feeds.Feed{
-// 		Title:       ass[0]["novel_name"].(string),
-// 		Link:        &feeds.Link{Href: ass[0]["novel_url"].(string)},
-// 		Description: "第一版主",
-// 		Author:      &feeds.Author{Name: "", Email: ""},
-// 		Created:     feedCreateTime,
-// 		Updated:     feedCreateTime,
-// 	}
-//
-// 	for _, value := range ass {
-//
-// 		itemCreateTime, _ := time.Parse("2006-01-02 15:04:05", value["create_time"].(string))
-// 		feed.Add(&feeds.Item{
-//
-// 			Title:       value["chapter_name"].(string),
-// 			Link:        &feeds.Link{Href: value["chapter_url"].(string)},
-// 			Description: "",
-// 			Created:     itemCreateTime,
-// 			Updated:     itemCreateTime,
-// 		})
-// 	}
-//
-// 	res, err := feed.ToAtom()
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-//
-// 	ctx.Data(200, "application/xml; charset=utf-8", []byte(res))
-// }
-//
-// func GetRssByTag(flag string) (gdb.Result, error) {
-// 	list, err := g.DB().GetAll("select * from dybz where novel_flag = ? order by --chapter_flag desc", flag)
-// 	return list, err
-// }
+import (
+	"errors"
+	"fmt"
+	"strings"
+	"time"
+
+	"github.com/91go/rss2/utils"
+
+	"github.com/gogf/gf/text/gregex"
+
+	"github.com/sirupsen/logrus"
+
+	"github.com/gogf/gf/os/gtime"
+
+	"github.com/gogf/gf/text/gstr"
+
+	"github.com/91go/rss2/core"
+	query "github.com/PuerkitoBio/goquery"
+
+	"github.com/gin-gonic/gin"
+)
+
+const (
+	DybzBaseUrl = "http://m.hongrenxs.net/book/"
+)
+
+// DybzRss 第一版主rss源
+func DybzRss(ctx *gin.Context) {
+	book := ctx.Param("novel")
+	url := fmt.Sprintf("%s%s/", DybzBaseUrl, book)
+
+	info, list := dybzList(url)
+
+	res := core.Rss(&info, list)
+
+	core.SendXML(ctx, res)
+}
+
+// 某novel的列表
+func dybzList(url string) (feed core.Feed, feeds []core.Feed) {
+	doc := core.FetchHTML(url)
+
+	wrap := doc.Find(".list_xm").Find("ul").Find("li")
+	ret := []core.Feed{}
+	wrap.Each(func(i int, selection *query.Selection) {
+		title := selection.Find("a").Text()
+		novelUrl, _ := selection.Find("a").Attr("href")
+
+		detail, err := novelDetail(novelUrl)
+		if err == nil {
+			ret = append(ret, core.Feed{
+				Title: title,
+				URL:   novelUrl,
+				Time:  detail,
+			})
+		} else {
+			ret = append(ret, core.Feed{
+				Title: title,
+				URL:   novelUrl,
+				Time:  utils.GetToday(),
+			})
+		}
+	})
+
+	info := dybzInfo(url, doc)
+
+	return info, ret
+}
+
+func dybzInfo(url string, doc *query.Document) core.Feed {
+	novelName := doc.Find(".cataloginfo").Find("h3").Text()
+	author := doc.Find(".infotype").Find("p").Find("a").Text()
+	return core.Feed{
+		URL:    url,
+		Title:  fmt.Sprintf("%s%s", "第一版主-", novelName),
+		Author: author,
+	}
+}
+
+func novelDetail(url string) (time.Time, error) {
+	doc := core.FetchHTML(url)
+	find := doc.Find(".articlecontent").Find("div").Find("p").Text()
+
+	t := strings.Replace(find, " ", "", -1)
+	t = strings.Replace(t, "\n", "", -1)
+	t = strings.Replace(t, "&nbsp", "", -1)
+	t = strings.Replace(t, " ", "", -1)
+
+	if !gstr.Contains(t, "年") {
+		return time.Time{}, errors.New("not contains time")
+	}
+
+	st, err := gregex.MatchString("(?U)([0-9]+)年([0-9]+)月([0-9]+)日", t)
+	if err != nil {
+		return time.Time{}, err
+	}
+	ss := gstr.Join(st[1:], "-")
+	tt, err := gtime.StrToTimeFormat(ss, "Y-n-j")
+	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"time": t,
+			"err":  err,
+		}).Warn("trans time failed")
+		return time.Time{}, err
+	}
+
+	return tt.Time, nil
+}
