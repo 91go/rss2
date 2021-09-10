@@ -15,13 +15,17 @@ RUN update-ca-certificates
 # 编译项目
 COPY go.mod .
 COPY go.sum .
+COPY public .
+COPY .env.example .env
 RUN go mod download
 COPY . .
 RUN go build -o rss2 .
 
-
+# 二阶段编译
 FROM scratch AS releaser
 COPY --from=builder /build/rss2 /
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /build/public /public
+COPY --from=builder /build/.env /.env
 EXPOSE 8090
 CMD ["/rss2"]

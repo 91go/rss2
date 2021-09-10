@@ -5,6 +5,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/91go/rss2/utils"
+
 	"github.com/natefinch/lumberjack"
 	"github.com/sirupsen/logrus"
 
@@ -30,6 +32,10 @@ func Logger() gin.HandlerFunc {
 	// 设置将日志输出到标准输出（默认的输出为stderr,标准错误）
 	// 日志消息输出可以是任意的io.writer类型
 	logrus.SetOutput(rolling(path))
+
+	dh, _ := utils.NewDingHook(utils.AssembleUrl(), nil)
+
+	logrus.AddHook(dh)
 
 	return func(c *gin.Context) {
 		// 开始时间

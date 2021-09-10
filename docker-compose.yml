@@ -4,6 +4,9 @@ services:
   service.rss2:
     build: .
     container_name: rss2
+    environment:
+      - DING_TOKEN=${DING_TOKEN}
+      - DING_SECRET=${DING_SECRET}
     ports:
       - 8090:8090
     networks:

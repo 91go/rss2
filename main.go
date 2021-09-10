@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/91go/rss2/middleware"
 
 	asmr2 "github.com/91go/rss2/server/asmr"
@@ -24,6 +26,16 @@ func main() {
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(middleware.Logger())
+
+	r.GET("/ding", func(context *gin.Context) {
+		logrus.WithFields(logrus.Fields{
+			"msgtype": "markdown",
+			"markdown": map[string]string{
+				"title": "ping",
+				"text":  "pong",
+			},
+		}).Error()
+	})
 
 	// asmr路由
 	asmr := r.Group("/asmr")
