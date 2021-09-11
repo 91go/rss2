@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/91go/rss2/core"
+	"github.com/91go/rss2/core/resp"
+	"github.com/91go/rss2/core/rss"
+
+	"github.com/91go/rss2/core/gq"
+
 	query "github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
 )
@@ -18,27 +22,27 @@ const (
 func HuangZRss(ctx *gin.Context) {
 	ass := crawlHuangZ()
 
-	res := core.Rss(&core.Feed{
+	res := rss.Rss(&rss.Feed{
 		Title: "HuangZ-blog",
 	}, ass)
 
-	core.SendXML(ctx, res)
+	resp.SendXML(ctx, res)
 }
 
 // [huangz/blog — blog.huangz.me](https://blog.huangz.me/#)
-func crawlHuangZ() []core.Feed {
-	doc := core.FetchHTML(url)
+func crawlHuangZ() []rss.Feed {
+	doc := gq.FetchHTML(url)
 
 	wrap := doc.Find(".toctree-l2")
 
-	var param = []core.Feed{}
+	var param = []rss.Feed{}
 	wrap.Each(func(i int, selection *query.Selection) {
 		articleURL, _ := selection.Find(".reference").Attr("href")
 		title := selection.Find(".reference").Text()
 
 		fullURL := fmt.Sprintf("%s%s", url, articleURL)
 
-		param = append(param, core.Feed{
+		param = append(param, rss.Feed{
 			Author: "huangz",
 			URL:    fullURL,
 			Title:  title,

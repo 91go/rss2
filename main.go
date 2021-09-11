@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/91go/rss2/core"
+	"github.com/91go/rss2/core/resp"
 
 	"github.com/sirupsen/logrus"
 
@@ -38,7 +38,7 @@ func setupRouter() *gin.Engine {
 			},
 		}).Error()
 
-		core.SendJSON(ctx, "pong")
+		resp.SendJSON(ctx, "pong")
 	})
 
 	// asmr路由
@@ -59,6 +59,7 @@ func setupRouter() *gin.Engine {
 	porn.GET("/ysk/:tag", porn2.YskRss)
 	porn.GET("/jiuse/:author", porn2.JiuSeRss)
 	porn.GET("/dybz/:novel", porn2.DybzRss)
+	porn.GET("/dybz/search/:novel", porn2.DybzSearchRss)
 
 	return r
 }

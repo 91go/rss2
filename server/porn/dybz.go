@@ -5,6 +5,13 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/91go/rss2/core/resp"
+	"github.com/91go/rss2/core/rss"
+
+	"github.com/91go/rss2/core/gq"
+
+	"github.com/gogf/gf/frame/g"
+
 	"github.com/91go/rss2/utils"
 
 	"github.com/gogf/gf/text/gregex"
@@ -15,59 +22,69 @@ import (
 
 	"github.com/gogf/gf/text/gstr"
 
-	"github.com/91go/rss2/core"
 	query "github.com/PuerkitoBio/goquery"
 
 	"github.com/gin-gonic/gin"
 )
 
 const (
-	DybzBaseUrl   = "http://m.hongrenxs.net/book/"
+	DybzBaseUrl   = "http://m.hongrenxs.net"
+	DybzBookUrl   = "http://m.hongrenxs.net/book/"
 	DybzSearchUrl = "http://m.hongrenxs.net/s.html"
 )
 
 // DybzRss 第一版主rss源
 func DybzRss(ctx *gin.Context) {
-	book := ctx.Param("novel")
-	url := fmt.Sprintf("%s%s/", DybzBaseUrl, book)
+	novel := ctx.Param("novel")
+	url := fmt.Sprintf("%s%s/", DybzBookUrl, novel)
 
 	info, list := dybzList(url)
+	res := rss.Rss(&info, list)
 
-	res := core.Rss(&info, list)
-
-	core.SendXML(ctx, res)
+	resp.SendXML(ctx, res)
 }
 
 // DybzSearchRss 搜索某小说
 func DybzSearchRss(ctx *gin.Context) {
-	// 用chromedp搜索，获取小说列表
-	// 根据id获取最新小说，返回小说url
-	url := ""
-	info, list := dybzList(url)
-	res := core.Rss(&info, list)
+	novel := ctx.Param("novel")
+	m := g.Map{
+		"s":    novel,
+		"type": "articlename",
+	}
 
-	core.SendXML(ctx, res)
+	doc := gq.PostHTML(DybzSearchUrl, m)
+	url, exists := doc.Find(".searchresult").Find(".sone").Find("a").Attr("href")
+	if !exists {
+		logrus.WithFields(utils.Fields(url, errors.New("not exist novel")))
+		return
+	}
+
+	// 根据id获取最新小说，返回小说url
+	info, list := dybzList(fmt.Sprintf("%s%s", DybzBaseUrl, url))
+	res := rss.Rss(&info, list)
+
+	resp.SendXML(ctx, res)
 }
 
 // 某novel的列表
-func dybzList(url string) (feed core.Feed, feeds []core.Feed) {
-	doc := core.FetchHTML(url)
+func dybzList(url string) (feed rss.Feed, feeds []rss.Feed) {
+	doc := gq.FetchHTML(url)
 
 	wrap := doc.Find(".list_xm").Find("ul").Find("li")
-	ret := []core.Feed{}
+	ret := []rss.Feed{}
 	wrap.Each(func(i int, selection *query.Selection) {
 		title := selection.Find("a").Text()
 		novelUrl, _ := selection.Find("a").Attr("href")
 
 		detail, err := novelDetail(novelUrl)
 		if err == nil {
-			ret = append(ret, core.Feed{
+			ret = append(ret, rss.Feed{
 				Title: title,
 				URL:   novelUrl,
 				Time:  detail,
 			})
 		} else {
-			ret = append(ret, core.Feed{
+			ret = append(ret, rss.Feed{
 				Title: title,
 				URL:   novelUrl,
 				Time:  utils.GetToday(),
@@ -80,10 +97,10 @@ func dybzList(url string) (feed core.Feed, feeds []core.Feed) {
 	return info, ret
 }
 
-func dybzInfo(url string, doc *query.Document) core.Feed {
+func dybzInfo(url string, doc *query.Document) rss.Feed {
 	novelName := doc.Find(".cataloginfo").Find("h3").Text()
-	author := doc.Find(".infotype").Find("p").Find("a").Text()
-	return core.Feed{
+	author := doc.Find(".infotype").Find("p").Find(gq.LabelA).Text()
+	return rss.Feed{
 		URL:    url,
 		Title:  fmt.Sprintf("%s%s", "第一版主-", novelName),
 		Author: author,
@@ -91,7 +108,7 @@ func dybzInfo(url string, doc *query.Document) core.Feed {
 }
 
 func novelDetail(url string) (time.Time, error) {
-	doc := core.FetchHTML(url)
+	doc := gq.FetchHTML(url)
 	find := doc.Find(".articlecontent").Find("div").Find("p").Text()
 
 	t := utils.TrimBlank(find)

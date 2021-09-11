@@ -5,13 +5,15 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/91go/rss2/core/resp"
+	"github.com/91go/rss2/core/rss"
+
 	"github.com/91go/rss2/utils"
 
 	"github.com/sirupsen/logrus"
 
 	"github.com/gogf/gf/os/gtime"
 
-	"github.com/91go/rss2/core"
 	"github.com/bitly/go-simplejson"
 	"github.com/gin-gonic/gin"
 )
@@ -34,15 +36,15 @@ type IResearch struct {
 func IResearchRss(ctx *gin.Context) {
 	ret := crawlIResearch()
 
-	res := core.Rss(&core.Feed{
+	res := rss.Rss(&rss.Feed{
 		Title: "艾瑞咨询——产业研究报告",
 		URL:   BaseURL,
 	}, ret)
 
-	core.SendXML(ctx, res)
+	resp.SendXML(ctx, res)
 }
 
-func crawlIResearch() []core.Feed {
+func crawlIResearch() []rss.Feed {
 	body := utils.RequestGet(BaseURL)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
@@ -51,10 +53,10 @@ func crawlIResearch() []core.Feed {
 			"err": err,
 		}).Warn("parse iresearch failed")
 
-		return []core.Feed{}
+		return []rss.Feed{}
 	}
 
-	iResearch := []core.Feed{}
+	iResearch := []rss.Feed{}
 	rows, err := res.Get("List").Array()
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
@@ -62,14 +64,14 @@ func crawlIResearch() []core.Feed {
 			"err": err,
 		}).Warn("detail加载失败")
 
-		return []core.Feed{}
+		return []rss.Feed{}
 	}
 	for _, row := range rows[0:LIMIT] {
 		if each, ok := row.(map[string]interface{}); ok {
 			id := each["NewsId"].(json.Number).String()
 			detail := parseDetail(id)
 
-			iResearch = append(iResearch, core.Feed{
+			iResearch = append(iResearch, rss.Feed{
 				Title:    each["Title"].(string),
 				Time:     transTime(each["Uptime"].(string)),
 				URL:      each["VisitUrl"].(string),

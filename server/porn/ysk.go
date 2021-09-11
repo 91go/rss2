@@ -5,6 +5,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/91go/rss2/core/resp"
+	"github.com/91go/rss2/core/rss"
+
+	"github.com/91go/rss2/core/gq"
+
 	"github.com/91go/rss2/utils"
 	"github.com/sirupsen/logrus"
 
@@ -12,7 +17,6 @@ import (
 
 	"github.com/gogf/gf/os/gtime"
 
-	"github.com/91go/rss2/core"
 	query "github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
 	"github.com/gogf/gf/text/gregex"
@@ -31,31 +35,31 @@ func YskRss(ctx *gin.Context) {
 
 	list := parseList(url)
 
-	res := core.Rss(&core.Feed{
+	res := rss.Rss(&rss.Feed{
 		URL:    url,
 		Title:  fmt.Sprintf("%s%s", "优丝库-", tag),
 		Author: tag,
 	}, list)
 
-	core.SendXML(ctx, res)
+	resp.SendXML(ctx, res)
 }
 
 // 解析列表页
-func parseList(url string) []core.Feed {
-	doc := core.FetchHTML(url)
+func parseList(url string) []rss.Feed {
+	doc := gq.FetchHTML(url)
 
 	total := doc.Find(".post").Size()
-	if total >= core.LimitItem {
-		total = core.LimitItem
+	if total >= rss.LimitItem {
+		total = rss.LimitItem
 	}
 	wrap := doc.Find(".post").Slice(0, total)
-	ret := []core.Feed{}
+	ret := []rss.Feed{}
 	wrap.Each(func(i int, selection *query.Selection) {
-		href, _ := selection.Find(".img").Find(core.LabelA).Attr("href")
-		title, _ := selection.Find(".img").Find(core.LabelA).Attr("title")
-		cover, _ := selection.Find(".img").Find(core.LabelA).Find("img").Attr("src")
+		href, _ := selection.Find(".img").Find(gq.LabelA).Attr("href")
+		title, _ := selection.Find(".img").Find(gq.LabelA).Attr("title")
+		cover, _ := selection.Find(".img").Find(gq.LabelA).Find("img").Attr("src")
 
-		ret = append(ret, core.Feed{
+		ret = append(ret, rss.Feed{
 			URL:      href,
 			Title:    title,
 			Time:     sanitizeTime(cover),
@@ -86,11 +90,11 @@ func sanitizeTime(url string) time.Time {
 
 // 解析详情页，获取所有图片
 func parsePics(url string) string {
-	doc := core.FetchHTML(url)
+	doc := gq.FetchHTML(url)
 	wrap := doc.Find(".gallery-fancy-item")
 	pics := []string{}
 	wrap.Each(func(i int, selection *query.Selection) {
-		pic, _ := selection.Find(core.LabelA).Attr("href")
+		pic, _ := selection.Find(gq.LabelA).Attr("href")
 		pics = append(pics, pic)
 	})
 

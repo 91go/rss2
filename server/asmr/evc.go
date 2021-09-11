@@ -6,6 +6,9 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/91go/rss2/core/resp"
+	"github.com/91go/rss2/core/rss"
+
 	"github.com/91go/rss2/utils"
 
 	"github.com/sirupsen/logrus"
@@ -13,7 +16,6 @@ import (
 	"github.com/gogf/gf/os/gfile"
 
 	"github.com/91go/gofc/fctime"
-	"github.com/91go/rss2/core"
 	"github.com/bitly/go-simplejson"
 	"github.com/gin-gonic/gin"
 	"github.com/robertkrimen/otto"
@@ -38,28 +40,28 @@ const (
 func EvcRss(ctx *gin.Context) {
 	ret := parseRequest(NzURL)
 
-	res := core.Rss(&core.Feed{
+	res := rss.Rss(&rss.Feed{
 		Title: "南征付费ASMR音频",
 		URL:   NzURL,
 	}, ret)
 
-	core.SendXML(ctx, res)
+	resp.SendXML(ctx, res)
 }
 
-func parseRequest(url string) []core.Feed {
+func parseRequest(url string) []rss.Feed {
 	body := utils.RequestGet(url)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
 		logrus.WithFields(utils.Fields(url, err)).Error("list加载失败")
-		return []core.Feed{}
+		return []rss.Feed{}
 	}
 
-	asmr := []core.Feed{}
+	asmr := []rss.Feed{}
 	rows, err := res.Get("data").Get("pageData").Array()
 	if err != nil {
-		return []core.Feed{}
+		return []rss.Feed{}
 	}
-	rowws := rows[0:core.LimitItem]
+	rowws := rows[0:rss.LimitItem]
 	for _, row := range rowws {
 		if each, ok := row.(map[string]interface{}); ok {
 			origID, err := each["id"].(json.Number).Int64()
@@ -69,7 +71,7 @@ func parseRequest(url string) []core.Feed {
 			apiURL := fmt.Sprintf("https://www.2evc.cn/voiceAppserver/voice/get?id=%d&telephone=undefined&cvId=8", origID)
 			detail := parseDetail(apiURL)
 
-			asmr = append(asmr, core.Feed{
+			asmr = append(asmr, rss.Feed{
 				Title:    each["name"].(string),
 				URL:      detail.AudioURL,
 				Contents: fmt.Sprintf("%s\n%s", detail.AudioURL, detail.Desc),

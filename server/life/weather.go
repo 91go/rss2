@@ -4,10 +4,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/91go/rss2/core/resp"
+
+	"github.com/91go/rss2/core/gq"
+
 	"github.com/sirupsen/logrus"
 
 	"github.com/91go/gofc"
-	"github.com/91go/rss2/core"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/feeds"
 )
@@ -70,7 +73,7 @@ func WeatherRss(ctx *gin.Context) {
 		}).Warn("generate weather feed failed")
 	}
 
-	core.SendXML(ctx, res)
+	resp.SendXML(ctx, res)
 }
 
 func crawl(city string) Warm {
@@ -139,7 +142,7 @@ const HTML = `
 // GetWeather data
 func getWeather(local string) Weather {
 	url := "https://tianqi.moji.com/weather/china/" + local
-	doc := core.FetchHTML(url)
+	doc := gq.FetchHTML(url)
 	wrap := doc.Find(".wea_info .left")
 	humidityDesc := strings.Split(wrap.Find(".wea_about span").Text(), " ")
 	humidity := "未知"

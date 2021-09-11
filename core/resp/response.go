@@ -1,4 +1,4 @@
-package core
+package resp
 
 import (
 	"net/http"
