@@ -3,7 +3,6 @@ package porn
 import (
 	"errors"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/91go/rss2/utils"
@@ -23,7 +22,8 @@ import (
 )
 
 const (
-	DybzBaseUrl = "http://m.hongrenxs.net/book/"
+	DybzBaseUrl   = "http://m.hongrenxs.net/book/"
+	DybzSearchUrl = "http://m.hongrenxs.net/s.html"
 )
 
 // DybzRss 第一版主rss源
@@ -33,6 +33,17 @@ func DybzRss(ctx *gin.Context) {
 
 	info, list := dybzList(url)
 
+	res := core.Rss(&info, list)
+
+	core.SendXML(ctx, res)
+}
+
+// DybzSearchRss 搜索某小说
+func DybzSearchRss(ctx *gin.Context) {
+	// 用chromedp搜索，获取小说列表
+	// 根据id获取最新小说，返回小说url
+	url := ""
+	info, list := dybzList(url)
 	res := core.Rss(&info, list)
 
 	core.SendXML(ctx, res)
@@ -83,11 +94,7 @@ func novelDetail(url string) (time.Time, error) {
 	doc := core.FetchHTML(url)
 	find := doc.Find(".articlecontent").Find("div").Find("p").Text()
 
-	t := strings.Replace(find, " ", "", -1)
-	t = strings.Replace(t, "\n", "", -1)
-	t = strings.Replace(t, "&nbsp", "", -1)
-	t = strings.Replace(t, " ", "", -1)
-
+	t := utils.TrimBlank(find)
 	if !gstr.Contains(t, "年") {
 		return time.Time{}, errors.New("not contains time")
 	}

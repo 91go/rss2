@@ -16,7 +16,7 @@ RUN update-ca-certificates
 COPY go.mod .
 COPY go.sum .
 COPY public .
-COPY .env.example .env
+COPY .env .
 RUN go mod download
 COPY . .
 RUN go build -o rss2 .

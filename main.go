@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 
+	"github.com/91go/rss2/core"
+
 	"github.com/sirupsen/logrus"
 
 	"github.com/91go/rss2/middleware"
@@ -27,7 +29,7 @@ func setupRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(middleware.Logger())
 
-	r.GET("/ding", func(context *gin.Context) {
+	r.GET("/ding", func(ctx *gin.Context) {
 		logrus.WithFields(logrus.Fields{
 			"msgtype": "markdown",
 			"markdown": map[string]string{
@@ -35,6 +37,8 @@ func setupRouter() *gin.Engine {
 				"text":  "pong",
 			},
 		}).Error()
+
+		core.SendJSON(ctx, "pong")
 	})
 
 	// asmr路由

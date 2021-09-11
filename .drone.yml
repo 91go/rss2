@@ -14,7 +14,6 @@ steps:
     pull: if-not-exists
     image: hello-world
 
-
   - name: linter
     image: golang:latest
     pull: if-not-exists
@@ -29,7 +28,7 @@ steps:
         path: /go/pkg
     commands:
       - go get github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-      - golangci-lint run
+      - golangci-lint run --fix
 
   - name: test
     image: golang:latest

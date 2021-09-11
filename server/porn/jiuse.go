@@ -5,6 +5,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/91go/rss2/utils"
+
 	"github.com/gogf/gf/os/gtime"
 
 	query "github.com/PuerkitoBio/goquery"
@@ -68,11 +70,8 @@ func patchVideoURL(url string) string {
 func getCreateTime(text string) time.Time {
 	s := strings.Split(text, "|")
 	s2 := s[0]
-	t := strings.Replace(s2, " ", "", -1)
-	t = strings.Replace(t, "\n", "", -1)
-	t = strings.Replace(t, "&nbsp", "", -1)
-	t = strings.Replace(t, " ", "", -1)
-	format, err := gtime.StrToTimeFormat(t, "Y-m-d")
+
+	format, err := gtime.StrToTimeFormat(utils.TrimBlank(s2), "Y-m-d")
 	if err != nil {
 		return time.Time{}
 	}
