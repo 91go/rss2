@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/91go/rss2/core/config"
@@ -22,6 +23,9 @@ func NewClient(conn *redis.Client) *Client {
 }
 
 func Conn() *redis.Client {
+	fmt.Println("addr===", config.GetString("redis.addr"), "===")
+	fmt.Println("pwd===", config.GetString("redis.pwd"), "===")
+
 	conn := redis.NewClient(&redis.Options{
 		Addr:     config.GetString("redis.Addr"),
 		Password: config.GetString("redis.Password"),

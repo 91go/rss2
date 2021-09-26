@@ -102,10 +102,9 @@ func (dh *DingHook) Fire(entry *logrus.Entry) error {
 
 // AssembleUrl 组装url
 func AssembleUrl() string {
-	//  构建 签名
 	//  把timestamp+"\n"+密钥当做签名字符串，使用HmacSHA256算法计算签名，然后进行Base64 encode，最后再把签名参数再进行urlEncode，得到最终的签名（需要使用UTF-8字符集）。
-	secret := config.GetString("DING_SECRET")
-	token := config.GetString("DING_TOKEN")
+	token := config.GetString("dingtalk.token")
+	secret := config.GetString("dingtalk.secret")
 
 	now := time.Now().UnixMilli()
 	signStr := fmt.Sprintf("%d\n%s", now, secret)

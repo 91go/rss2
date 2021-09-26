@@ -1,27 +1,24 @@
 version: '3'
 
 services:
-  service.rss2:
+  rss2.service:
     build: .
-    container_name: rss2
+    container_name: rss2-service
     ports:
       - 8090:8090
     links:
-      - rss2_redis
+      - redis
     depends_on:
-      - rss2_redis
+      - redis
     networks:
       - rss2
 
-  rss2_redis:
-    image: redis:6.0.10-alpine3.12
-    container_name: rss2_redis
+  redis:
+    image: redis:alpine
+    container_name: rss2-redis
     volumes:
       - ~/docker/rss2/redis/:/redis/data
     restart: always
-    ports:
-      - 6380:6379
-    command: redis-server --requirepass root --appendonly yes
     networks:
       - rss2
 
