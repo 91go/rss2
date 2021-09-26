@@ -16,4 +16,6 @@ services:
     volumes:
       - ~/docker/rss2/redis/:/redis/data
     restart: always
+    ports:
+      - 6380:6379
     command: redis-server --requirepass root --appendonly yes
