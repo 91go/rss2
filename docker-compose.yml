@@ -4,17 +4,13 @@ services:
   service.rss2:
     build: .
     container_name: rss2
-#    environment:
-#      - DING_TOKEN=${DING_TOKEN}
-#      - DING_SECRET=${DING_SECRET}
     ports:
       - 8090:8090
     links:
       - rss2_redis
   rss2_redis:
-    image: redis:latest
+    image: redis:alpine
     container_name: rss2_redis
-    build: ./docker/redis
     volumes:
       - ~/docker/rss2/redis/:/redis/data
     restart: always

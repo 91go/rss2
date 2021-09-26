@@ -1,25 +1,18 @@
 package utils
 
 import (
-	"github.com/spf13/viper"
 	"testing"
 
 	"github.com/sirupsen/logrus"
 )
 
 func TestDingrusHook(t *testing.T) {
-	viper.SetConfigName("config.toml")
-	viper.SetConfigType("toml")
-	viper.AddConfigPath("./../utils")
-	viper.AutomaticEnv()
-	dh, err := NewDingHook(AssembleUrl(), nil)
 
+	dh, err := NewDingHook(AssembleUrl(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	logrus.AddHook(dh)
-
 	logrus.WithFields(logrus.Fields{
 		"msgtype": "markdown",
 		"markdown": map[string]string{
