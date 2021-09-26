@@ -1,4 +1,6 @@
 .idea
 
 # file
-.env
+config.toml
+**/.DS_Store
+*.log

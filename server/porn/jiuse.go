@@ -34,26 +34,27 @@ func JiuSeRss(ctx *gin.Context) {
 	list := jsList(url)
 	res := rss.Rss(&rss.Feed{
 		URL:    url,
-		Title:  fmt.Sprintf("%s%s", "91porn-", author),
+		Title:  rss.Title{Prefix: "91porn", Name: author},
 		Author: author,
+		Time:   gtime.Now().Time,
 	}, list)
 
 	resp.SendXML(ctx, res)
 }
 
-func jsList(url string) []rss.Feed {
+func jsList(url string) []rss.Item {
 	doc := gq.FetchHTML(url)
 
 	total := doc.Find(".colVideoList").Size()
 	size := gofc.If(total >= rss.LimitItem, rss.LimitItem, total).(int)
 	wrap := doc.Find(".colVideoList").Slice(0, size)
-	ret := []rss.Feed{}
+	ret := []rss.Item{}
 	wrap.Each(func(i int, selection *query.Selection) {
 		title := selection.Find(".video-elem").Find(".title").Text()
 		href, _ := selection.Find(".video-elem").Find(".title").Attr("href")
 		text := selection.Find(".text-muted").Eq(1).Text()
 
-		ret = append(ret, rss.Feed{
+		ret = append(ret, rss.Item{
 			Title: title,
 			URL:   fmt.Sprintf("%s%s", JiuSeBaseURL, patchVideoURL(href)),
 			Time:  getCreateTime(text),

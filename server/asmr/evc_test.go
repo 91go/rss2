@@ -1,24 +1,5 @@
 package asmr
 
-import (
-	"testing"
-
-	"github.com/91go/rss2/utils"
-
-	"github.com/91go/rss2/server/code"
-	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
-)
-
-func TestEvc(t *testing.T) {
-	uri := "/code/huangZ"
-	router := gin.Default()
-	router.GET(uri, code.HuangZRss)
-
-	_, err := utils.Get(uri, router)
-	assert.Nil(t, err)
-}
-
 // todo 添加所有的httptest测试
 
 // func TestApiURL(t *testing.T) {

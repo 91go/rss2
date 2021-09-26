@@ -24,27 +24,21 @@ const (
 	LIMIT     = 1
 )
 
-type IResearch struct {
-	Title    string
-	Time     time.Time
-	URL      string
-	Describe string
-	Pics     string
-}
-
 // IResearchRss [产业研究报告-艾瑞咨询](https://www.iresearch.com.cn/m/report.shtml)
 func IResearchRss(ctx *gin.Context) {
 	ret := crawlIResearch()
 
 	res := rss.Rss(&rss.Feed{
-		Title: "艾瑞咨询——产业研究报告",
-		URL:   BaseURL,
+		Title: rss.Title{
+			Prefix: "艾瑞咨询",
+		},
+		URL: BaseURL,
 	}, ret)
 
 	resp.SendXML(ctx, res)
 }
 
-func crawlIResearch() []rss.Feed {
+func crawlIResearch() []rss.Item {
 	body := utils.RequestGet(BaseURL)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
@@ -53,10 +47,10 @@ func crawlIResearch() []rss.Feed {
 			"err": err,
 		}).Warn("parse iresearch failed")
 
-		return []rss.Feed{}
+		return []rss.Item{}
 	}
 
-	iResearch := []rss.Feed{}
+	iResearch := []rss.Item{}
 	rows, err := res.Get("List").Array()
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
@@ -64,19 +58,18 @@ func crawlIResearch() []rss.Feed {
 			"err": err,
 		}).Warn("detail加载失败")
 
-		return []rss.Feed{}
+		return []rss.Item{}
 	}
 	for _, row := range rows[0:LIMIT] {
 		if each, ok := row.(map[string]interface{}); ok {
 			id := each["NewsId"].(json.Number).String()
 			detail := parseDetail(id)
 
-			iResearch = append(iResearch, rss.Feed{
+			iResearch = append(iResearch, rss.Item{
 				Title:    each["Title"].(string),
 				Time:     transTime(each["Uptime"].(string)),
 				URL:      each["VisitUrl"].(string),
 				Contents: fmt.Sprintf("%s%s", each["Content"].(string), detail),
-				Pics:     detail,
 			})
 		}
 		continue

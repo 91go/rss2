@@ -22,14 +22,12 @@ import (
 )
 
 type Asmr struct {
-	Title    string `json:"title"`
-	APIURL   string `json:"api_url"`
-	OriginID int64  `json:"origin_id"`
-	Desc     string `json:"desc"`
-	// 真实url
-	AudioURL string `json:"audio_url"`
-	// 创建时间
-	CreateTime time.Time `json:"create_time"`
+	Title      string    `json:"title"`
+	APIURL     string    `json:"api_url"`
+	OriginID   int64     `json:"origin_id"`
+	Desc       string    `json:"desc"`
+	AudioURL   string    `json:"audio_url"`   // 真实url
+	CreateTime time.Time `json:"create_time"` // 创建时间
 }
 
 const (
@@ -41,25 +39,27 @@ func EvcRss(ctx *gin.Context) {
 	ret := parseRequest(NzURL)
 
 	res := rss.Rss(&rss.Feed{
-		Title: "南征付费ASMR音频",
-		URL:   NzURL,
+		Title: rss.Title{
+			Prefix: "asmr-南征",
+		},
+		URL: NzURL,
 	}, ret)
 
 	resp.SendXML(ctx, res)
 }
 
-func parseRequest(url string) []rss.Feed {
+func parseRequest(url string) []rss.Item {
 	body := utils.RequestGet(url)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
-		logrus.WithFields(utils.Fields(url, err)).Error("list加载失败")
-		return []rss.Feed{}
+		logrus.WithFields(utils.Fields(url, err)).Error("list load failed")
+		return []rss.Item{}
 	}
 
-	asmr := []rss.Feed{}
+	asmr := []rss.Item{}
 	rows, err := res.Get("data").Get("pageData").Array()
 	if err != nil {
-		return []rss.Feed{}
+		return []rss.Item{}
 	}
 	rowws := rows[0:rss.LimitItem]
 	for _, row := range rowws {
@@ -71,7 +71,7 @@ func parseRequest(url string) []rss.Feed {
 			apiURL := fmt.Sprintf("https://www.2evc.cn/voiceAppserver/voice/get?id=%d&telephone=undefined&cvId=8", origID)
 			detail := parseDetail(apiURL)
 
-			asmr = append(asmr, rss.Feed{
+			asmr = append(asmr, rss.Item{
 				Title:    each["name"].(string),
 				URL:      detail.AudioURL,
 				Contents: fmt.Sprintf("%s\n%s", detail.AudioURL, detail.Desc),

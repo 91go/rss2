@@ -9,6 +9,7 @@ require (
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/gin-gonic/gin v1.7.4
 	github.com/go-playground/validator/v10 v10.9.0 // indirect
+	github.com/go-redis/redis/v8 v8.11.3
 	github.com/gogf/gf v1.16.6
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/gorilla/feeds v1.1.1
@@ -33,8 +34,10 @@ require (
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/andybalholm/cascadia v1.2.0 // indirect
+	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/clbanning/mxj v1.8.5-0.20200714211355-ff02cfb8ea28 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/color v1.12.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect

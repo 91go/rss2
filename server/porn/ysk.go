@@ -37,7 +37,7 @@ func YskRss(ctx *gin.Context) {
 
 	res := rss.Rss(&rss.Feed{
 		URL:    url,
-		Title:  fmt.Sprintf("%s%s", "优丝库-", tag),
+		Title:  rss.Title{Prefix: "优丝库", Name: tag},
 		Author: tag,
 	}, list)
 
@@ -45,7 +45,7 @@ func YskRss(ctx *gin.Context) {
 }
 
 // 解析列表页
-func parseList(url string) []rss.Feed {
+func parseList(url string) []rss.Item {
 	doc := gq.FetchHTML(url)
 
 	total := doc.Find(".post").Size()
@@ -53,13 +53,13 @@ func parseList(url string) []rss.Feed {
 		total = rss.LimitItem
 	}
 	wrap := doc.Find(".post").Slice(0, total)
-	ret := []rss.Feed{}
+	ret := []rss.Item{}
 	wrap.Each(func(i int, selection *query.Selection) {
 		href, _ := selection.Find(".img").Find(gq.LabelA).Attr("href")
 		title, _ := selection.Find(".img").Find(gq.LabelA).Attr("title")
 		cover, _ := selection.Find(".img").Find(gq.LabelA).Find("img").Attr("src")
 
-		ret = append(ret, rss.Feed{
+		ret = append(ret, rss.Item{
 			URL:      href,
 			Title:    title,
 			Time:     sanitizeTime(cover),

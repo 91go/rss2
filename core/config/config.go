@@ -17,18 +17,19 @@ func init() {
 	// 1. 初始化 Viper 库
 	Viper = viper.New()
 	// 2. 设置文件名称
-	Viper.SetConfigName(".env")
+	Viper.SetConfigName("config.toml")
 	// 3. 配置类型，支持 "json", "toml", "yaml", "yml", "properties",
 	//             "props", "prop", "env", "dotenv"
-	Viper.SetConfigType("env")
+	Viper.SetConfigType("toml")
 	// 4. 环境变量配置文件查找的路径，相对于 main.go
 	Viper.AddConfigPath(".")
 	viper.AutomaticEnv()
 
 	// 5. 开始读根目录下的 .env 文件，读不到会报错
 	err := Viper.ReadInConfig()
-	logrus.WithFields(logrus.Fields{"err": err}).Error("viper load failed")
-
+	if err != nil {
+		logrus.WithFields(logrus.Fields{"err": err}).Error("viper load failed")
+	}
 	// 6. 设置环境变量前缀，用以区分 Go 的系统环境变量
 	Viper.SetEnvPrefix("appenv")
 	// 7. Viper.Get() 时，优先读取环境变量

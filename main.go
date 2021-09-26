@@ -10,7 +10,6 @@ import (
 	"github.com/91go/rss2/middleware"
 
 	asmr2 "github.com/91go/rss2/server/asmr"
-	code2 "github.com/91go/rss2/server/code"
 	life2 "github.com/91go/rss2/server/life"
 	porn2 "github.com/91go/rss2/server/porn"
 	"github.com/gin-gonic/gin"
@@ -44,10 +43,6 @@ func setupRouter() *gin.Engine {
 	// asmr路由
 	asmr := r.Group("/asmr")
 	asmr.GET("evc", asmr2.EvcRss)
-
-	// code路由分组
-	code := r.Group("/code")
-	code.GET("/huangZ", code2.HuangZRss)
 
 	// life路由分组
 	life := r.Group("/life")

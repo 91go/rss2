@@ -10,9 +10,7 @@ linters:
     - errcheck # 用于检查有error返回的函数，却没有做判断检查
     - exportloopref # 查看变量作用域，WARN [runner] The linter 'scopelint' is deprecated (since v1.39.0) due to: The repository of the linter has been deprecated by the owner.  Replaced by exportloopref.
     - exhaustive # 检查枚举switch语句的覆盖率
-#    - exhaustivestruct # 检查struct的字段是否都已初始化
     - funlen # 检查长函数的linter，用来检查行数，默认限制60行和40个statement
-#    - gochecknoinits # 检查init函数
     - goconst # 查找重复的字符串，这些字符串可以抽取成常量
     - gocritic
     - gocyclo # 用来检查函数的复杂度
@@ -27,7 +25,6 @@ linters:
     - lll
     - misspell # 查找单词拼写错误
     - nakedret
-#    - noctx # [sonatard/noctx: noctx finds sending http request without context.Context.](https://github.com/sonatard/noctx)
     - nolintlint
     - rowserrcheck
     - staticcheck # 提供了巨多的静态检查，检查bug，分析性能等
@@ -41,6 +38,9 @@ linters:
     - whitespace
     - revive # 打印出 go 代码的格式错误，WARN [runner] The linter 'golint' is deprecated (since v1.41.0) due to: The repository of the linter has been archived by the owner.  Replaced by revive. # 检查是否有死锁的静态检测工具
 #    - gochecknoglobals # 检查 go 代码中是否存在全局变量
+#    - exhaustivestruct # 检查struct的字段是否都已初始化
+#    - gochecknoinits # 检查init函数
+#    - noctx # [sonatard/noctx: noctx finds sending http request without context.Context.](https://github.com/sonatard/noctx)
 
   # don't enable:
   # - asciicheck

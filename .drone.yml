@@ -46,6 +46,7 @@ steps:
         path: /go/pkg
     commands:
       - go test ./...
+      - go test -race -coverprofile=coverage.txt -covermode=atomic
 
 #  - name: coverage
 #    image: plugins/codecov
