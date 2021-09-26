@@ -8,9 +8,12 @@ services:
       - 8090:8090
     links:
       - rss2_redis
+    depends_on:
+      - rss2_redis
   rss2_redis:
-    image: redis:alpine
+    image: redis:6.0.10-alpine3.12
     container_name: rss2_redis
     volumes:
       - ~/docker/rss2/redis/:/redis/data
     restart: always
+    command: redis-server --requirepass root --appendonly yes
