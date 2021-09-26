@@ -10,6 +10,9 @@ services:
       - rss2_redis
     depends_on:
       - rss2_redis
+    networks:
+      - rss2
+
   rss2_redis:
     image: redis:6.0.10-alpine3.12
     container_name: rss2_redis
@@ -19,3 +22,9 @@ services:
     ports:
       - 6380:6379
     command: redis-server --requirepass root --appendonly yes
+    networks:
+      - rss2
+
+networks:
+  rss2:
+    driver: bridge
