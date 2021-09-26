@@ -63,34 +63,3 @@ func dybzInfo(url string, doc *query.Document) rss.Feed {
 		Author: author,
 	}
 }
-
-// func novelDetail(url string) (time.Time, error) {
-// 	doc := gq.FetchHTML(url)
-// 	find := doc.Find(".articlecontent").Find("div").Find("p").Text()
-//
-// 	t := utils.TrimBlank(find)
-// 	if !gstr.Contains(t, "年") {
-// 		return time.Time{}, errors.New("not contains time")
-// 	}
-//
-// 	st, err := gregex.MatchString("(?U)([0-9]+)年([0-9]+)月([0-9]+)日", t)
-// 	if err != nil {
-// 		logrus.WithFields(logrus.Fields{
-// 			"time": t,
-// 			"err":  err,
-// 		}).Warn("regex time failed")
-// 		return time.Time{}, err
-// 	}
-//
-// 	ss := gstr.Join(st[1:], "-")
-// 	tt, err := gtime.StrToTimeFormat(ss, "Y-n-j")
-// 	if err != nil {
-// 		logrus.WithFields(logrus.Fields{
-// 			"time": t,
-// 			"err":  err,
-// 		}).Warn("trans time failed")
-// 		return time.Time{}, err
-// 	}
-//
-// 	return tt.Time, nil
-// }

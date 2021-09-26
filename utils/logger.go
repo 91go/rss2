@@ -7,9 +7,9 @@ const (
 	Err = "err"
 )
 
-func Fields(url string, err error) logrus.Fields {
+func Text(url string, err error) logrus.Fields {
 	return logrus.Fields{
-		"url": url,
-		"err": err,
+		"msgtype": "text",
+		"text":    map[string]interface{}{"url": url, "err": err},
 	}
 }

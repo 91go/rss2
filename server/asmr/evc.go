@@ -52,7 +52,7 @@ func parseRequest(url string) []rss.Item {
 	body := utils.RequestGet(url)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
-		logrus.WithFields(utils.Fields(url, err)).Error("list load failed")
+		logrus.WithFields(utils.Text(url, err)).Error("list load failed")
 		return []rss.Item{}
 	}
 
@@ -66,7 +66,7 @@ func parseRequest(url string) []rss.Item {
 		if each, ok := row.(map[string]interface{}); ok {
 			origID, err := each["id"].(json.Number).Int64()
 			if err != nil {
-				logrus.WithFields(utils.Fields(url, err)).Error("convert origID err")
+				logrus.WithFields(utils.Text(url, err)).Error("convert origID err")
 			}
 			apiURL := fmt.Sprintf("https://www.2evc.cn/voiceAppserver/voice/get?id=%d&telephone=undefined&cvId=8", origID)
 			detail := parseDetail(apiURL)
@@ -107,7 +107,7 @@ func parseDetail(url string) Asmr {
 	fileSrc := each["fileSrc"]
 	createTime, err := fctime.MsToTime(each["createDate"].(json.Number).String())
 	if err != nil {
-		logrus.WithFields(utils.Fields(url, err)).Warn("trans time error")
+		logrus.WithFields(utils.Text(url, err)).Warn("trans time error")
 		return Asmr{}
 	}
 
@@ -123,14 +123,14 @@ func originAudioURL(fileSource string) string {
 	vm := otto.New()
 	_, err := vm.Run(getPublicFile())
 	if err != nil {
-		logrus.WithFields(utils.Fields(fileSource, err)).Warn("otto parse js file failed")
+		logrus.WithFields(utils.Text(fileSource, err)).Warn("otto parse js file failed")
 		return ""
 	}
 
 	const hasOwn = "true"
 	call, err := vm.Call("unDecrypt", nil, fileSource, hasOwn)
 	if err != nil {
-		logrus.WithFields(utils.Fields(fileSource, err)).Warn("otto decrypt failed")
+		logrus.WithFields(utils.Text(fileSource, err)).Warn("otto decrypt failed")
 		return ""
 	}
 	return call.String()
@@ -140,7 +140,7 @@ func originAudioURL(fileSource string) string {
 func getPublicFile() string {
 	abs, err := filepath.Abs("./public/js/voice.js")
 	if err != nil {
-		logrus.WithFields(utils.Fields("", err)).Warn("voice.js not found")
+		logrus.WithFields(utils.Text("", err)).Warn("voice.js not found")
 		return ""
 	}
 	contents := gfile.GetContents(abs)

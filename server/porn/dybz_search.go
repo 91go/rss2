@@ -24,7 +24,7 @@ func DybzSearchRss(ctx *gin.Context) {
 	doc := gq.PostHTML(DybzSearchUrl, m)
 	url, exists := doc.Find(".searchresult").Find(".sone").Find("a").Attr("href")
 	if !exists {
-		logrus.WithFields(utils.Fields(url, errors.New("not exist novel")))
+		logrus.WithFields(utils.Text(url, errors.New("not exist novel")))
 		return
 	}
 

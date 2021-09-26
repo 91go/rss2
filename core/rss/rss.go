@@ -44,7 +44,7 @@ const (
 // Rss 输出rss
 func Rss(fe *Feed, items []Item) string {
 	if len(items) == 0 {
-		logrus.WithFields(utils.Fields("", errors.New("")))
+		logrus.WithFields(utils.Text("", errors.New("")))
 		return ""
 	}
 
@@ -75,7 +75,7 @@ func rss(fe *Feed, items []Item) string {
 
 	atom, err := feed.ToRss()
 	if err != nil {
-		logrus.WithFields(utils.Fields("", errors.New("rss generate failed")))
+		logrus.WithFields(utils.Text("", errors.New("rss generate failed")))
 		return ""
 	}
 	return atom
