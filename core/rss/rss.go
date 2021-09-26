@@ -3,12 +3,10 @@ package rss
 import (
 	"errors"
 	"fmt"
-	"reflect"
 	"time"
 
+	"github.com/gogf/gf/os/gtime"
 	"github.com/gogf/gf/util/gconv"
-
-	"github.com/gogf/gf/frame/g"
 
 	"github.com/91go/rss2/utils"
 	"github.com/sirupsen/logrus"
@@ -77,6 +75,7 @@ func rss(fe *Feed, items []Item) string {
 
 	atom, err := feed.ToRss()
 	if err != nil {
+		logrus.WithFields(utils.Fields("", errors.New("rss generate failed")))
 		return ""
 	}
 	return atom
@@ -93,70 +92,83 @@ func feedTitle(tt Title) string {
 func feedWithoutTime(feed *Feed, items []Item) string {
 	clt := utils.NewClient(utils.Conn())
 
-	res := StructSliceToMapSlice(items)
-	g.Dump(res)
-
-	any := gconv.SliceAny(items)
-	g.Dump(any)
-
+	m := []string{}
+	for _, item := range items {
+		m = append(m, item.URL, gtime.Now().TimestampStr())
+	}
 	// 判断key是否存在，不存在则直接set并返回
 	if clt.Conn.Exists(utils.Ctx, feed.URL).Val() != 1 {
-		// todo
-		err := clt.Conn.LPushX(utils.Ctx, feed.URL, any).Err()
-
+		err := clt.Conn.HSet(utils.Ctx, feed.URL, m).Err()
 		if err != nil {
 			fmt.Println(err)
 			return ""
 		}
-		return rss(feed, items)
-	}
-
-	// 未更新
-	if checkIsUpdate(clt, feed, items) {
-		return rss(feed, items)
-	}
-	// 获取更新item
-	// 有更新，把新数据append进去，再返回
-	clt.Conn.LPushX(utils.Ctx, feed.URL)
-	clt.Conn.LRange(utils.Ctx, feed.URL, 0, -1).Val()
-	// todo []string转[]Item
-
-	return ""
-}
-
-func checkIsUpdate(clt *utils.Client, feed *Feed, items []Item) bool {
-	// 通过对比相同name下的key，检查item是否更新
-	old := clt.Conn.LLen(utils.Ctx, feed.URL).Val()
-
-	return len(items) == int(old)
-}
-
-// StructSliceToMapSlice : struct切片转为map切片
-func StructSliceToMapSlice(source interface{}) []map[string]interface{} {
-	// 判断，interface转为[]interface{}
-	v := reflect.ValueOf(source)
-	if v.Kind() != reflect.Slice {
-		panic("ERROR: Unknown type, slice expected.")
-	}
-	l := v.Len()
-	ret := make([]interface{}, l)
-	for i := 0; i < l; i++ {
-		ret[i] = v.Index(i).Interface()
-	}
-
-	// 转换之后的结果变量
-	res := make([]map[string]interface{}, 0)
-
-	// 通过遍历，每次迭代将struct转为map
-	for _, elem := range ret {
-		data := make(map[string]interface{})
-		objT := reflect.TypeOf(elem)
-		objV := reflect.ValueOf(elem)
-		for i := 0; i < objT.NumField(); i++ {
-			data[objT.Field(i).Name] = objV.Field(i).Interface()
+		for i, item := range items {
+			item.Time = gtime.Now().Time
+			items[i] = item
 		}
-		res = append(res, data)
+		return rss(feed, items)
 	}
 
-	return res
+	// 如果更新了，把新数据append进去，再返回
+	res := checkIsUpdate(clt, feed, items)
+	if len(res) != 0 {
+		n := []string{}
+		for _, re := range res {
+			n = append(n, re, gtime.Now().TimestampStr())
+		}
+		clt.Conn.HSet(utils.Ctx, feed.URL, n)
+	}
+
+	// 获取更新item
+	old := clt.Conn.HGetAll(utils.Ctx, feed.URL).Val()
+	for i, item := range items {
+		if search, ok := old[item.URL]; ok {
+			item.Time = gtime.NewFromTimeStamp(gconv.Int64(search)).Time
+			items[i] = item
+		} else {
+			fmt.Println(item.URL, "key not exist")
+		}
+	}
+	return rss(feed, items)
+}
+
+func checkIsUpdate(clt *utils.Client, feed *Feed, items []Item) []string {
+	// 通过对比相同name下的key，检查item是否更新
+	old := clt.Conn.HKeys(utils.Ctx, feed.URL).Val()
+
+	neo := []string{}
+	for _, item := range items {
+		neo = append(neo, item.URL)
+	}
+	return difference(old, neo)
+}
+
+// 比较两个[]string
+func difference(slice1, slice2 []string) []string {
+	var diff []string
+
+	// Loop two times, first to find slice1 strings not in slice2,
+	// second loop to find slice2 strings not in slice1
+	for i := 0; i < 2; i++ {
+		for _, s1 := range slice1 {
+			found := false
+			for _, s2 := range slice2 {
+				if s1 == s2 {
+					found = true
+					break
+				}
+			}
+			// String not found. We add it to return slice
+			if !found {
+				diff = append(diff, s1)
+			}
+		}
+		// Swap the slices, only if it was the first loop
+		if i == 0 {
+			slice1, slice2 = slice2, slice1
+		}
+	}
+
+	return diff
 }

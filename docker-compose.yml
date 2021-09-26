@@ -4,23 +4,16 @@ services:
   service.rss2:
     build: .
     container_name: rss2
-    environment:
-      - DING_TOKEN=${DING_TOKEN}
-      - DING_SECRET=${DING_SECRET}
+#    environment:
+#      - DING_TOKEN=${DING_TOKEN}
+#      - DING_SECRET=${DING_SECRET}
     ports:
       - 8090:8090
-    networks:
-      - rss2
-  redis:
+    links:
+      - rss2_redis
+  rss2_redis:
     image: redis:latest
-    container_name: redis
-    build: .
+    container_name: rss2_redis
     volumes:
       - ~/docker/rss2/redis/:/redis/data
-    ports:
-      - "6379:6379"
     restart: always
-
-networks:
-  rss2:
-    driver: bridge
