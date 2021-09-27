@@ -3,10 +3,9 @@ package porn
 import (
 	"fmt"
 
-	"github.com/91go/rss2/core/resp"
-	"github.com/91go/rss2/core/rss"
-
-	"github.com/91go/rss2/core/gq"
+	"github.com/91go/rss2/utils/gq"
+	"github.com/91go/rss2/utils/resp"
+	"github.com/91go/rss2/utils/rss"
 
 	query "github.com/PuerkitoBio/goquery"
 

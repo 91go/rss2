@@ -1,9 +1,11 @@
 package main
 
 import (
-	"github.com/91go/rss2/utils"
-	"github.com/sirupsen/logrus"
 	"testing"
+
+	"github.com/91go/rss2/utils/log"
+
+	"github.com/sirupsen/logrus"
 )
 
 // goleak
@@ -21,8 +23,7 @@ import (
 //
 // http://127.0.0.1:8090/porn/ysk/xiuren%E7%A7%80%E4%BA%BA%E7%BD%91
 func TestDingTalkHook(t *testing.T) {
-
-	dh, err := utils.NewDingHook(utils.AssembleUrl(), nil)
+	dh, err := log.NewDingHook(log.AssembleUrl(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}

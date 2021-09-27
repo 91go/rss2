@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/91go/rss2/utils/log"
+	"github.com/91go/rss2/utils/redis"
+
 	"github.com/gogf/gf/os/gtime"
 	"github.com/gogf/gf/util/gconv"
 
-	"github.com/91go/rss2/utils"
 	"github.com/sirupsen/logrus"
 
 	"github.com/gorilla/feeds"
@@ -44,7 +46,7 @@ const (
 // Rss 输出rss
 func Rss(fe *Feed, items []Item) string {
 	if len(items) == 0 {
-		logrus.WithFields(utils.Text("", errors.New("")))
+		logrus.WithFields(log.Text("", errors.New("")))
 		return ""
 	}
 
@@ -75,7 +77,7 @@ func rss(fe *Feed, items []Item) string {
 
 	atom, err := feed.ToRss()
 	if err != nil {
-		logrus.WithFields(utils.Text("", errors.New("rss generate failed")))
+		logrus.WithFields(log.Text("", errors.New("rss generate failed")))
 		return ""
 	}
 	return atom
@@ -90,15 +92,15 @@ func feedTitle(tt Title) string {
 
 // 处理没有提供更新时间的feed
 func feedWithoutTime(feed *Feed, items []Item) string {
-	clt := utils.NewClient(utils.Conn())
+	clt := redis.NewClient(redis.Conn())
 
 	m := []string{}
 	for _, item := range items {
 		m = append(m, item.URL, gtime.Now().TimestampStr())
 	}
 	// 判断key是否存在，不存在则直接set并返回
-	if clt.Conn.Exists(utils.Ctx, feed.URL).Val() != 1 {
-		err := clt.Conn.HSet(utils.Ctx, feed.URL, m).Err()
+	if clt.Conn.Exists(redis.Ctx, feed.URL).Val() != 1 {
+		err := clt.Conn.HSet(redis.Ctx, feed.URL, m).Err()
 		if err != nil {
 			fmt.Println(err)
 			return ""
@@ -117,11 +119,11 @@ func feedWithoutTime(feed *Feed, items []Item) string {
 		for _, re := range res {
 			n = append(n, re, gtime.Now().TimestampStr())
 		}
-		clt.Conn.HSet(utils.Ctx, feed.URL, n)
+		clt.Conn.HSet(redis.Ctx, feed.URL, n)
 	}
 
 	// 获取更新item
-	old := clt.Conn.HGetAll(utils.Ctx, feed.URL).Val()
+	old := clt.Conn.HGetAll(redis.Ctx, feed.URL).Val()
 	for i, item := range items {
 		if search, ok := old[item.URL]; ok {
 			item.Time = gtime.NewFromTimeStamp(gconv.Int64(search)).Time
@@ -133,9 +135,9 @@ func feedWithoutTime(feed *Feed, items []Item) string {
 	return rss(feed, items)
 }
 
-func checkIsUpdate(clt *utils.Client, feed *Feed, items []Item) []string {
+func checkIsUpdate(clt *redis.Client, feed *Feed, items []Item) []string {
 	// 通过对比相同name下的key，检查item是否更新
-	old := clt.Conn.HKeys(utils.Ctx, feed.URL).Val()
+	old := clt.Conn.HKeys(redis.Ctx, feed.URL).Val()
 
 	neo := []string{}
 	for _, item := range items {

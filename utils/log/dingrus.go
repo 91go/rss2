@@ -1,4 +1,4 @@
-package utils
+package log
 
 import (
 	"bytes"
@@ -13,7 +13,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/91go/rss2/core/config"
+	"github.com/91go/rss2/utils/config"
 
 	"github.com/sirupsen/logrus"
 )

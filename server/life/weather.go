@@ -4,9 +4,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/91go/rss2/core/resp"
-
-	"github.com/91go/rss2/core/gq"
+	"github.com/91go/rss2/utils/gq"
+	"github.com/91go/rss2/utils/resp"
 
 	"github.com/sirupsen/logrus"
 

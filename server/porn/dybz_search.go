@@ -4,10 +4,11 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/91go/rss2/core/gq"
-	"github.com/91go/rss2/core/resp"
-	"github.com/91go/rss2/core/rss"
-	"github.com/91go/rss2/utils"
+	"github.com/91go/rss2/utils/gq"
+	"github.com/91go/rss2/utils/log"
+	"github.com/91go/rss2/utils/resp"
+	"github.com/91go/rss2/utils/rss"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gogf/gf/frame/g"
 	"github.com/sirupsen/logrus"
@@ -24,7 +25,7 @@ func DybzSearchRss(ctx *gin.Context) {
 	doc := gq.PostHTML(DybzSearchUrl, m)
 	url, exists := doc.Find(".searchresult").Find(".sone").Find("a").Attr("href")
 	if !exists {
-		logrus.WithFields(utils.Text(url, errors.New("not exist novel")))
+		logrus.WithFields(log.Text(url, errors.New("not exist novel")))
 		return
 	}
 

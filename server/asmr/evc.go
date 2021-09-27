@@ -6,10 +6,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/91go/rss2/core/resp"
-	"github.com/91go/rss2/core/rss"
-
-	"github.com/91go/rss2/utils"
+	"github.com/91go/rss2/utils/http"
+	"github.com/91go/rss2/utils/log"
+	"github.com/91go/rss2/utils/resp"
+	"github.com/91go/rss2/utils/rss"
 
 	"github.com/sirupsen/logrus"
 
@@ -49,10 +49,10 @@ func EvcRss(ctx *gin.Context) {
 }
 
 func parseRequest(url string) []rss.Item {
-	body := utils.RequestGet(url)
+	body := http.RequestGet(url)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
-		logrus.WithFields(utils.Text(url, err)).Error("list load failed")
+		logrus.WithFields(log.Text(url, err)).Error("list load failed")
 		return []rss.Item{}
 	}
 
@@ -66,7 +66,7 @@ func parseRequest(url string) []rss.Item {
 		if each, ok := row.(map[string]interface{}); ok {
 			origID, err := each["id"].(json.Number).Int64()
 			if err != nil {
-				logrus.WithFields(utils.Text(url, err)).Error("convert origID err")
+				logrus.WithFields(log.Text(url, err)).Error("convert origID err")
 			}
 			apiURL := fmt.Sprintf("https://www.2evc.cn/voiceAppserver/voice/get?id=%d&telephone=undefined&cvId=8", origID)
 			detail := parseDetail(apiURL)
@@ -87,7 +87,7 @@ func parseRequest(url string) []rss.Item {
 
 // 解析详情页
 func parseDetail(url string) Asmr {
-	body := utils.RequestGet(url)
+	body := http.RequestGet(url)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
@@ -107,7 +107,7 @@ func parseDetail(url string) Asmr {
 	fileSrc := each["fileSrc"]
 	createTime, err := fctime.MsToTime(each["createDate"].(json.Number).String())
 	if err != nil {
-		logrus.WithFields(utils.Text(url, err)).Warn("trans time error")
+		logrus.WithFields(log.Text(url, err)).Warn("trans time error")
 		return Asmr{}
 	}
 
@@ -123,14 +123,14 @@ func originAudioURL(fileSource string) string {
 	vm := otto.New()
 	_, err := vm.Run(getPublicFile())
 	if err != nil {
-		logrus.WithFields(utils.Text(fileSource, err)).Warn("otto parse js file failed")
+		logrus.WithFields(log.Text(fileSource, err)).Warn("otto parse js file failed")
 		return ""
 	}
 
 	const hasOwn = "true"
 	call, err := vm.Call("unDecrypt", nil, fileSource, hasOwn)
 	if err != nil {
-		logrus.WithFields(utils.Text(fileSource, err)).Warn("otto decrypt failed")
+		logrus.WithFields(log.Text(fileSource, err)).Warn("otto decrypt failed")
 		return ""
 	}
 	return call.String()
@@ -140,7 +140,7 @@ func originAudioURL(fileSource string) string {
 func getPublicFile() string {
 	abs, err := filepath.Abs("./public/js/voice.js")
 	if err != nil {
-		logrus.WithFields(utils.Text("", err)).Warn("voice.js not found")
+		logrus.WithFields(log.Text("", err)).Warn("voice.js not found")
 		return ""
 	}
 	contents := gfile.GetContents(abs)

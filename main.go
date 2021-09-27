@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/91go/rss2/core/resp"
+	"github.com/91go/rss2/utils/resp"
 
 	"github.com/sirupsen/logrus"
 
@@ -28,7 +28,7 @@ func setupRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(middleware.Logger())
 
-	r.GET("/ding", func(ctx *gin.Context) {
+	r.GET("/ping", func(ctx *gin.Context) {
 		logrus.WithFields(logrus.Fields{
 			"msgtype": "markdown",
 			"markdown": map[string]string{

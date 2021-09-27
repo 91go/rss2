@@ -1,11 +1,11 @@
-package utils
+package redis
 
 import (
 	"context"
 	"fmt"
 	"log"
 
-	"github.com/91go/rss2/core/config"
+	"github.com/91go/rss2/utils/config"
 
 	"github.com/go-redis/redis/v8"
 )

@@ -5,12 +5,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/91go/rss2/core/resp"
-	"github.com/91go/rss2/core/rss"
-
-	"github.com/91go/rss2/core/gq"
-
-	"github.com/91go/rss2/utils"
+	"github.com/91go/rss2/utils/gq"
+	"github.com/91go/rss2/utils/helper"
+	"github.com/91go/rss2/utils/resp"
+	"github.com/91go/rss2/utils/rss"
 
 	"github.com/gogf/gf/os/gtime"
 
@@ -75,7 +73,7 @@ func getCreateTime(text string) time.Time {
 	s := strings.Split(text, "|")
 	s2 := s[0]
 
-	format, err := gtime.StrToTimeFormat(utils.TrimBlank(s2), "Y-m-d")
+	format, err := gtime.StrToTimeFormat(helper.TrimBlank(s2), "Y-m-d")
 	if err != nil {
 		return time.Time{}
 	}

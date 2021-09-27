@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/91go/rss2/core/resp"
-	"github.com/91go/rss2/core/rss"
-
-	"github.com/91go/rss2/utils"
+	"github.com/91go/rss2/utils/http"
+	"github.com/91go/rss2/utils/resp"
+	"github.com/91go/rss2/utils/rss"
 
 	"github.com/sirupsen/logrus"
 
@@ -39,7 +38,7 @@ func IResearchRss(ctx *gin.Context) {
 }
 
 func crawlIResearch() []rss.Item {
-	body := utils.RequestGet(BaseURL)
+	body := http.RequestGet(BaseURL)
 	res, err := simplejson.NewJson(body)
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
@@ -80,7 +79,7 @@ func crawlIResearch() []rss.Item {
 // 详情
 func parseDetail(id string) (ret string) {
 	url := fmt.Sprintf(DetailURL, id)
-	body := utils.RequestGet(url)
+	body := http.RequestGet(url)
 	res, _ := simplejson.NewJson(body)
 	total, _ := res.Get("List").GetIndex(0).Get("PagesCount").Int()
 

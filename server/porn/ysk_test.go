@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/91go/rss2/utils"
+	"github.com/91go/rss2/utils/helper"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -26,9 +26,9 @@ func Test_sanitizeTime(t *testing.T) {
 		args args
 		want time.Time
 	}{
-		{"", args{url: "https://youpai.netzijin.cn/2021/08/20210829140910717.jpg"}, utils.StrToTime("20210829", "Ymd")},
-		{"", args{url: "https://youpai.netzijin.cn/2021/08/20210809144240113-scaled.jpg"}, utils.StrToTime("20210809", "Ymd")},
-		{"", args{url: "https://youpai.netzijin.cn/2021/08/20210809142257765-scaled.jpg"}, utils.StrToTime("20210809", "Ymd")},
+		{"", args{url: "https://youpai.netzijin.cn/2021/08/20210829140910717.jpg"}, helper.StrToTime("20210829", "Ymd")},
+		{"", args{url: "https://youpai.netzijin.cn/2021/08/20210809144240113-scaled.jpg"}, helper.StrToTime("20210809", "Ymd")},
+		{"", args{url: "https://youpai.netzijin.cn/2021/08/20210809142257765-scaled.jpg"}, helper.StrToTime("20210809", "Ymd")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

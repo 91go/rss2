@@ -5,12 +5,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/91go/rss2/core/resp"
-	"github.com/91go/rss2/core/rss"
+	"github.com/91go/rss2/utils/gq"
+	"github.com/91go/rss2/utils/log"
+	"github.com/91go/rss2/utils/resp"
+	"github.com/91go/rss2/utils/rss"
 
-	"github.com/91go/rss2/core/gq"
-
-	"github.com/91go/rss2/utils"
 	"github.com/sirupsen/logrus"
 
 	"github.com/gogf/gf/text/gstr"
@@ -74,7 +73,7 @@ func parseList(url string) []rss.Item {
 func sanitizeTime(url string) time.Time {
 	cut, err := gregex.MatchString(".*/(.*).", url)
 	if err != nil {
-		logrus.WithFields(utils.Text(url, err)).Error("trans time regex failed")
+		logrus.WithFields(log.Text(url, err)).Error("trans time regex failed")
 		return time.Time{}
 	}
 	s := cut[1]
@@ -82,7 +81,7 @@ func sanitizeTime(url string) time.Time {
 
 	format, err := gtime.StrToTimeFormat(ts, "Ymd")
 	if err != nil {
-		logrus.WithFields(utils.Text(url, err)).Error("trans time failed")
+		logrus.WithFields(log.Text(url, err)).Error("trans time failed")
 		return time.Time{}
 	}
 	return format.Time

@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/91go/rss2/utils"
+	"github.com/91go/rss2/utils/log"
 
 	"github.com/natefinch/lumberjack"
 	"github.com/sirupsen/logrus"
@@ -33,7 +33,7 @@ func Logger() gin.HandlerFunc {
 	// 日志消息输出可以是任意的io.writer类型
 	logrus.SetOutput(rolling(path))
 
-	dh, _ := utils.NewDingHook(utils.AssembleUrl(), nil)
+	dh, _ := log.NewDingHook(log.AssembleUrl(), nil)
 
 	logrus.AddHook(dh)
 

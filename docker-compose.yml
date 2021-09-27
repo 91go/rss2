@@ -12,6 +12,8 @@ services:
       - redis
     networks:
       - rss2
+    environment:
+      - TZ=Asia/Shanghai
 
   redis:
     image: redis:alpine
