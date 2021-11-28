@@ -1,8 +1,11 @@
 package gq
 
 import (
+	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/go-resty/resty/v2"
 
 	"github.com/91go/rss2/utils/log"
 
@@ -48,6 +51,23 @@ func PostHTML(url string, m map[string]interface{}) *query.Document {
 	}(resp.Response.Body)
 
 	return document(url, resp.Response)
+}
+
+func RestyFetchHTML(url string) *query.Document {
+	client := resty.New()
+	resp, err := client.R().EnableTrace().Get("https://cn.pornhub.com/model/mai-chen/videos?o=mr")
+	if err != nil {
+		return nil
+	}
+	fmt.Println(resp)
+	fmt.Println(resp.RawResponse.Body)
+
+	if err != nil {
+		logrus.WithFields(log.Text(url, nil)).Error("http request failed")
+		return &query.Document{}
+	}
+
+	return document(url, resp.RawResponse)
 }
 
 // 请求goquery

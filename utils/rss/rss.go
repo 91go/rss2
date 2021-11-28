@@ -87,7 +87,7 @@ func feedTitle(tt Title) string {
 	if tt.Name == "" {
 		return tt.Prefix
 	}
-	return fmt.Sprintf("%s-%s", tt.Prefix, tt.Name)
+	return fmt.Sprintf("%s - %s", tt.Prefix, tt.Name)
 }
 
 // 处理没有提供更新时间的feed

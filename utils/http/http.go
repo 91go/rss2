@@ -2,7 +2,7 @@ package http
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -17,7 +17,7 @@ func RequestGet(url string) []byte {
 	}
 
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if resp.StatusCode != http.StatusOK || err != nil {
 		fmt.Printf("Error Reading failed: %s", url)
 		return nil
