@@ -19,14 +19,16 @@ type Notification struct {
 
 // 用rss代替"提醒事项APP"的原因是，
 func HabitRss(ctx *gin.Context) {
+
 	res := rss.Rss(&rss.Feed{
 		Title: rss.Title{
-			Prefix: "life habit",
+			Prefix: "生活习惯",
 			Name:   "lry",
 		},
 		Author: "lry",
 		Time:   helper.GetToday(),
 	}, item())
+
 	resp.SendXML(ctx, res)
 }
 
