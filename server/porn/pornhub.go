@@ -37,7 +37,7 @@ func PornhubRss(ctx *gin.Context) {
 	}
 
 	res := rss.Rss(&rss.Feed{
-		URL:    url,
+		URL:    feed.Link,
 		Title:  rss.Title{Prefix: "pornhub", Name: model},
 		Author: model,
 		Time:   *feed.UpdatedParsed,

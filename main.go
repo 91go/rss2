@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-
 	"github.com/91go/rss2/utils/resp"
 
 	"github.com/sirupsen/logrus"
