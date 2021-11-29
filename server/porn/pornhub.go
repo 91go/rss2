@@ -1,49 +1,47 @@
 package porn
 
 import (
+	"errors"
 	"fmt"
-
-	"github.com/91go/rss2/utils/gq"
+	"github.com/91go/rss2/utils/log"
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
-	query "github.com/PuerkitoBio/goquery"
+	"github.com/gogf/gf/text/gstr"
+	"github.com/mmcdole/gofeed"
+	"github.com/sirupsen/logrus"
+
 	"github.com/gin-gonic/gin"
-	"github.com/gogf/gf/os/gtime"
 )
 
-// rsshub的pornhub源没有视频地址，无法直接播放，需要跳转才能播放视频
+// rsshub的pornhub源没有视频地址，无法直接播放，需要跳转才能播放视频，所以重制该feed
 func PornhubRss(ctx *gin.Context) {
 	model := ctx.Param("model")
-	url := fmt.Sprintf("https://cn.pornhub.com/model/%s/videos?o=mr", model)
+	url := fmt.Sprintf("https://rsshub.wrss.top/pornhub/model/%s", model)
 
-	list := pornhubList(url)
+	fp := gofeed.NewParser()
+	feed, err := fp.ParseURL(url)
+	if err != nil {
+		logrus.WithFields(log.Text("", errors.New("feed parser failed")))
+		return
+	}
+
+	ret := []rss.Item{}
+	for _, item := range feed.Items {
+		link := item.Link
+		viewKey := gstr.SubStr(link, gstr.Pos(link, "=")+1)
+		ret = append(ret, rss.Item{
+			Title:    item.Title,
+			Contents: fmt.Sprintf(`<iframe src="https://www.pornhub.com/embed/%s" frameborder="0" width="640" height="390" scrolling="no" allowfullscreen></iframe>`, viewKey),
+			URL:      link,
+		})
+	}
+
 	res := rss.Rss(&rss.Feed{
 		URL:    url,
-		Title:  rss.Title{Prefix: "pornhub", Name: ""},
+		Title:  rss.Title{Prefix: "pornhub", Name: model},
 		Author: model,
-		Time:   gtime.Now().Time,
-	}, list)
+		Time:   *feed.UpdatedParsed,
+	}, ret)
 
 	resp.SendXML(ctx, res)
-}
-
-func pornhubList(url string) []rss.Item {
-	doc := gq.RestyFetchHTML(url)
-	// wrap := doc.Find("#mostRecentVideosSection").Find(".pcVideoListItem")
-	wrap := doc.Find("#mostRecentVideosSection").Find(".videoBox")
-	ret := []rss.Item{}
-
-	wrap.Each(func(i int, selection *query.Selection) {
-		on := selection.Find(".wrap").Find(".thumbnail-info-wrapper").Find("span")
-		title, _ := on.Attr("title")
-		videoUrl, _ := on.Attr("href")
-		videoFrame := fmt.Sprintf(`<iframe src="https://www.pornhub.com/embed/%s" frameborder="0" width="640" height="390" scrolling="no" allowfullscreen></iframe>`, videoUrl)
-
-		ret = append(ret, rss.Item{
-			Title:    title,
-			URL:      videoUrl,
-			Contents: videoFrame,
-		})
-	})
-	return ret
 }

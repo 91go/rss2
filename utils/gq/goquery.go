@@ -1,7 +1,6 @@
 package gq
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 
@@ -55,13 +54,11 @@ func PostHTML(url string, m map[string]interface{}) *query.Document {
 
 func RestyFetchHTML(url string) *query.Document {
 	client := resty.New()
-	resp, err := client.R().EnableTrace().Get("https://cn.pornhub.com/model/mai-chen/videos?o=mr")
+	resp, err := client.R().EnableTrace().Get(url)
 	if err != nil {
-		return nil
+		logrus.WithFields(log.Text(url, nil)).Error("http request failed")
+		return &query.Document{}
 	}
-	fmt.Println(resp)
-	fmt.Println(resp.RawResponse.Body)
-
 	if err != nil {
 		logrus.WithFields(log.Text(url, nil)).Error("http request failed")
 		return &query.Document{}
