@@ -3,7 +3,7 @@ package http
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http/httptest"
 
 	"github.com/gin-gonic/gin"
@@ -24,7 +24,7 @@ func Get(uri string, router *gin.Engine) ([]byte, error) {
 	defer result.Body.Close()
 
 	// 读取响应body
-	body, err := ioutil.ReadAll(result.Body)
+	body, err := io.ReadAll(result.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func PostForm(uri string, param map[string]string, router *gin.Engine) []byte {
 	defer result.Body.Close()
 
 	// 读取响应body
-	body, _ := ioutil.ReadAll(result.Body)
+	body, _ := io.ReadAll(result.Body)
 	return body
 }
 
@@ -70,7 +70,7 @@ func PostJSON(uri string, param map[string]interface{}, router *gin.Engine) []by
 	defer result.Body.Close()
 
 	// 读取响应body
-	body, _ := ioutil.ReadAll(result.Body)
+	body, _ := io.ReadAll(result.Body)
 	return body
 }
 

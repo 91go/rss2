@@ -2,14 +2,14 @@ package porn
 
 import (
 	"fmt"
-	"github.com/gogf/gf/text/gstr"
 	"testing"
+
+	"github.com/gogf/gf/text/gstr"
 
 	"github.com/go-resty/resty/v2"
 )
 
 func TestFetch(t *testing.T) {
-
 	client := resty.New()
 	resp, err := client.R().EnableTrace().Get("https://cn.pornhub.com/model/mai-chen/videos?o=mr")
 	if err != nil {

@@ -3,6 +3,7 @@ package porn
 import (
 	"errors"
 	"fmt"
+
 	"github.com/91go/rss2/utils/log"
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
@@ -31,7 +32,7 @@ func PornhubRss(ctx *gin.Context) {
 		viewKey := gstr.SubStr(link, gstr.Pos(link, "=")+1)
 		ret = append(ret, rss.Item{
 			Title:    item.Title,
-			Contents: fmt.Sprintf(`<iframe src="https://www.pornhub.com/embed/%s" frameborder="0" width="640" height="390" scrolling="no" allowfullscreen></iframe>`, viewKey),
+			Contents: fmt.Sprintf(`<iframe src="https://www.pornhub.com/embed/%s" frameborder="0" width="640" height="390" scrolling="no" allowfullscreen></iframe><br><br>%s<br>`, viewKey, item.Description),
 			URL:      link,
 		})
 	}

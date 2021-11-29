@@ -56,12 +56,10 @@ func parseList(url string) []rss.Item {
 	wrap.Each(func(i int, selection *query.Selection) {
 		href, _ := selection.Find(".img").Find(gq.LabelA).Attr("href")
 		title, _ := selection.Find(".img").Find(gq.LabelA).Attr("title")
-		cover, _ := selection.Find(".img").Find(gq.LabelA).Find("img").Attr("src")
 
 		ret = append(ret, rss.Item{
 			URL:      href,
 			Title:    title,
-			Time:     sanitizeTime(cover),
 			Contents: parsePics(href),
 		})
 	})

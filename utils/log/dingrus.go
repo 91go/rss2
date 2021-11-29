@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -63,7 +64,7 @@ func (dh *DingHook) Fire(entry *logrus.Entry) error {
 		return errors.New("Marshal Fields to JSON error: " + err.Error())
 	}
 
-	body := ioutil.NopCloser(bytes.NewBuffer(b))
+	body := io.NopCloser(bytes.NewBuffer(b))
 	request := &http.Request{
 		Method:     "POST",
 		URL:        dh.Webhook,

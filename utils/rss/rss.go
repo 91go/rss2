@@ -45,10 +45,18 @@ const (
 
 // Rss 输出rss
 func Rss(fe *Feed, items []Item) string {
-	// if len(items) == 0 {
-	// 	logrus.WithFields(log.Text("", errors.New("")))
-	// 	return ""
-	// }
+	if len(items) == 0 {
+		logrus.WithFields(log.Text(feedTitle(fe.Title), errors.New("未输出rss")))
+
+		feed := feeds.Feed{
+			Title:   feedTitle(fe.Title),
+			Link:    &feeds.Link{Href: fe.URL},
+			Author:  &feeds.Author{Name: fe.Author},
+			Created: fe.Time,
+		}
+		atom, _ := feed.ToRss()
+		return atom
+	}
 
 	if fe.Time.IsZero() {
 		return feedWithoutTime(fe, items)
