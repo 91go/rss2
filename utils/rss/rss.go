@@ -18,11 +18,9 @@ import (
 
 // Feed 通用Feed
 type Feed struct {
-	URL string
+	URL, Author, Contents    string
+	CreatedTime, UpdatedTime time.Time
 	Title
-	Time     time.Time
-	Author   string
-	Contents string
 }
 
 type Title struct {
@@ -32,11 +30,8 @@ type Title struct {
 
 //
 type Item struct {
-	URL      string
-	Title    string
-	Time     time.Time
-	Author   string
-	Contents string
+	URL, Title, Author, Contents, ID string
+	Time                             time.Time
 }
 
 const (
@@ -46,19 +41,18 @@ const (
 // Rss 输出rss
 func Rss(fe *Feed, items []Item) string {
 	if len(items) == 0 {
-		logrus.WithFields(log.Text(feedTitle(fe.Title), errors.New("未输出rss")))
-
+		// logrus.WithFields(log.Text(feedTitle(fe.Title), errors.New("未输出rss")))
 		feed := feeds.Feed{
 			Title:   feedTitle(fe.Title),
 			Link:    &feeds.Link{Href: fe.URL},
 			Author:  &feeds.Author{Name: fe.Author},
-			Created: fe.Time,
+			Updated: fe.UpdatedTime,
 		}
 		atom, _ := feed.ToRss()
 		return atom
 	}
 
-	if fe.Time.IsZero() {
+	if fe.UpdatedTime.IsZero() {
 		return feedWithoutTime(fe, items)
 	}
 
@@ -70,7 +64,7 @@ func rss(fe *Feed, items []Item) string {
 		Title:   feedTitle(fe.Title),
 		Link:    &feeds.Link{Href: fe.URL},
 		Author:  &feeds.Author{Name: fe.Author},
-		Created: fe.Time,
+		Updated: fe.UpdatedTime,
 	}
 
 	for _, value := range items {
@@ -79,7 +73,7 @@ func rss(fe *Feed, items []Item) string {
 			Link:        &feeds.Link{Href: value.URL},
 			Description: value.Contents,
 			Author:      &feeds.Author{Name: value.Author},
-			Created:     value.Time,
+			Id:          value.ID,
 		})
 	}
 

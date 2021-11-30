@@ -34,14 +34,15 @@ func PornhubRss(ctx *gin.Context) {
 			Title:    item.Title,
 			Contents: fmt.Sprintf(`<iframe src="https://www.pornhub.com/embed/%s" frameborder="0" width="640" height="390" scrolling="no" allowfullscreen></iframe><br><br>%s<br>`, viewKey, item.Description),
 			URL:      link,
+			ID:       item.GUID,
 		})
 	}
 
 	res := rss.Rss(&rss.Feed{
-		URL:    feed.Link,
-		Title:  rss.Title{Prefix: "pornhub", Name: model},
-		Author: model,
-		Time:   *feed.UpdatedParsed,
+		URL:         feed.Link,
+		Title:       rss.Title{Prefix: "pornhub", Name: model},
+		Author:      model,
+		UpdatedTime: *feed.UpdatedParsed,
 	}, ret)
 
 	resp.SendXML(ctx, res)

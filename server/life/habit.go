@@ -29,8 +29,8 @@ func HabitRss(ctx *gin.Context) {
 			Prefix: "生活习惯",
 			Name:   "lry",
 		},
-		Author: "lry",
-		Time:   helper.GetToday(),
+		Author:      "lry",
+		UpdatedTime: helper.GetToday(),
 	}, item())
 
 	resp.SendXML(ctx, res)

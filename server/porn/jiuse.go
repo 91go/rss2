@@ -31,10 +31,10 @@ func JiuSeRss(ctx *gin.Context) {
 
 	list := jsList(url)
 	res := rss.Rss(&rss.Feed{
-		URL:    url,
-		Title:  rss.Title{Prefix: "91porn", Name: author},
-		Author: author,
-		Time:   gtime.Now().Time,
+		URL:         url,
+		Title:       rss.Title{Prefix: "91porn", Name: author},
+		Author:      author,
+		UpdatedTime: gtime.Now().Time,
 	}, list)
 
 	resp.SendXML(ctx, res)
