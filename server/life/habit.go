@@ -52,6 +52,12 @@ func item() []rss.Item {
 	ret := []rss.Item{}
 	for _, item := range items {
 		isFriday := carbon.Now().IsFriday()
+		dayOfMonth := carbon.Now().DayOfMonth()
+		weekOfYear := carbon.Now().WeekOfYear()
+		monthOfYear := carbon.Now().MonthOfYear()
+		isJanuary := carbon.Now().IsJanuary()
+
+		// @weekly
 		if isFriday && item.Cron == "@friday" {
 			ret = append(ret, rss.Item{
 				Title: fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
@@ -59,8 +65,15 @@ func item() []rss.Item {
 			})
 		}
 
+		// @2weekly
+		if item.Cron == "2weekly" && weekOfYear%2 != 0 && isFriday {
+			ret = append(ret, rss.Item{
+				Title: fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
+				Time:  helper.GetToday(),
+			})
+		}
+
 		// @monthly
-		dayOfMonth := carbon.Now().DayOfMonth()
 		if item.Cron == "@monthly" && dayOfMonth == 20 {
 			ret = append(ret, rss.Item{
 				Title: fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
@@ -68,17 +81,8 @@ func item() []rss.Item {
 			})
 		}
 
-		// @yearly
-		isJanuary := carbon.Now().IsJanuary()
-		if item.Cron == "@yearly" && isJanuary && dayOfMonth == 1 {
-			ret = append(ret, rss.Item{
-				Title: fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
-				Time:  helper.GetToday(),
-			})
-		}
-
 		// @2monthly
-		if item.Cron == "@2monthly" && garray.NewIntArrayFrom([]int{1, 3, 5, 7, 9, 11}).Contains(dayOfMonth) {
+		if item.Cron == "@2monthly" && garray.NewIntArrayFrom([]int{1, 3, 5, 7, 9, 11}).Contains(monthOfYear) && dayOfMonth == 1 {
 			ret = append(ret, rss.Item{
 				Title: fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
 				Time:  helper.GetToday(),
@@ -86,21 +90,21 @@ func item() []rss.Item {
 		}
 
 		// @6monthly
-		if item.Cron == "@6monthly" && garray.NewIntArrayFrom([]int{1, 7}).Contains(dayOfMonth) {
+		if item.Cron == "@6monthly" && garray.NewIntArrayFrom([]int{1, 7}).Contains(monthOfYear) && dayOfMonth == 1 {
 			ret = append(ret, rss.Item{
 				Title: fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
 				Time:  helper.GetToday(),
 			})
 		}
 
-		// @2weekly
-		weekOfYear := carbon.Now().WeekOfYear()
-		if item.Cron == "2weekly" && weekOfYear%2 != 0 && isFriday {
+		// @yearly
+		if item.Cron == "@yearly" && isJanuary && dayOfMonth == 1 {
 			ret = append(ret, rss.Item{
 				Title: fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
 				Time:  helper.GetToday(),
 			})
 		}
+
 	}
 
 	return ret
