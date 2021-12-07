@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	code2 "github.com/91go/rss2/server/code"
 
 	"github.com/91go/rss2/utils/resp"
 
@@ -42,7 +43,10 @@ func setupRouter() *gin.Engine {
 
 	// asmr路由
 	asmr := r.Group("/asmr")
-	asmr.GET("evc", asmr2.EvcRss)
+	asmr.GET("/evc", asmr2.EvcRss)
+
+	code := r.Group("/code")
+	code.GET("/gocn/:topic", code2.GoCnRss)
 
 	// life路由分组
 	life := r.Group("/life")
