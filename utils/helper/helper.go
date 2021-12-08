@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"github.com/sirupsen/logrus"
 	"strings"
 	"time"
 
@@ -21,6 +22,18 @@ func StrToTime(str, format string) time.Time {
 		return time.Time{}
 	}
 	return st.Time
+}
+
+func TransTime(str string) time.Time {
+	format, err := gtime.StrToTimeFormat(str, "Y/n/d H:i:s")
+	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"time": str,
+			"err":  err,
+		}).Warn("transTime failed")
+		return time.Time{}
+	}
+	return format.Time
 }
 
 // TrimBlank 移除HTML的空格

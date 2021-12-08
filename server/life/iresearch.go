@@ -3,15 +3,12 @@ package life
 import (
 	"encoding/json"
 	"fmt"
-	"time"
-
+	"github.com/91go/rss2/utils/helper"
 	"github.com/91go/rss2/utils/http"
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
 
 	"github.com/sirupsen/logrus"
-
-	"github.com/gogf/gf/os/gtime"
 
 	"github.com/bitly/go-simplejson"
 	"github.com/gin-gonic/gin"
@@ -66,7 +63,7 @@ func crawlIResearch() []rss.Item {
 
 			iResearch = append(iResearch, rss.Item{
 				Title:    each["Title"].(string),
-				Time:     transTime(each["Uptime"].(string)),
+				Time:     helper.TransTime(each["Uptime"].(string)),
 				URL:      each["VisitUrl"].(string),
 				Contents: fmt.Sprintf("%s%s", each["Content"].(string), detail),
 			})
@@ -90,16 +87,4 @@ func parseDetail(id string) (ret string) {
 	}
 
 	return ret
-}
-
-func transTime(str string) time.Time {
-	format, err := gtime.StrToTimeFormat(str, "Y/n/d H:i:s")
-	if err != nil {
-		logrus.WithFields(logrus.Fields{
-			"time": str,
-			"err":  err,
-		}).Warn("transTime failed")
-		return time.Time{}
-	}
-	return format.Time
 }

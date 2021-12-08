@@ -27,7 +27,7 @@ func GoCnRss(ctx *gin.Context) {
 
 func goCnList(url string) (feed rss.Feed, list []rss.Item) {
 	doc := gq.FetchHTML(url)
-	wrap := doc.Find(".item-list").Find(".topic")
+	wrap := doc.Find(".item-list").Find(".topic").Slice(0, 3)
 	ret := []rss.Item{}
 	wrap.Each(func(i int, sel *query.Selection) {
 		ta := sel.Find(".infos").Find(".title").Find("a")

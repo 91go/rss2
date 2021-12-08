@@ -2,7 +2,6 @@ package life
 
 import (
 	"fmt"
-
 	"github.com/91go/rss2/utils/helper"
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
@@ -17,8 +16,9 @@ const (
 )
 
 const (
-	Weekly       = "@weekly"
-	TwoWeekly    = "@2weekly"
+	Weekly    = "@weekly"
+	TwoWeekly = "@2weekly"
+	// ThreeWeekly  = "@3weekly"
 	Monthly      = "@monthly"
 	TwoMonthly   = "@2monthly"
 	ThreeMonthly = "@3monthly"
@@ -52,7 +52,7 @@ func item() []rss.Item {
 		// 生活习惯
 		{Prefix: LifeHabit, Task: "每周五晚上，扫地拖地、刮胡子、理发、清洗脏衣服(换内裤)、换牙刷", Cron: Weekly},
 		{Prefix: LifeHabit, Task: "每两周周五，打飞机，晚上洗澡的时候顺便", Cron: TwoWeekly},
-		{Prefix: LifeHabit, Task: "每月20号晚上，清洗洗脸毛巾、床单枕套、枕巾、浴巾", Cron: Monthly},
+		{Prefix: LifeHabit, Task: "每月，清洗洗脸毛巾、床单枕套、枕巾、浴巾", Cron: Monthly},
 		{Prefix: LifeHabit, Task: "每两个月，换一次洗脸仪刷头", Cron: TwoMonthly},
 		// renew复购
 		{Prefix: Renew, Task: "每2周：牙刷", Cron: TwoWeekly},
@@ -69,76 +69,57 @@ func item() []rss.Item {
 
 	ret := []rss.Item{}
 	for _, item := range items {
-		isFriday := carbon.Now().IsFriday()
-		dayOfMonth := carbon.Now().DayOfMonth()
-		weekOfYear := carbon.Now().WeekOfYear()
-		monthOfYear := carbon.Now().MonthOfYear()
-		isJanuary := carbon.Now().IsJanuary()
-
-		// @weekly
-		if isFriday && item.Cron == Weekly {
+		if CheckCron(item.Cron, carbon.Now()) {
 			ret = append(ret, rss.Item{
 				Title:    fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
 				Contents: item.Remark,
 				Time:     helper.GetToday(),
 			})
 		}
-
-		// @2weekly
-		if item.Cron == TwoWeekly && weekOfYear%2 != 0 && isFriday {
-			ret = append(ret, rss.Item{
-				Title:    fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
-				Contents: item.Remark,
-				Time:     helper.GetToday(),
-			})
-		}
-
-		// @3weekly
-		if item.Cron == TwoWeekly && weekOfYear%3 != 0 && isFriday {
-			ret = append(ret, rss.Item{
-				Title:    fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
-				Contents: item.Remark,
-				Time:     helper.GetToday(),
-			})
-		}
-
-		// @monthly
-		if item.Cron == Monthly && dayOfMonth == 20 {
-			ret = append(ret, rss.Item{
-				Title:    fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
-				Contents: item.Remark,
-				Time:     helper.GetToday(),
-			})
-		}
-
-		// @2monthly
-		if item.Cron == TwoMonthly && garray.NewIntArrayFrom([]int{1, 3, 5, 7, 9, 11}).Contains(monthOfYear) && dayOfMonth == 1 {
-			ret = append(ret, rss.Item{
-				Title:    fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
-				Contents: item.Remark,
-				Time:     helper.GetToday(),
-			})
-		}
-
-		// @6monthly
-		if item.Cron == SixMonthly && garray.NewIntArrayFrom([]int{1, 7}).Contains(monthOfYear) && dayOfMonth == 1 {
-			ret = append(ret, rss.Item{
-				Title:    fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
-				Contents: item.Remark,
-				Time:     helper.GetToday(),
-			})
-		}
-
-		// @yearly
-		if item.Cron == Yearly && isJanuary && dayOfMonth == 1 {
-			ret = append(ret, rss.Item{
-				Title:    fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
-				Contents: item.Remark,
-				Time:     helper.GetToday(),
-			})
-		}
-
 	}
 
 	return ret
+}
+
+func CheckCron(cronTime string, carbon carbon.Carbon) bool {
+	isFriday := carbon.IsFriday()
+	dayOfMonth := carbon.DayOfMonth()
+	weekOfYear := carbon.WeekOfYear()
+	monthOfYear := carbon.MonthOfYear()
+	isJanuary := carbon.IsJanuary()
+
+	// @weekly
+	if cronTime == Weekly && isFriday {
+		return true
+	}
+	// @2weekly
+	if cronTime == TwoWeekly && weekOfYear%2 != 0 && isFriday {
+		return true
+	}
+	// // @3weekly
+	// if cronTime == ThreeWeekly && weekOfYear%3 != 0 && isFriday {
+	// 	return true
+	// }
+	// @monthly 每月1号
+	if cronTime == Monthly && dayOfMonth == 1 {
+		return true
+	}
+	// @2monthly
+	if cronTime == TwoMonthly && garray.NewIntArrayFrom([]int{1, 3, 5, 7, 9, 11}).Contains(monthOfYear) && dayOfMonth == 1 {
+		return true
+	}
+	// @3monthly
+	if cronTime == ThreeMonthly && garray.NewIntArrayFrom([]int{1, 4, 7, 10}).Contains(monthOfYear) && dayOfMonth == 1 {
+		return true
+	}
+	// @6monthly
+	if cronTime == SixMonthly && garray.NewIntArrayFrom([]int{1, 7}).Contains(monthOfYear) && dayOfMonth == 1 {
+		return true
+	}
+	// @yearly
+	if cronTime == Yearly && isJanuary && dayOfMonth == 1 {
+		return true
+	}
+
+	return false
 }
