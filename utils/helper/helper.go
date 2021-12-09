@@ -1,7 +1,9 @@
 package helper
 
 import (
+	"bytes"
 	"github.com/sirupsen/logrus"
+	"github.com/yuin/goldmark"
 	"strings"
 	"time"
 
@@ -61,4 +63,15 @@ func StringSliceEqual(a, b []string) bool {
 	}
 
 	return true
+}
+
+// markdown转HTML
+func Md2HTML(md string) string {
+	var buf bytes.Buffer
+	if err := goldmark.Convert([]byte(md), &buf); err != nil {
+		// panic(err)
+		return ""
+	}
+
+	return buf.String()
 }

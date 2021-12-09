@@ -1,7 +1,9 @@
 package life
 
 import (
+	"fmt"
 	"github.com/golang-module/carbon"
+	"reflect"
 	"testing"
 	"time"
 )
@@ -16,6 +18,14 @@ func TestHabitTime(t *testing.T) {
 	week := carbon.Now().WeekOfYear()
 
 	t.Log(month, month2, year, week)
+
+	// math.IsNaN()
+	var x int = 111
+	fmt.Println("type: ", reflect.TypeOf(x).String())
+	fmt.Println("type: ", reflect.TypeOf(x).Name())
+
+	var xx float64 = 11.11
+	fmt.Println("type: ", reflect.TypeOf(xx).String())
 }
 
 func TestCheckCron(t *testing.T) {
@@ -28,6 +38,27 @@ func TestCheckCron(t *testing.T) {
 		args args
 		want bool
 	}{
+		{TwoDaily, args{cronTime: TwoDaily, carbon: Time2Carbon("2021/12/03")}, true},
+		{TwoDaily, args{cronTime: TwoDaily, carbon: Time2Carbon("2021/12/04")}, false},
+		{TwoDaily, args{cronTime: TwoDaily, carbon: Time2Carbon("2021/12/05")}, true},
+		{TwoDaily, args{cronTime: TwoDaily, carbon: Time2Carbon("2021/12/06")}, false},
+		{TwoDaily, args{cronTime: TwoDaily, carbon: Time2Carbon("2021/12/30")}, false},
+		{TwoDaily, args{cronTime: TwoDaily, carbon: Time2Carbon("2021/12/31")}, true}, // 转过年有问题
+		{TwoDaily, args{cronTime: TwoDaily, carbon: Time2Carbon("2022/1/01")}, true},
+		{TwoDaily, args{cronTime: TwoDaily, carbon: Time2Carbon("2021/1/02")}, false},
+		{TwoDaily, args{cronTime: TwoDaily, carbon: Time2Carbon("2021/1/03")}, true},
+
+		{ThreeDaily, args{cronTime: ThreeDaily, carbon: Time2Carbon("2021/12/03")}, true},
+		{ThreeDaily, args{cronTime: ThreeDaily, carbon: Time2Carbon("2021/12/04")}, false},
+		{ThreeDaily, args{cronTime: ThreeDaily, carbon: Time2Carbon("2021/12/05")}, false},
+		{ThreeDaily, args{cronTime: ThreeDaily, carbon: Time2Carbon("2021/12/06")}, true},
+		{ThreeDaily, args{cronTime: ThreeDaily, carbon: Time2Carbon("2021/12/30")}, true},
+		{ThreeDaily, args{cronTime: ThreeDaily, carbon: Time2Carbon("2021/12/31")}, false}, // 转过年有问题
+		{ThreeDaily, args{cronTime: ThreeDaily, carbon: Time2Carbon("2022/1/01")}, true},
+		{ThreeDaily, args{cronTime: ThreeDaily, carbon: Time2Carbon("2021/1/02")}, false},
+		{ThreeDaily, args{cronTime: ThreeDaily, carbon: Time2Carbon("2021/1/03")}, false},
+		{ThreeDaily, args{cronTime: ThreeDaily, carbon: Time2Carbon("2021/1/04")}, true},
+
 		{Weekly, args{cronTime: Weekly, carbon: Time2Carbon("2021/12/03")}, true},
 		{Weekly, args{cronTime: Weekly, carbon: Time2Carbon("2021/12/10")}, true},
 		{Weekly, args{cronTime: Weekly, carbon: Time2Carbon("2021/12/11")}, false},
@@ -83,4 +114,26 @@ func Time2Carbon(str string) carbon.Carbon {
 func TransTimeN(str string) time.Time {
 	tt, _ := time.Parse("2006/1/02", str)
 	return tt
+}
+
+func TestTime(t *testing.T) {
+	t.Run("", func(t *testing.T) {
+		for i := 1; i <= 1000; i++ {
+			kk := (i - 1) % 2
+
+			if kk == 0 {
+				fmt.Println(i, ":", "value:", kk, "true")
+			}
+		}
+	})
+
+	t.Run("", func(t *testing.T) {
+		for i := 1; i <= 1000; i++ {
+			kk := (i - 1) % 3
+
+			if kk == 0 {
+				fmt.Println(i, ":", "value:", kk, "true")
+			}
+		}
+	})
 }
