@@ -72,10 +72,10 @@ func parseRequest(url string) []rss.Item {
 			detail := parseDetail(apiURL)
 
 			asmr = append(asmr, rss.Item{
-				Title:    each["name"].(string),
-				URL:      detail.AudioURL,
-				Contents: fmt.Sprintf("%s\n%s", detail.AudioURL, detail.Desc),
-				Time:     detail.CreateTime,
+				Title:       each["name"].(string),
+				URL:         detail.AudioURL,
+				Contents:    fmt.Sprintf("%s\n%s", detail.AudioURL, detail.Desc),
+				UpdatedTime: detail.CreateTime,
 			})
 		}
 

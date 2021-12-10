@@ -31,7 +31,7 @@ type Title struct {
 //
 type Item struct {
 	URL, Title, Author, Contents, ID string
-	Time                             time.Time
+	CreatedTime, UpdatedTime         time.Time
 }
 
 const (
@@ -74,6 +74,7 @@ func rss(fe *Feed, items []Item) string {
 			Description: value.Contents,
 			Author:      &feeds.Author{Name: value.Author},
 			Id:          value.ID,
+			Updated:     value.UpdatedTime,
 		})
 	}
 
@@ -93,6 +94,7 @@ func feedTitle(tt Title) string {
 }
 
 // 处理没有提供更新时间的feed
+// 根据item的UpdatedTime判断
 func feedWithoutTime(feed *Feed, items []Item) string {
 	clt := redis.NewClient(redis.Conn())
 
@@ -108,7 +110,7 @@ func feedWithoutTime(feed *Feed, items []Item) string {
 			return ""
 		}
 		for i, item := range items {
-			item.Time = gtime.Now().Time
+			item.UpdatedTime = gtime.Now().Time
 			items[i] = item
 		}
 		return rss(feed, items)
@@ -128,7 +130,7 @@ func feedWithoutTime(feed *Feed, items []Item) string {
 	old := clt.Conn.HGetAll(redis.Ctx, feed.URL).Val()
 	for i, item := range items {
 		if search, ok := old[item.URL]; ok {
-			item.Time = gtime.NewFromTimeStamp(gconv.Int64(search)).Time
+			item.UpdatedTime = gtime.NewFromTimeStamp(gconv.Int64(search)).Time
 			items[i] = item
 		} else {
 			fmt.Println(item.URL, "key not exist")

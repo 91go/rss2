@@ -53,9 +53,9 @@ func jsList(url string) []rss.Item {
 		text := selection.Find(".text-muted").Eq(1).Text()
 
 		ret = append(ret, rss.Item{
-			Title: title,
-			URL:   fmt.Sprintf("%s%s", JiuSeBaseURL, patchVideoURL(href)),
-			Time:  getCreateTime(text),
+			Title:       title,
+			URL:         fmt.Sprintf("%s%s", JiuSeBaseURL, patchVideoURL(href)),
+			UpdatedTime: getCreateTime(text),
 		})
 	})
 	return ret

@@ -2,11 +2,12 @@ package helper
 
 import (
 	"bytes"
-	"github.com/sirupsen/logrus"
-	"github.com/yuin/goldmark"
 	"math/rand"
 	"strings"
 	"time"
+
+	"github.com/sirupsen/logrus"
+	"github.com/yuin/goldmark"
 
 	"github.com/gogf/gf/os/gtime"
 )

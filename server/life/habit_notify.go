@@ -2,6 +2,7 @@ package life
 
 import (
 	"fmt"
+
 	"github.com/91go/rss2/utils/helper"
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
@@ -103,10 +104,9 @@ func habitFeed() []rss.Item {
 	for _, item := range items {
 		if CheckCron(item.Cron, carbon.Now()) {
 			ret = append(ret, rss.Item{
-				Title:    fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
-				Contents: item.Remark,
-				Time:     helper.GetToday(),
-				ID:       helper.RandStringRunes(24),
+				Title:       fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
+				Contents:    item.Remark,
+				UpdatedTime: helper.GetToday(),
 			})
 		}
 	}

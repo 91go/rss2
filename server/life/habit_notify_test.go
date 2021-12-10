@@ -2,10 +2,11 @@ package life
 
 import (
 	"fmt"
-	"github.com/golang-module/carbon"
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/golang-module/carbon"
 )
 
 func TestHabitTime(t *testing.T) {
@@ -20,11 +21,11 @@ func TestHabitTime(t *testing.T) {
 	t.Log(month, month2, year, week)
 
 	// math.IsNaN()
-	var x int = 111
+	var x = 111
 	fmt.Println("type: ", reflect.TypeOf(x).String())
 	fmt.Println("type: ", reflect.TypeOf(x).Name())
 
-	var xx float64 = 11.11
+	var xx = 11.11
 	fmt.Println("type: ", reflect.TypeOf(xx).String())
 }
 

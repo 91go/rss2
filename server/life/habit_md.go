@@ -2,6 +2,8 @@ package life
 
 import (
 	"fmt"
+	"path/filepath"
+
 	"github.com/91go/rss2/utils/helper"
 	"github.com/91go/rss2/utils/log"
 	"github.com/91go/rss2/utils/resp"
@@ -9,7 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gogf/gf/os/gfile"
 	"github.com/sirupsen/logrus"
-	"path/filepath"
 )
 
 func HabitMDRss(ctx *gin.Context) {
@@ -26,22 +27,18 @@ func HabitMDRss(ctx *gin.Context) {
 }
 
 func DietFeed() (ret []rss.Item) {
-
 	ret = append(ret, rss.Item{
-		Title:    "生活习惯",
-		Contents: ReadMarkdown("life.md"),
-		Time:     helper.GetToday(),
-		ID:       helper.RandStringRunes(24),
+		Title:       "生活习惯",
+		Contents:    ReadMarkdown("life.md"),
+		UpdatedTime: helper.GetToday(),
 	}, rss.Item{
-		Title:    "吃饭",
-		Contents: ReadMarkdown("diet.md"),
-		Time:     helper.GetToday(),
-		ID:       helper.RandStringRunes(24),
+		Title:       "吃饭",
+		Contents:    ReadMarkdown("diet.md"),
+		UpdatedTime: helper.GetToday(),
 	}, rss.Item{
-		Title:    "运动",
-		Contents: ReadMarkdown("exercise.md"),
-		Time:     helper.GetToday(),
-		ID:       helper.RandStringRunes(24),
+		Title:       "运动",
+		Contents:    ReadMarkdown("exercise.md"),
+		UpdatedTime: helper.GetToday(),
 	})
 
 	return

@@ -3,6 +3,7 @@ package life
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/91go/rss2/utils/helper"
 	"github.com/91go/rss2/utils/http"
 	"github.com/91go/rss2/utils/resp"
@@ -62,10 +63,10 @@ func crawlIResearch() []rss.Item {
 			detail := parseDetail(id)
 
 			iResearch = append(iResearch, rss.Item{
-				Title:    each["Title"].(string),
-				Time:     helper.TransTime(each["Uptime"].(string)),
-				URL:      each["VisitUrl"].(string),
-				Contents: fmt.Sprintf("%s%s", each["Content"].(string), detail),
+				Title:       each["Title"].(string),
+				UpdatedTime: helper.TransTime(each["Uptime"].(string)),
+				URL:         each["VisitUrl"].(string),
+				Contents:    fmt.Sprintf("%s%s", each["Content"].(string), detail),
 			})
 		}
 		continue
