@@ -47,11 +47,11 @@ type Notification struct {
 }
 
 // 用rss代替"提醒事项APP"的原因是，
-func HabitRss(ctx *gin.Context) {
+func HabitNotifyRss(ctx *gin.Context) {
 	res := rss.Rss(&rss.Feed{
 		Title: rss.Title{
 			Prefix: "life",
-			Name:   "生活习惯",
+			Name:   "生活习惯notification",
 		},
 		Author:      "lry",
 		UpdatedTime: helper.GetToday(),
@@ -76,7 +76,7 @@ func habitFeed() []rss.Item {
 		{Prefix: FoodPurchase, Task: "每三天：肉类，买一袋300g(平均每天100g)", Cron: ThreeDaily},
 		{Prefix: FoodPurchase, Task: "每三天：苹果，买一袋(4个)", Cron: ThreeDaily},
 		{Prefix: FoodPurchase, Task: "每六天：燕麦，买一袋500g(平均每天100g左右)", Cron: ThreeDaily},
-		{Prefix: FoodPurchase, Task: "每六天：鸡蛋，买一盒(6个装)", Cron: ThreeDaily},
+		// {Prefix: FoodPurchase, Task: "每六天：鸡蛋，买一盒(6个装)", Cron: ThreeDaily},
 		// 更换
 		{Prefix: Renew, Task: "每两天：换袜子、内裤", Cron: TwoDaily},
 		{Prefix: Renew, Task: "每周五：换速干衣(如果冬天还有速干秋裤)、睡衣睡裤，外衣外裤是否更换看需要", Cron: Weekly},
@@ -106,6 +106,7 @@ func habitFeed() []rss.Item {
 				Title:    fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
 				Contents: item.Remark,
 				Time:     helper.GetToday(),
+				ID:       helper.RandStringRunes(24),
 			})
 		}
 	}

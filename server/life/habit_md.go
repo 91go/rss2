@@ -12,11 +12,11 @@ import (
 	"path/filepath"
 )
 
-func DietRss(ctx *gin.Context) {
+func HabitMDRss(ctx *gin.Context) {
 	res := rss.Rss(&rss.Feed{
 		Title: rss.Title{
 			Prefix: "life",
-			Name:   "吃饭(饮食方案)",
+			Name:   "生活习惯md",
 		},
 		Author:      "lry",
 		UpdatedTime: helper.GetToday(),
@@ -28,9 +28,20 @@ func DietRss(ctx *gin.Context) {
 func DietFeed() (ret []rss.Item) {
 
 	ret = append(ret, rss.Item{
-		Title:    "diet",
+		Title:    "生活习惯",
+		Contents: ReadMarkdown("life.md"),
+		Time:     helper.GetToday(),
+		ID:       helper.RandStringRunes(24),
+	}, rss.Item{
+		Title:    "吃饭",
 		Contents: ReadMarkdown("diet.md"),
 		Time:     helper.GetToday(),
+		ID:       helper.RandStringRunes(24),
+	}, rss.Item{
+		Title:    "运动",
+		Contents: ReadMarkdown("exercise.md"),
+		Time:     helper.GetToday(),
+		ID:       helper.RandStringRunes(24),
 	})
 
 	return

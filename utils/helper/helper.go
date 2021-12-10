@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"github.com/sirupsen/logrus"
 	"github.com/yuin/goldmark"
+	"math/rand"
 	"strings"
 	"time"
 
@@ -74,4 +75,15 @@ func Md2HTML(md string) string {
 	}
 
 	return buf.String()
+}
+
+// 随机字符串
+func RandStringRunes(n int) string {
+	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letterRunes[rand.Intn(len(letterRunes))]
+	}
+	return string(b)
 }
