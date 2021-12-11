@@ -29,19 +29,23 @@ func HabitMDRss(ctx *gin.Context) {
 func DietFeed() (ret []rss.Item) {
 	ret = append(ret, rss.Item{
 		Title:    "生活习惯",
-		Contents: ReadMarkdown("life.md"),
-		URL:      helper.RandStringRunes(24),
-		// UpdatedTime: helper.GetToday(),
+		Contents: ReadMarkdown("life.md") + helper.RandStringRunes(24),
+		// URL:      helper.RandStringRunes(24),
+		UpdatedTime: helper.GetToday(),
 	}, rss.Item{
 		Title:    "吃饭",
-		Contents: ReadMarkdown("diet.md"),
-		URL:      helper.RandStringRunes(24),
-		// UpdatedTime: helper.GetToday(),
+		Contents: ReadMarkdown("diet.md") + helper.RandStringRunes(24),
+		// URL:      helper.RandStringRunes(24),
+		UpdatedTime: helper.GetToday(),
 	}, rss.Item{
 		Title:    "运动",
-		Contents: ReadMarkdown("exercise.md"),
-		URL:      helper.RandStringRunes(24),
-		// UpdatedTime: helper.GetToday(),
+		Contents: ReadMarkdown("exercise.md") + helper.RandStringRunes(24),
+		// URL:      helper.RandStringRunes(24),
+		UpdatedTime: helper.GetToday(),
+	}, rss.Item{
+		Title:    "一些想法",
+		Contents: ReadMarkdown("thought.md") + helper.RandStringRunes(24),
+		UpdatedTime: helper.GetToday(),
 	})
 
 	return
