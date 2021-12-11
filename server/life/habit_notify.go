@@ -104,9 +104,10 @@ func habitFeed() []rss.Item {
 	for _, item := range items {
 		if CheckCron(item.Cron, carbon.Now()) {
 			ret = append(ret, rss.Item{
-				Title:       fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
-				Contents:    item.Remark,
-				UpdatedTime: helper.GetToday(),
+				Title:    fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
+				Contents: item.Remark,
+				URL:      helper.RandStringRunes(24),
+				// UpdatedTime: helper.GetToday(),
 			})
 		}
 	}
