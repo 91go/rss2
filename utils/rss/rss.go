@@ -78,7 +78,8 @@ func rss(fe *Feed, items []Item) string {
 		})
 	}
 
-	atom, err := feed.ToRss()
+	// atom, err := feed.ToRss()
+	atom, err := feed.ToAtom()
 	if err != nil {
 		logrus.WithFields(log.Text("", errors.New("rss generate failed")))
 		return ""
@@ -177,4 +178,8 @@ func difference(slice1, slice2 []string) []string {
 	}
 
 	return diff
+}
+
+func GenerateDateGUID(tag, link string) string {
+	return fmt.Sprintf("tag:%s,%s:%s", tag, gtime.Date(), link)
 }

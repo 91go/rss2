@@ -2,7 +2,6 @@ package life
 
 import (
 	"fmt"
-
 	"github.com/91go/rss2/utils/helper"
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
@@ -22,6 +21,7 @@ const (
 const (
 	TwoDaily   = "@2daily"
 	ThreeDaily = "@3daily"
+	SixDaily   = "@6daily"
 	Weekly     = "@weekly"
 	TwoWeekly  = "@2weekly"
 	// ThreeWeekly  = "@3weekly"
@@ -76,7 +76,7 @@ func habitFeed() []rss.Item {
 		{Prefix: FoodPurchase, Task: "每三天：脱脂奶，买一桶1.4L(平均每天500ml)", Cron: ThreeDaily},
 		{Prefix: FoodPurchase, Task: "每三天：肉类，买一袋300g(平均每天100g)", Cron: ThreeDaily},
 		{Prefix: FoodPurchase, Task: "每三天：苹果，买一袋(4个)", Cron: ThreeDaily},
-		{Prefix: FoodPurchase, Task: "每六天：燕麦，买一袋500g(平均每天100g左右)", Cron: ThreeDaily},
+		{Prefix: FoodPurchase, Task: "每六天：燕麦，买一袋500g(平均每天100g左右)", Cron: SixDaily},
 		// {Prefix: FoodPurchase, Task: "每六天：鸡蛋，买一盒(6个装)", Cron: ThreeDaily},
 		// 更换
 		{Prefix: Renew, Task: "每两天：换袜子、内裤", Cron: TwoDaily},
@@ -105,8 +105,9 @@ func habitFeed() []rss.Item {
 		if CheckCron(item.Cron, carbon.Now()) {
 			ret = append(ret, rss.Item{
 				Title:       fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
-				Contents:    item.Remark + helper.RandStringRunes(24),
+				Contents:    item.Remark,
 				UpdatedTime: helper.GetToday(),
+				ID:          rss.GenerateDateGUID("habit", "notify"),
 			})
 		}
 	}
@@ -128,6 +129,10 @@ func CheckCron(cronTime string, carbon carbon.Carbon) bool {
 	}
 	// @3daily
 	if cronTime == ThreeDaily && ((dayOfYear-1)%3 == 0 || dayOfYear == 1) {
+		return true
+	}
+	// @6daily
+	if cronTime == SixDaily && ((dayOfYear-1)%6 == 0 || dayOfYear == 1) {
 		return true
 	}
 	// @weekly

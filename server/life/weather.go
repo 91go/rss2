@@ -1,6 +1,7 @@
 package life
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -46,7 +47,7 @@ func WeatherRss(ctx *gin.Context) {
 	warm := crawl(city)
 
 	feed := &feeds.Feed{
-		Title:       warm.City,
+		Title:       fmt.Sprintf("%s - %s", "天气", warm.City),
 		Link:        &feeds.Link{Href: warm.URL},
 		Description: warm.City,
 		Author:      &feeds.Author{Name: "", Email: ""},
