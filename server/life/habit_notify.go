@@ -107,7 +107,7 @@ func habitFeed() []rss.Item {
 				Title:       fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
 				Contents:    item.Remark,
 				UpdatedTime: helper.GetToday(),
-				ID:          rss.GenerateDateGUID("habit", "notify"),
+				ID:          rss.GenerateDateGUID("habit-notify", item.Task),
 			})
 		}
 	}
