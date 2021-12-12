@@ -7,6 +7,7 @@ import (
 	"github.com/91go/rss2/utils/rss"
 	"github.com/gin-gonic/gin"
 	"github.com/gogf/gf/container/garray"
+	"github.com/gogf/gf/os/gtime"
 	"github.com/golang-module/carbon"
 )
 
@@ -47,6 +48,44 @@ type Notification struct {
 	Remark string // 备注
 }
 
+var notifications = []Notification{
+	// 生活习惯
+	{Prefix: LifeHabit, Task: "每周五：刮胡子、换牙刷", Cron: Weekly},
+	{Prefix: LifeHabit, Task: "每周五：理发", Cron: Weekly, Remark: helper.Md2HTML(HairCut)},
+	{Prefix: LifeHabit, Task: "每两周周五：打飞机，晚上洗澡的时候顺便", Cron: TwoWeekly},
+	{Prefix: LifeHabit, Task: "每两周周五：剪手指甲", Cron: TwoWeekly},
+	{Prefix: LifeHabit, Task: "每两个月：换洗脸仪刷头", Cron: TwoMonthly},
+	{Prefix: LifeHabit, Task: "每两个月：剪脚趾甲", Cron: TwoMonthly},
+	// 食物采购
+	{Prefix: FoodPurchase, Task: "每三天：蔬菜，买三袋", Cron: ThreeDaily},
+	{Prefix: FoodPurchase, Task: "每三天：脱脂奶，买一桶1.4L(平均每天500ml)", Cron: ThreeDaily},
+	{Prefix: FoodPurchase, Task: "每三天：肉类，买一袋300g(平均每天100g)", Cron: ThreeDaily},
+	{Prefix: FoodPurchase, Task: "每三天：苹果，买一袋(4个)", Cron: ThreeDaily},
+	{Prefix: FoodPurchase, Task: "每六天：燕麦，买一袋500g(平均每天100g左右)", Cron: SixDaily},
+	{Prefix: FoodPurchase, Task: "每六天：鸡蛋，买一盒(6个装)", Cron: SixDaily},
+	// 更换
+	{Prefix: Renew, Task: "每两天：换袜子、内裤", Cron: TwoDaily},
+	{Prefix: Renew, Task: "每周五：换速干衣(如果冬天还有速干秋裤)、睡衣睡裤，外衣外裤是否更换看需要", Cron: Weekly},
+	// 清洗
+	{Prefix: Clean, Task: "每周五：扫地拖地", Cron: Weekly},
+	{Prefix: Clean, Task: "每周五：清洗本周脏衣服", Cron: Weekly},
+	{Prefix: Clean, Task: "每月：清洗洗脸毛巾、床单枕套、枕巾、浴巾", Cron: Monthly},
+	// 复购
+	{Prefix: Repurchase, Task: "每2周：牙刷", Cron: TwoWeekly},
+	{Prefix: Repurchase, Task: "每2月：抽纸(4包)、牙膏(黑人190g)、洗面奶(uno-130g)", Cron: TwoMonthly},
+	{Prefix: Repurchase, Task: "每2月：牙线(屈臣氏50支*2)、擦镜纸(100片)", Cron: TwoMonthly, Remark: "平均每天2支/2片，所以每两个月复购一次"},
+	{Prefix: Repurchase, Task: "每3月：毛巾(三利*2)", Cron: ThreeMonthly},
+	{Prefix: Repurchase, Task: "每3月：湿巾(gatsby-42片*2)", Cron: ThreeMonthly, Remark: "平均每天一片"},
+	{Prefix: Repurchase, Task: "每半年：跑鞋", Cron: SixMonthly},
+	{Prefix: Repurchase, Task: "每半年：洗衣液(500g)", Cron: SixMonthly},
+	{Prefix: Repurchase, Task: "每半年：洗发水(900g)", Cron: SixMonthly, Remark: "用洗发水代替沐浴露、洗手液、洗洁精"},
+	{Prefix: Repurchase, Task: "每年：内裤(4条)", Cron: Yearly},
+	{Prefix: Repurchase, Task: "每年：床笠、枕套", Cron: Yearly},
+	{Prefix: Repurchase, Task: "每年：搓澡巾(单只)、鼻通(6支)", Cron: Yearly},
+	{Prefix: Repurchase, Task: "每年：垃圾袋(100只)", Cron: Yearly, Remark: "平均每周两袋垃圾，一年正好用100只垃圾袋"},
+	{Prefix: Repurchase, Task: "每年：新年给父母¥1000", Cron: Yearly},
+}
+
 // 用rss代替"提醒事项APP"的原因是，
 func HabitNotifyRss(ctx *gin.Context) {
 	res := rss.Rss(&rss.Feed{
@@ -62,49 +101,11 @@ func HabitNotifyRss(ctx *gin.Context) {
 }
 
 func habitFeed() []rss.Item {
-	items := []Notification{
-		// 生活习惯
-		{Prefix: LifeHabit, Task: "每两天早上：蹲坑", Cron: TwoDaily},
-		{Prefix: LifeHabit, Task: "每周五：刮胡子、换牙刷", Cron: Weekly},
-		{Prefix: LifeHabit, Task: "每周五：理发", Cron: Weekly, Remark: helper.Md2HTML(HairCut)},
-		{Prefix: LifeHabit, Task: "每两周周五：打飞机，晚上洗澡的时候顺便", Cron: TwoWeekly},
-		{Prefix: LifeHabit, Task: "每两周周五：剪手指甲", Cron: TwoWeekly}, // ???
-		{Prefix: LifeHabit, Task: "每两个月：换洗脸仪刷头", Cron: TwoMonthly},
-		{Prefix: LifeHabit, Task: "每两个月：剪脚趾甲", Cron: TwoMonthly}, // ???
-		// 食物采购
-		{Prefix: FoodPurchase, Task: "每三天：蔬菜，买三袋", Cron: ThreeDaily},
-		{Prefix: FoodPurchase, Task: "每三天：脱脂奶，买一桶1.4L(平均每天500ml)", Cron: ThreeDaily},
-		{Prefix: FoodPurchase, Task: "每三天：肉类，买一袋300g(平均每天100g)", Cron: ThreeDaily},
-		{Prefix: FoodPurchase, Task: "每三天：苹果，买一袋(4个)", Cron: ThreeDaily},
-		{Prefix: FoodPurchase, Task: "每六天：燕麦，买一袋500g(平均每天100g左右)", Cron: SixDaily},
-		// {Prefix: FoodPurchase, Task: "每六天：鸡蛋，买一盒(6个装)", Cron: ThreeDaily},
-		// 更换
-		{Prefix: Renew, Task: "每两天：换袜子、内裤", Cron: TwoDaily},
-		{Prefix: Renew, Task: "每周五：换速干衣(如果冬天还有速干秋裤)、睡衣睡裤，外衣外裤是否更换看需要", Cron: Weekly},
-		// 清洗
-		{Prefix: Clean, Task: "每周五：扫地拖地", Cron: Weekly},
-		{Prefix: Clean, Task: "每周五：清洗本周脏衣服", Cron: Weekly},
-		{Prefix: Clean, Task: "每月：清洗洗脸毛巾、床单枕套、枕巾、浴巾", Cron: Monthly},
-		// 复购
-		{Prefix: Repurchase, Task: "每2周：牙刷", Cron: TwoWeekly},
-		{Prefix: Repurchase, Task: "每2月：抽纸(4包)、牙膏(黑人190g)、洗面奶(uno-130g)", Cron: TwoMonthly},
-		{Prefix: Repurchase, Task: "每2月：牙线(屈臣氏50支*2)、擦镜纸(100片)", Cron: TwoMonthly, Remark: "平均每天2支/2片，所以每两个月复购一次"},
-		{Prefix: Repurchase, Task: "每3月：毛巾(三利*2)", Cron: ThreeMonthly},
-		{Prefix: Repurchase, Task: "每3月：湿巾(gatsby-42片*2)", Cron: ThreeMonthly, Remark: "平均每天一片"},
-		{Prefix: Repurchase, Task: "每半年：跑鞋", Cron: SixMonthly},
-		{Prefix: Repurchase, Task: "每半年：洗衣液(500g)", Cron: SixMonthly},
-		{Prefix: Repurchase, Task: "每半年：洗发水(900g)", Cron: SixMonthly, Remark: "用洗发水代替沐浴露、洗手液、洗洁精"},
-		{Prefix: Repurchase, Task: "每年：内裤(4条)", Cron: Yearly},
-		{Prefix: Repurchase, Task: "每年：床笠、枕套", Cron: Yearly},
-		{Prefix: Repurchase, Task: "每年：搓澡巾(单只)、鼻通(6支)", Cron: Yearly},
-		{Prefix: Repurchase, Task: "每年：垃圾袋(100只)", Cron: Yearly, Remark: "平均每周两袋垃圾，一年正好用100只垃圾袋"},
-	}
-
 	ret := []rss.Item{}
-	for _, item := range items {
+	for _, item := range notifications {
 		if CheckCron(item.Cron, carbon.Now()) {
 			ret = append(ret, rss.Item{
-				Title:       fmt.Sprintf("[%s] - %s", item.Prefix, item.Task),
+				Title:       fmt.Sprintf("[%s] - [%s] - %s", item.Prefix, gtime.Date(), item.Task),
 				Contents:    item.Remark,
 				UpdatedTime: helper.GetToday(),
 				ID:          rss.GenerateDateGUID("habit-notify", item.Task),

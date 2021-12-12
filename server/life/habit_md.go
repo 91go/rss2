@@ -2,6 +2,7 @@ package life
 
 import (
 	"fmt"
+	"github.com/gogf/gf/os/gtime"
 	"path/filepath"
 
 	"github.com/91go/rss2/utils/helper"
@@ -28,17 +29,17 @@ func HabitMDRss(ctx *gin.Context) {
 
 func DietFeed() (ret []rss.Item) {
 	ret = append(ret, rss.Item{
-		Title:       "生活习惯",
+		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "生活习惯"),
 		Contents:    ReadMarkdown("life.md"),
 		ID:          rss.GenerateDateGUID("habit", "md-habit"),
 		UpdatedTime: helper.GetToday(),
 	}, rss.Item{
-		Title:       "吃饭",
+		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "吃饭"),
 		Contents:    ReadMarkdown("diet.md"),
 		ID:          rss.GenerateDateGUID("habit", "md-diet"),
 		UpdatedTime: helper.GetToday(),
 	}, rss.Item{
-		Title:       "一些想法",
+		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "一些想法"),
 		Contents:    ReadMarkdown("thought.md"),
 		ID:          rss.GenerateDateGUID("habit", "md-thought"),
 		UpdatedTime: helper.GetToday(),
