@@ -7,7 +7,6 @@ import (
 	"github.com/91go/rss2/utils/rss"
 	"github.com/gin-gonic/gin"
 	"github.com/gogf/gf/os/gtime"
-	"time"
 )
 
 const (
@@ -26,6 +25,7 @@ var (
 		{Prefix: Day, Task: "写代码/背面试题", StartTime: Day + "7:30", Duration: "60min", TimeStub: "7h30m"},
 		{Prefix: Day, Task: "跑步5km/出门上班", StartTime: Day + "8:30", TimeStub: "8h30m"},
 		{Prefix: Day, Task: "test", StartTime: Day + "10:30", TimeStub: "10h30m"},
+		{Prefix: Day, Task: "test", StartTime: Day + "11:00", TimeStub: "11h"},
 		{Prefix: Day, Task: "test2", StartTime: Day + "11:30", TimeStub: "11h30m"},
 		{Prefix: Day, Task: "test3", StartTime: Day + "2:00", TimeStub: "14h"},
 		{Prefix: Day, Task: "test4", StartTime: Night + "3:00", TimeStub: "15h"},
@@ -45,7 +45,7 @@ func HabitRoutineRss(ctx *gin.Context) {
 	res := rss.Rss(&rss.Feed{
 		Title: rss.Title{
 			Prefix: "life",
-			Name:   "routine",
+			Name:   "每日routine",
 		},
 		Author:      "lry",
 		UpdatedTime: helper.GetToday(),
@@ -64,24 +64,25 @@ func routineFeed() []rss.Item {
 			title = fmt.Sprintf("[%s%s]-[从%s开始]-%s", gtime.Date(), item.Prefix, item.StartTime, item.Task)
 		}
 
-		ret = append(ret, rss.Item{
-			Title:       title,
-			Contents:    item.Remark,
-			UpdatedTime: CheckDateTime(item.TimeStub),
-			ID:          rss.GenerateDateGUID("habit-routine", item.Task),
-		})
+		if CheckDateTime(item.TimeStub).Before(gtime.Now()) {
+			ret = append(ret, rss.Item{
+				Title:       title,
+				Contents:    item.Remark,
+				UpdatedTime: CheckDateTime(item.TimeStub).Time,
+				ID:          rss.GenerateDateGUID("habit-routine", item.Task),
+			})
+		}
 	}
 	return ret
 }
 
 // 与当前时间对比
-func CheckDateTime(nn string) time.Time {
-	// str, err := gtime.NewFromStr(gtime.Datetime()).AddStr(nn)
+func CheckDateTime(nn string) *gtime.Time {
 	str, err := gtime.NewFromTime(helper.GetToday()).AddStr(nn)
 	if err != nil {
 		fmt.Println(err)
-		return time.Time{}
+		return nil
 	}
 
-	return str.Time
+	return str
 }
