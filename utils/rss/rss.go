@@ -78,7 +78,7 @@ func rss(fe *Feed, items []Item) string {
 		})
 	}
 
-	// atom, err := feed.ToRss()
+	// 输出atom，跟rsshub保持一致
 	atom, err := feed.ToAtom()
 	if err != nil {
 		logrus.WithFields(log.Text("", errors.New("rss generate failed")))
