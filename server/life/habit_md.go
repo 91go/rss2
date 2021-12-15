@@ -31,17 +31,17 @@ func DietFeed() (ret []rss.Item) {
 	ret = append(ret, rss.Item{
 		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "生活习惯"),
 		Contents:    ReadMarkdown("life.md"),
-		ID:          rss.GenerateDateGUID("habit", "md-habit"),
-		UpdatedTime: helper.GetToday(),
-	}, rss.Item{
-		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "吃饭"),
-		Contents:    ReadMarkdown("diet.md"),
-		ID:          rss.GenerateDateGUID("habit", "md-diet"),
+		ID:          rss.GenerateDateGUID("habit-md", "habit"),
 		UpdatedTime: helper.GetToday(),
 	}, rss.Item{
 		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "一些想法"),
 		Contents:    ReadMarkdown("thought.md"),
-		ID:          rss.GenerateDateGUID("habit", "md-thought"),
+		ID:          rss.GenerateDateGUID("habit-md", "thought"),
+		UpdatedTime: helper.GetToday(),
+	}, rss.Item{
+		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "thought2"),
+		Contents:    ReadMarkdown("thought2.md"),
+		ID:          rss.GenerateDateGUID("habit-md", "thought2"),
 		UpdatedTime: helper.GetToday(),
 	})
 

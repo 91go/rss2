@@ -70,6 +70,9 @@ var notifications = []Notification{
 	{Prefix: LifeHabit, Task: "每两周周五：剪手指甲", Cron: TwoWeekly},
 	{Prefix: LifeHabit, Task: "每两个月：换洗脸仪刷头", Cron: TwoMonthly},
 	{Prefix: LifeHabit, Task: "每两个月：剪脚趾甲", Cron: TwoMonthly},
+	// ???
+	// todo
+	{Prefix: LifeHabit, Task: "每周五：写周报，评估是否完成habit", Cron: Weekly},
 	// 食物采购
 	{Prefix: FoodBuy, Task: "每三天：蔬菜，买三袋", Cron: ThreeDaily, Remark: "莲藕、西芹、西兰花、香菇、豌豆、春笋"},
 	{Prefix: FoodBuy, Task: "每三天：脱脂奶，买一桶1.4L(平均每天500ml)", Cron: ThreeDaily},
@@ -78,7 +81,7 @@ var notifications = []Notification{
 	{Prefix: FoodBuy, Task: "每六天：燕麦，买一袋500g(平均每天100g左右)", Cron: SixDaily},
 	{Prefix: FoodBuy, Task: "每六天：鸡蛋，买一盒(6个装)", Cron: SixDaily},
 	// 更换
-	{Prefix: Renew, Task: "每两天：换袜子、内裤", Cron: TwoDaily},
+	{Prefix: Renew, Task: "每两天：换袜子、内裤", Cron: TwoDaily, Remark: ""},
 	{Prefix: Renew, Task: "每周五：换速干衣(如果冬天还有速干秋裤)、睡衣睡裤，外衣外裤是否更换看需要", Cron: Weekly},
 	// 清洗
 	{Prefix: Clean, Task: "每周五：扫地拖地", Cron: Weekly},
@@ -86,7 +89,7 @@ var notifications = []Notification{
 	{Prefix: Clean, Task: "每月：清洗洗脸毛巾、床单枕套、枕巾、浴巾", Cron: Monthly},
 	// 复购
 	{Prefix: ReBuy, Task: "每2周：牙刷", Cron: TwoWeekly},
-	{Prefix: ReBuy, Task: "每2月：抽纸(4包)、牙膏(黑人190g)、洗面奶(uno-130g)", Cron: TwoMonthly},
+	{Prefix: ReBuy, Task: "每2月：抽纸(4包)、牙膏(黑人牙膏190g)、洗面奶(uno-130g)", Cron: TwoMonthly},
 	{Prefix: ReBuy, Task: "每2月：牙线(屈臣氏50支*2)、擦镜纸(100片)", Cron: TwoMonthly, Remark: "平均每天2支/2片，所以每两个月复购一次"},
 	{Prefix: ReBuy, Task: "每3月：毛巾(三利*2)", Cron: ThreeMonthly},
 	{Prefix: ReBuy, Task: "每3月：湿巾(gatsby-42片*2)", Cron: ThreeMonthly, Remark: "平均每天一片"},
