@@ -74,7 +74,7 @@ var notifications = []Notification{
 	// todo
 	{Prefix: LifeHabit, Task: "每周五：写周报，评估是否完成habit", Cron: Weekly},
 	// 食物采购
-	{Prefix: FoodBuy, Task: "每三天：蔬菜，买三袋", Cron: ThreeDaily, Remark: "莲藕、西芹、西兰花、香菇、豌豆、春笋"},
+	{Prefix: FoodBuy, Task: "每三天：蔬菜，买三袋", Cron: ThreeDaily, Remark: "莲藕、西芹、四季豆、西兰花、香菇、豌豆、春笋"},
 	{Prefix: FoodBuy, Task: "每三天：脱脂奶，买一桶1.4L(平均每天500ml)", Cron: ThreeDaily},
 	{Prefix: FoodBuy, Task: "每三天：肉类，买一袋300g(平均每天100g)", Cron: ThreeDaily},
 	{Prefix: FoodBuy, Task: "每三天：苹果，买一袋(4个)", Cron: ThreeDaily},

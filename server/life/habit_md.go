@@ -43,6 +43,11 @@ func DietFeed() (ret []rss.Item) {
 		Contents:    ReadMarkdown("thought2.md"),
 		ID:          rss.GenerateDateGUID("habit-md", "thought2"),
 		UpdatedTime: helper.GetToday(),
+	}, rss.Item{
+		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "团队管理"),
+		Contents:    ReadMarkdown("tm.md"),
+		ID:          rss.GenerateDateGUID("habit-md", "tm"),
+		UpdatedTime: helper.GetToday(),
 	})
 
 	return

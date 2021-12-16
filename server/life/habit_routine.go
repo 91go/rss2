@@ -23,7 +23,7 @@ var (
 		// DAY
 		// 早起时间最好有条理，放松而不松弛，行动迅速但不紧迫
 		// 有可以优化的点，随时修改
-		{Prefix: Day, Task: "起床+放点提气的歌+洗漱+喝杯温水+叠被子", StartTime: Day + "7:00", TimeStub: "7h", Duration: "10min"},
+		{Prefix: Day, Task: "起床+放点提气的歌+洗漱+喝杯温水+叠被子+(处理notify)", StartTime: Day + "7:00", TimeStub: "7h", Duration: "10min"},
 		{Prefix: Day, Task: "跑步5km，顺便看看feed/代码视频/娱乐视频", StartTime: Day + "7:10", TimeStub: "7h10m", Duration: "30min"},
 		{Prefix: Day, Task: "吃饭+散步", StartTime: Day + "7:40", TimeStub: "7h40m", Duration: "10min"},
 		{Prefix: Day, Task: "写代码/背面试题", StartTime: Day + "7:50", TimeStub: "7h50m", Duration: "30-40min", Remark: "时间不固定，具体看通勤时间"},
