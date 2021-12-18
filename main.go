@@ -47,15 +47,16 @@ func setupRouter() *gin.Engine {
 	// 挂载yl文件夹
 	r.StaticFS(lf2.RootDir, gin.Dir(lf2.RootDir, true))
 
-	// local
+	// local路由
 	lf := r.Group("/lf")
-	lf.GET("/local/:path", lf2.LocalFileRss)
-	lf.GET("/local/:path/:sec", lf2.LocalSecDirFileRss)
+	lf.GET("/:path", lf2.LocalFileRss)
+	lf.GET("/:path/:sec", lf2.LocalSecDirFileRss)
 
 	// asmr路由
 	asmr := r.Group("/asmr")
 	asmr.GET("/evc", asmr2.EvcRss)
 
+	// code路由
 	code := r.Group("/code")
 	code.GET("/gocn/:topic", code2.GoCnRss)
 

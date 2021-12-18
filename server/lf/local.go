@@ -52,18 +52,27 @@ func FileList(host, path string) []rss.Item {
 		size := fileInfo.Size()
 
 		tfUrl := fmt.Sprintf("https://%s%s%s", host, RootDir, str)
+		filetype := helper.GetContentType(file)
 		ret = append(ret, rss.Item{
 			Title:    title,
 			URL:      tfUrl,
-			Contents: fmt.Sprintf(`<iframe src="%s" frameborder="0" width="640" height="390" scrolling="no" frameborder="0" border="0" framespacing="0" allowfullscreen></iframe><br><br>%s<br>`, tfUrl),
+			Contents: DealContents(filetype, tfUrl),
 			Enclosure: &feeds.Enclosure{
 				Url:    tfUrl,
 				Length: strconv.FormatInt(size, 10),
-				Type:   helper.GetContentType(file),
+				Type:   filetype,
 			},
 			UpdatedTime: helper.GetToday(),
 		})
 	}
 
 	return ret
+}
+
+// DealContents 根据文件类型，判断是否返回iframe
+func DealContents(filetype, tfUrl string) string {
+	if gstr.Contains(filetype, "video") {
+		return fmt.Sprintf(`<iframe src="%s" frameborder="0" width="640" height="390" scrolling="no" frameborder="0" border="0" framespacing="0" allowfullscreen></iframe><br><br>`, tfUrl)
+	}
+	return ""
 }
