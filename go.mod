@@ -32,9 +32,11 @@ require (
 )
 
 require (
+	github.com/abhinav/goldmark-toc v0.2.1
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/golang-module/carbon v1.5.5
 	github.com/mmcdole/gofeed v1.1.3
+	github.com/yuin/goldmark v1.3.5
 )
 
 require (
@@ -73,7 +75,6 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
-	github.com/yuin/goldmark v1.4.4 // indirect
 	go.opentelemetry.io/otel v1.0.0-RC2 // indirect
 	go.opentelemetry.io/otel/trace v1.0.0-RC2 // indirect
 	golang.org/x/net v0.0.0-20211123203042-d83791d6bcd9 // indirect

@@ -76,12 +76,15 @@ var notifications = []Notification{
 	{Prefix: LifeHabit, Task: "每两个月：换洗脸仪刷头", Cron: TwoMonthly},
 
 	// 食物采购
-	{Prefix: FoodBuy, Task: "每三天：蔬菜，买三袋", Cron: ThreeDaily, Remark: "莲藕、西芹、四季豆、西兰花、香菇、豌豆、春笋"},
+	// 早饭
 	{Prefix: FoodBuy, Task: "每三天：脱脂奶，买一桶1.4L(平均每天500ml)", Cron: ThreeDaily},
-	{Prefix: FoodBuy, Task: "每三天：肉类，买一袋300g(平均每天100g)", Cron: ThreeDaily},
 	{Prefix: FoodBuy, Task: "每三天：苹果，买一袋(4个)", Cron: ThreeDaily},
 	{Prefix: FoodBuy, Task: "每六天：燕麦，买一袋500g(平均每天100g左右)", Cron: SixDaily},
+	// 其他
+	{Prefix: FoodBuy, Task: "每三天：蔬菜，买三袋", Cron: ThreeDaily, Remark: "莲藕、西芹、四季豆、西兰花、香菇、豌豆、春笋"},
+	{Prefix: FoodBuy, Task: "每三天：肉类，买一袋300g(平均每天100g)", Cron: ThreeDaily},
 	{Prefix: FoodBuy, Task: "每六天：鸡蛋，买一盒(6个装)", Cron: SixDaily},
+
 	// 更换
 	{Prefix: Renew, Task: "每两天：换袜子、内裤", Cron: TwoDaily, Remark: ""},
 	{Prefix: Renew, Task: "每周五：换速干衣(如果冬天还有速干秋裤)、睡衣睡裤，外衣外裤是否更换看需要", Cron: Saturday},
@@ -114,6 +117,7 @@ func HabitNotifyRss(ctx *gin.Context) {
 			Name:   "生活习惯notification",
 		},
 		Author:      "lry",
+		URL:         "https://rss2.wrss.top/life/habit/routine",
 		UpdatedTime: helper.GetToday(),
 	}, habitFeed())
 

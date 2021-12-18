@@ -3,7 +3,10 @@ package helper
 import (
 	"bytes"
 	"fmt"
+	toc "github.com/abhinav/goldmark-toc"
 	"github.com/gogf/gf/os/gfile"
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/parser"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -11,10 +14,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sirupsen/logrus"
-	"github.com/yuin/goldmark"
-
 	"github.com/gogf/gf/os/gtime"
+	"github.com/sirupsen/logrus"
 )
 
 // GetToday 获取今天的零点时间
@@ -75,7 +76,14 @@ func StringSliceEqual(a, b []string) bool {
 // markdown转HTML
 func Md2HTML(md string) string {
 	var buf bytes.Buffer
-	if err := goldmark.Convert([]byte(md), &buf); err != nil {
+	markdown := goldmark.New(
+		goldmark.WithParserOptions(parser.WithAutoHeadingID()),
+		goldmark.WithExtensions(
+			// TOC拓展
+			&toc.Extender{},
+		),
+	)
+	if err := markdown.Convert([]byte(md), &buf); err != nil {
 		// panic(err)
 		return ""
 	}
