@@ -1,4 +1,4 @@
-package life
+package habit
 
 import (
 	"fmt"
@@ -28,6 +28,7 @@ func HabitMDRss(ctx *gin.Context) {
 }
 
 func DietFeed() (ret []rss.Item) {
+	// todo
 	ret = append(ret, rss.Item{
 		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "生活习惯"),
 		Contents:    ReadMarkdown("life.md"),

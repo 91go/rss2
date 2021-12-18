@@ -32,6 +32,7 @@ type Title struct {
 type Item struct {
 	URL, Title, Author, Contents, ID string
 	CreatedTime, UpdatedTime         time.Time
+	Enclosure                        *feeds.Enclosure
 }
 
 const (
@@ -74,6 +75,7 @@ func rss(fe *Feed, items []Item) string {
 			Description: value.Contents,
 			Author:      &feeds.Author{Name: value.Author},
 			Id:          value.ID,
+			Enclosure:   value.Enclosure,
 			Updated:     value.UpdatedTime,
 		})
 	}

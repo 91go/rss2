@@ -1,4 +1,4 @@
-package life
+package habit
 
 import (
 	"fmt"
@@ -24,6 +24,7 @@ const (
 	ThreeDaily   = "@3daily"
 	SixDaily     = "@6daily"
 	Weekly       = "@weekly"
+	Saturday     = "@saturday"
 	TwoWeekly    = "@2weekly"
 	ThreeWeekly  = "@3weekly"
 	Monthly      = "@monthly"
@@ -38,6 +39,7 @@ var CronTime = map[string]string{
 	"@3daily":   "每三天",
 	"@6daily":   "每六天",
 	"@weekly":   "每周",
+	"@saturday": "每周六",
 	"@2weekly":  "每两周",
 	"@3weekly":  "每三周",
 	"@monthly":  "每月",
@@ -50,9 +52,10 @@ var CronTime = map[string]string{
 const (
 	HairCut = `1. 自己理发有什么要注意的？
     1. *头发长度保持24mm，每周理发一次，打理起来很方便*
-    2. *两边的头发不用太短，把鬓角推掉就可以了，其他地方不用管*，推太短了头皮露出来不好看
+    2. *两边的头发不要太短，把鬓角推掉就可以了，其他地方不用管*，推太短了头皮露出来不好看
     3. *后面的头发，在看不到的情况下，很难处理，所以就不要弄了*，习惯习惯就好了
-    4. 理完之后，站定看看齐不齐，换角度看看`
+    4. 理完之后，站定看看齐不齐，换角度看看
+	5. 先用24mm卡尺过一遍，两边和后面用12mm卡尺，用剃须刀把须清理掉，其他地方不要刮青了`
 )
 
 type Notification struct {
@@ -64,15 +67,14 @@ type Notification struct {
 
 var notifications = []Notification{
 	// 生活习惯
-	{Prefix: LifeHabit, Task: "每周五：刮胡子、换牙刷", Cron: Weekly},
-	{Prefix: LifeHabit, Task: "每周五：理发", Cron: Weekly, Remark: helper.Md2HTML(HairCut)},
-	{Prefix: LifeHabit, Task: "每两周周五：打飞机，晚上洗澡的时候顺便", Cron: TwoWeekly},
-	{Prefix: LifeHabit, Task: "每两周周五：剪手指甲", Cron: TwoWeekly},
+	{Prefix: LifeHabit, Task: "每周六：刮胡子、换牙刷", Cron: Saturday},
+	{Prefix: LifeHabit, Task: "每周六：理发", Cron: Saturday, Remark: helper.Md2HTML(HairCut)},
+	{Prefix: LifeHabit, Task: "每周六：剪手指甲", Cron: Saturday},
+	{Prefix: LifeHabit, Task: "每周六：写周报，评估是否完成habit", Cron: Saturday},
+	{Prefix: LifeHabit, Task: "每两周：打飞机，晚上洗澡的时候顺便", Cron: TwoWeekly},
+	{Prefix: LifeHabit, Task: "每月：剪脚趾甲", Cron: Monthly},
 	{Prefix: LifeHabit, Task: "每两个月：换洗脸仪刷头", Cron: TwoMonthly},
-	{Prefix: LifeHabit, Task: "每两个月：剪脚趾甲", Cron: TwoMonthly},
-	// ???
-	// todo
-	{Prefix: LifeHabit, Task: "每周五：写周报，评估是否完成habit", Cron: Weekly},
+
 	// 食物采购
 	{Prefix: FoodBuy, Task: "每三天：蔬菜，买三袋", Cron: ThreeDaily, Remark: "莲藕、西芹、四季豆、西兰花、香菇、豌豆、春笋"},
 	{Prefix: FoodBuy, Task: "每三天：脱脂奶，买一桶1.4L(平均每天500ml)", Cron: ThreeDaily},
@@ -82,10 +84,11 @@ var notifications = []Notification{
 	{Prefix: FoodBuy, Task: "每六天：鸡蛋，买一盒(6个装)", Cron: SixDaily},
 	// 更换
 	{Prefix: Renew, Task: "每两天：换袜子、内裤", Cron: TwoDaily, Remark: ""},
-	{Prefix: Renew, Task: "每周五：换速干衣(如果冬天还有速干秋裤)、睡衣睡裤，外衣外裤是否更换看需要", Cron: Weekly},
+	{Prefix: Renew, Task: "每周五：换速干衣(如果冬天还有速干秋裤)、睡衣睡裤，外衣外裤是否更换看需要", Cron: Saturday},
 	// 清洗
-	{Prefix: Clean, Task: "每周五：扫地拖地", Cron: Weekly},
-	{Prefix: Clean, Task: "每周五：清洗本周脏衣服", Cron: Weekly},
+	{Prefix: Clean, Task: "每周六：扫地拖地", Cron: Saturday},
+	{Prefix: Clean, Task: "每周六：清洗本周脏衣服", Cron: Saturday},
+
 	{Prefix: Clean, Task: "每月：清洗洗脸毛巾、床单枕套、枕巾、浴巾", Cron: Monthly},
 	// 复购
 	{Prefix: ReBuy, Task: "每2周：牙刷", Cron: TwoWeekly},
@@ -135,6 +138,7 @@ func habitFeed() []rss.Item {
 
 func CheckCron(cronTime string, carbon carbon.Carbon) bool {
 	isFriday := carbon.IsFriday()
+	isSaturday := carbon.IsSaturday()
 	dayOfYear := carbon.DayOfYear()
 	dayOfMonth := carbon.DayOfMonth()
 	weekOfYear := carbon.WeekOfYear()
@@ -157,8 +161,12 @@ func CheckCron(cronTime string, carbon carbon.Carbon) bool {
 	if cronTime == Weekly && isFriday {
 		return true
 	}
+	// @saturday
+	if cronTime == Saturday && isSaturday {
+		return true
+	}
 	// @2weekly
-	if cronTime == TwoWeekly && weekOfYear%2 != 0 && isFriday {
+	if cronTime == TwoWeekly && weekOfYear%2 != 0 && isSaturday {
 		return true
 	}
 	// // @3weekly

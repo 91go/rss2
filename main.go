@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/91go/rss2/server/habit"
 
 	code2 "github.com/91go/rss2/server/code"
 
@@ -12,6 +13,7 @@ import (
 	"github.com/91go/rss2/middleware"
 
 	asmr2 "github.com/91go/rss2/server/asmr"
+	lf2 "github.com/91go/rss2/server/lf"
 	life2 "github.com/91go/rss2/server/life"
 	porn2 "github.com/91go/rss2/server/porn"
 	"github.com/gin-gonic/gin"
@@ -42,6 +44,14 @@ func setupRouter() *gin.Engine {
 		resp.SendJSON(ctx, "pong")
 	})
 
+	// 挂载yl文件夹
+	r.StaticFS(lf2.RootDir, gin.Dir(lf2.RootDir, true))
+
+	// local
+	lf := r.Group("/lf")
+	lf.GET("/local/:path", lf2.LocalFileRss)
+	lf.GET("/local/:path/:sec", lf2.LocalSecDirFileRss)
+
 	// asmr路由
 	asmr := r.Group("/asmr")
 	asmr.GET("/evc", asmr2.EvcRss)
@@ -53,9 +63,11 @@ func setupRouter() *gin.Engine {
 	life := r.Group("/life")
 	life.GET("/iresearch", life2.IResearchRss)
 	life.GET("/weather", life2.WeatherRss)
-	life.GET("/habit/notify", life2.HabitNotifyRss)
-	life.GET("/habit/md", life2.HabitMDRss)
-	life.GET("/habit/routine", life2.HabitRoutineRss)
+
+	// habit
+	life.GET("/habit/notify", habit.HabitNotifyRss)
+	life.GET("/habit/md", habit.HabitMDRss)
+	life.GET("/habit/routine", habit.HabitRoutineRss)
 
 	// porn路由分组
 	porn := r.Group("/porn")
