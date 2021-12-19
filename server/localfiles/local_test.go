@@ -1,4 +1,4 @@
-package lf
+package localfiles
 
 import (
 	"fmt"

@@ -13,8 +13,8 @@ import (
 	"github.com/91go/rss2/middleware"
 
 	asmr2 "github.com/91go/rss2/server/asmr"
-	lf2 "github.com/91go/rss2/server/lf"
 	life2 "github.com/91go/rss2/server/life"
+	lf2 "github.com/91go/rss2/server/localfiles"
 	porn2 "github.com/91go/rss2/server/porn"
 	"github.com/gin-gonic/gin"
 )
@@ -44,13 +44,18 @@ func setupRouter() *gin.Engine {
 		resp.SendJSON(ctx, "pong")
 	})
 
+	// 渲染html，订阅到IFTTT需要每个entry的url都是合法的
+	r.GET("/render/*txt", func(ctx *gin.Context) {
+		resp.SendJSON(ctx, "success")
+	})
+
 	// 挂载yl文件夹
 	r.StaticFS(lf2.RootDir, gin.Dir(lf2.RootDir, true))
 
-	// local路由
-	lf := r.Group("/lf")
-	lf.GET("/:path", lf2.LocalFileRss)
-	lf.GET("/:path/:sec", lf2.LocalSecDirFileRss)
+	// localfiles路由
+	localfiles := r.Group("/localfiles")
+	localfiles.GET("/:path", lf2.LocalFileRss)
+	localfiles.GET("/:path/:sec", lf2.LocalSecDirFileRss)
 
 	// asmr路由
 	asmr := r.Group("/asmr")
@@ -64,7 +69,6 @@ func setupRouter() *gin.Engine {
 	life := r.Group("/life")
 	life.GET("/iresearch", life2.IResearchRss)
 	life.GET("/weather", life2.WeatherRss)
-
 	// habit
 	life.GET("/habit/notify", habit.HabitNotifyRss)
 	life.GET("/habit/md", habit.HabitMDRss)

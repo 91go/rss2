@@ -1,4 +1,4 @@
-package lf
+package localfiles
 
 import (
 	"fmt"
@@ -42,17 +42,17 @@ func FileList(host, path string) []rss.Item {
 		return nil
 	}
 
-	for _, file := range files {
-		str := gstr.Str(file, RootDir)
-		title := gfile.Basename(file)
-		fileInfo, err := gfile.Info(file)
+	for _, filepath := range files {
+		str := gstr.Str(filepath, RootDir)
+		title := gfile.Basename(filepath)
+		fileInfo, err := gfile.Info(filepath)
 		if err != nil {
 			return nil
 		}
 		size := fileInfo.Size()
 
 		tfUrl := fmt.Sprintf("https://%s%s%s", host, RootDir, str)
-		filetype := helper.GetContentType(file)
+		filetype := helper.GetContentType(filepath)
 		ret = append(ret, rss.Item{
 			Title:    title,
 			URL:      tfUrl,
@@ -63,6 +63,8 @@ func FileList(host, path string) []rss.Item {
 				Type:   filetype,
 			},
 			UpdatedTime: helper.GetToday(),
+			// 如果不设置，gorilla会自动设置一个带日期的ID；该rss除非资源位置变更，否则不更新，所以手动设置ID
+			ID: fmt.Sprintf("tag:%s", filepath),
 		})
 	}
 

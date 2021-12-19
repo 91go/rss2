@@ -41,25 +41,29 @@ var (
 )
 
 func HabitRoutineRss(ctx *gin.Context) {
+
+	baseUrl := GetBaseURL(ctx.Request)
+
 	res := rss.Rss(&rss.Feed{
 		Title: rss.Title{
 			Prefix: "life",
 			Name:   "每日routine",
 		},
 		Author:      "lry",
+		URL:         GetURL(ctx.Request),
 		UpdatedTime: helper.GetToday(),
-	}, routineFeed())
+	}, routineFeed(baseUrl))
 
 	resp.SendXML(ctx, res)
 }
 
-func routineFeed() []rss.Item {
+func routineFeed(baseUrl string) []rss.Item {
 	ret := []rss.Item{}
+
 	for _, item := range routines {
 		title := ""
 		// todo 截止
 		if item.Duration != "" {
-
 			title = fmt.Sprintf("(从%s开始，预计%s)%s", item.StartTime, item.Duration, item.Task)
 		} else {
 			title = fmt.Sprintf("(从%s开始)%s", item.StartTime, item.Task)
@@ -71,6 +75,7 @@ func routineFeed() []rss.Item {
 				Contents:    item.Remark,
 				UpdatedTime: CheckDateTime(item.TimeStub).Time,
 				ID:          rss.GenerateDateGUID("habit-routine", item.Task),
+				URL:         fmt.Sprintf("%s/render/%s", baseUrl, title),
 			})
 		}
 	}

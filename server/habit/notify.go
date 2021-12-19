@@ -9,6 +9,8 @@ import (
 	"github.com/gogf/gf/container/garray"
 	"github.com/gogf/gf/os/gtime"
 	"github.com/golang-module/carbon"
+	"net/http"
+	"strings"
 )
 
 const (
@@ -111,28 +113,33 @@ var notifications = []Notification{
 
 // 用rss代替"提醒事项APP"的原因是，
 func HabitNotifyRss(ctx *gin.Context) {
+
+	baseUrl := GetBaseURL(ctx.Request)
 	res := rss.Rss(&rss.Feed{
 		Title: rss.Title{
 			Prefix: "life",
 			Name:   "生活习惯notification",
 		},
 		Author:      "lry",
-		URL:         "https://rss2.wrss.top/life/habit/routine",
+		URL:         GetURL(ctx.Request),
 		UpdatedTime: helper.GetToday(),
-	}, habitFeed())
+	}, habitFeed(baseUrl))
 
 	resp.SendXML(ctx, res)
 }
 
-func habitFeed() []rss.Item {
+func habitFeed(baseUrl string) []rss.Item {
 	ret := []rss.Item{}
+
 	for _, item := range notifications {
 		if CheckCron(item.Cron, carbon.Now()) {
+			title := fmt.Sprintf("[%s] - [%s] - [%s] - %s", item.Prefix, gtime.Date(), CronTime[item.Cron], item.Task)
 			ret = append(ret, rss.Item{
-				Title:       fmt.Sprintf("[%s] - [%s] - [%s] - %s", item.Prefix, gtime.Date(), CronTime[item.Cron], item.Task),
+				Title:       title,
 				Contents:    item.Remark,
 				UpdatedTime: helper.GetToday(),
 				ID:          rss.GenerateDateGUID("habit-notify", item.Task),
+				URL:         fmt.Sprintf("%s/render/%s", baseUrl, title),
 			})
 		}
 	}
@@ -199,4 +206,28 @@ func CheckCron(cronTime string, carbon carbon.Carbon) bool {
 	}
 
 	return false
+}
+
+func GetURL(r *http.Request) (Url string) {
+
+	scheme := "http://"
+
+	if r.TLS != nil {
+
+		scheme = "https://"
+
+	}
+	return strings.Join([]string{scheme, r.Host, r.RequestURI}, "")
+}
+
+func GetBaseURL(r *http.Request) (Url string) {
+
+	scheme := "http://"
+
+	if r.TLS != nil {
+
+		scheme = "https://"
+
+	}
+	return strings.Join([]string{scheme, r.Host}, "")
 }

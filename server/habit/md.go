@@ -54,6 +54,7 @@ func DietFeed() (ret []rss.Item) {
 	return
 }
 
+// 读取md
 func ReadMarkdown(filename string) string {
 	abs, err := filepath.Abs(fmt.Sprintf("%s%s", "./public/md/", filename))
 	if err != nil {
