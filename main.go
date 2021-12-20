@@ -65,9 +65,9 @@ func setupRouter() *gin.Engine {
 	life.GET("/iresearch", life2.IResearchRss)
 	life.GET("/weather", life2.WeatherRss)
 	// habit
-	life.GET("/habit/notify", habit.HabitNotifyRss)
+	life.GET("/habit/yearly", habit.HabitYearlyRss)
 	life.GET("/habit/md", habit.HabitMDRss)
-	life.GET("/habit/routine", habit.HabitRoutineRss)
+	life.GET("/habit/everyday", habit.HabitEverydayRss)
 
 	// porn路由分组
 	porn := r.Group("/porn")
