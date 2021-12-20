@@ -75,6 +75,9 @@ func StringSliceEqual(a, b []string) bool {
 
 // markdown转HTML
 func Md2HTML(md string) string {
+	if md == "" {
+		return ""
+	}
 	var buf bytes.Buffer
 	markdown := goldmark.New(
 		goldmark.WithParserOptions(parser.WithAutoHeadingID()),

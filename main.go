@@ -44,11 +44,6 @@ func setupRouter() *gin.Engine {
 		resp.SendJSON(ctx, "pong")
 	})
 
-	// 渲染html，订阅到IFTTT需要每个entry的url都是合法的
-	r.GET("/render/*txt", func(ctx *gin.Context) {
-		resp.SendJSON(ctx, "success")
-	})
-
 	// 挂载yl文件夹
 	r.StaticFS(lf2.RootDir, gin.Dir(lf2.RootDir, true))
 

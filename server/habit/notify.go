@@ -70,7 +70,7 @@ type Notification struct {
 var notifications = []Notification{
 	// 生活习惯
 	{Prefix: LifeHabit, Task: "每周六：刮胡子、换牙刷", Cron: Saturday},
-	{Prefix: LifeHabit, Task: "每周六：理发", Cron: Saturday, Remark: helper.Md2HTML(HairCut)},
+	{Prefix: LifeHabit, Task: "每周六：理发", Cron: Saturday, Remark: HairCut},
 	{Prefix: LifeHabit, Task: "每周六：剪手指甲", Cron: Saturday},
 	{Prefix: LifeHabit, Task: "每周六：写周报，评估是否完成habit", Cron: Saturday},
 	{Prefix: LifeHabit, Task: "每两周：打飞机，晚上洗澡的时候顺便", Cron: TwoWeekly},
@@ -111,10 +111,11 @@ var notifications = []Notification{
 	{Prefix: ReBuy, Task: "每年：新年给父母¥1000", Cron: Yearly},
 }
 
+// 每年12月买护手霜(100g或者30g*3)，基本上一个月一支30g装，一直用到第二年2月底；
+
 // 用rss代替"提醒事项APP"的原因是，
 func HabitNotifyRss(ctx *gin.Context) {
 
-	baseUrl := GetBaseURL(ctx.Request)
 	res := rss.Rss(&rss.Feed{
 		Title: rss.Title{
 			Prefix: "life",
@@ -123,12 +124,12 @@ func HabitNotifyRss(ctx *gin.Context) {
 		Author:      "lry",
 		URL:         GetURL(ctx.Request),
 		UpdatedTime: helper.GetToday(),
-	}, habitFeed(baseUrl))
+	}, habitFeed())
 
 	resp.SendXML(ctx, res)
 }
 
-func habitFeed(baseUrl string) []rss.Item {
+func habitFeed() []rss.Item {
 	ret := []rss.Item{}
 
 	for _, item := range notifications {
@@ -136,10 +137,9 @@ func habitFeed(baseUrl string) []rss.Item {
 			title := fmt.Sprintf("[%s] - [%s] - [%s] - %s", item.Prefix, gtime.Date(), CronTime[item.Cron], item.Task)
 			ret = append(ret, rss.Item{
 				Title:       title,
-				Contents:    item.Remark,
+				Contents:    helper.Md2HTML(item.Remark),
 				UpdatedTime: helper.GetToday(),
 				ID:          rss.GenerateDateGUID("habit-notify", item.Task),
-				URL:         fmt.Sprintf("%s/render/%s", baseUrl, title),
 			})
 		}
 	}
