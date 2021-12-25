@@ -2,6 +2,9 @@ package habit
 
 import (
 	"fmt"
+	"net/http"
+	"strings"
+
 	"github.com/91go/rss2/utils/helper"
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
@@ -9,8 +12,6 @@ import (
 	"github.com/gogf/gf/container/garray"
 	"github.com/gogf/gf/os/gtime"
 	"github.com/golang-module/carbon"
-	"net/http"
-	"strings"
 )
 
 const (
@@ -69,10 +70,11 @@ type Notification struct {
 var notifications = map[string][]Notification{
 	// 日常习惯
 	LifeHabit: {
-		{Task: "每周六：刮胡子、换牙刷", Cron: Saturday},
+		{Task: "每周六：刮胡子", Cron: Saturday},
 		{Task: "每周六：理发", Cron: Saturday, Remark: HairCut},
 		{Task: "每周六：剪手指甲", Cron: Saturday},
 		{Task: "每周六：写周报，评估是否完成habit", Cron: Saturday},
+		{Task: "每两周：换牙刷", Cron: TwoWeekly},
 		{Task: "每两周：打飞机，晚上洗澡的时候顺便", Cron: TwoWeekly},
 		{Task: "每月：剪脚趾甲", Cron: Monthly},
 		{Task: "每两个月：换洗脸仪刷头", Cron: TwoMonthly},
@@ -126,11 +128,10 @@ var notifications = map[string][]Notification{
 
 // 用rss代替"提醒事项APP"的原因是，
 func HabitYearlyRss(ctx *gin.Context) {
-
 	res := rss.Rss(&rss.Feed{
 		Title: rss.Title{
 			Prefix: "life",
-			Name:   "生活习惯",
+			Name:   "生活习惯yearly",
 		},
 		Author:      "lry",
 		URL:         GetURL(ctx.Request),
@@ -144,7 +145,6 @@ func habitFeed() []rss.Item {
 	ret := []rss.Item{}
 
 	for prefix, notification := range notifications {
-
 		for _, item := range notification {
 			if CheckCron(item.Cron, carbon.Now()) {
 				title := fmt.Sprintf("[%s] - [%s] - [%s] - %s", prefix, gtime.Date(), CronTime[item.Cron], item.Task)
@@ -223,25 +223,19 @@ func CheckCron(cronTime string, carbon carbon.Carbon) bool {
 }
 
 func GetURL(r *http.Request) (Url string) {
-
 	scheme := "http://"
 
 	if r.TLS != nil {
-
 		scheme = "https://"
-
 	}
 	return strings.Join([]string{scheme, r.Host, r.RequestURI}, "")
 }
 
 func GetBaseURL(r *http.Request) (Url string) {
-
 	scheme := "http://"
 
 	if r.TLS != nil {
-
 		scheme = "https://"
-
 	}
 	return strings.Join([]string{scheme, r.Host}, "")
 }

@@ -22,7 +22,6 @@ const (
 // FetchHTML 获取网页
 func FetchHTML(url string) *query.Document {
 	resp, err := ghttp.NewClient().Get(url)
-
 	if err != nil {
 		logrus.WithFields(log.Text(url, nil)).Error("http request failed")
 		return &query.Document{}
@@ -34,7 +33,7 @@ func FetchHTML(url string) *query.Document {
 		}
 	}(resp.Body)
 
-	return document(url, resp.Response)
+	return DocQuery(resp.Response)
 }
 
 // PostHTML 发送表单请求
@@ -49,7 +48,7 @@ func PostHTML(url string, m map[string]interface{}) *query.Document {
 		}
 	}(resp.Response.Body)
 
-	return document(url, resp.Response)
+	return DocQuery(resp.Response)
 }
 
 func RestyFetchHTML(url string) *query.Document {
@@ -64,14 +63,14 @@ func RestyFetchHTML(url string) *query.Document {
 		return &query.Document{}
 	}
 
-	return document(url, resp.RawResponse)
+	return DocQuery(resp.RawResponse)
 }
 
 // 请求goquery
-func document(url string, resp *http.Response) *query.Document {
+func DocQuery(resp *http.Response) *query.Document {
 	doc, err := query.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		logrus.WithFields(log.Text(url, err)).Error("goquery failed")
+		logrus.WithFields(log.Text(resp.Request.URL.String(), err)).Error("goquery failed")
 		return &query.Document{}
 	}
 

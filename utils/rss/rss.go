@@ -61,6 +61,7 @@ func Rss(fe *Feed, items []Item) string {
 }
 
 func rss(fe *Feed, items []Item) string {
+	// todo 添加favicon
 	feed := feeds.Feed{
 		Title:   feedTitle(fe.Title),
 		Link:    &feeds.Link{Href: fe.URL},

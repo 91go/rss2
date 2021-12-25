@@ -2,8 +2,9 @@ package habit
 
 import (
 	"fmt"
-	"github.com/gogf/gf/os/gtime"
 	"path/filepath"
+
+	"github.com/gogf/gf/os/gtime"
 
 	"github.com/91go/rss2/utils/helper"
 	"github.com/91go/rss2/utils/log"
@@ -31,22 +32,22 @@ func DietFeed() (ret []rss.Item) {
 	// todo
 	ret = append(ret, rss.Item{
 		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "生活习惯"),
-		Contents:    ReadMarkdown("life.md"),
+		Contents:    ReadMarkdown("", "life.md"),
 		ID:          rss.GenerateDateGUID("habit-md", "habit"),
 		UpdatedTime: helper.GetToday(),
 	}, rss.Item{
 		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "一些想法"),
-		Contents:    ReadMarkdown("thought.md"),
+		Contents:    ReadMarkdown("", "thought.md"),
 		ID:          rss.GenerateDateGUID("habit-md", "thought"),
 		UpdatedTime: helper.GetToday(),
 	}, rss.Item{
 		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "thought2"),
-		Contents:    ReadMarkdown("thought2.md"),
+		Contents:    ReadMarkdown("", "thought2.md"),
 		ID:          rss.GenerateDateGUID("habit-md", "thought2"),
 		UpdatedTime: helper.GetToday(),
 	}, rss.Item{
 		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "thought2"),
-		Contents:    ReadMarkdown("thought3.md"),
+		Contents:    ReadMarkdown("", "thought3.md"),
 		ID:          rss.GenerateDateGUID("habit-md", "thought2"),
 		UpdatedTime: helper.GetToday(),
 	})
@@ -55,8 +56,8 @@ func DietFeed() (ret []rss.Item) {
 }
 
 // 读取md
-func ReadMarkdown(filename string) string {
-	abs, err := filepath.Abs(fmt.Sprintf("%s%s", "./public/md/", filename))
+func ReadMarkdown(filename, path string) string {
+	abs, err := filepath.Abs(fmt.Sprintf("%s%s%s", "./public/md/", path, filename))
 	if err != nil {
 		logrus.WithFields(log.Text("", err)).Warn("md file not found")
 		return ""

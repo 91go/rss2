@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/91go/rss2/server/habit"
 
 	code2 "github.com/91go/rss2/server/code"
@@ -59,6 +60,7 @@ func setupRouter() *gin.Engine {
 	// code路由
 	code := r.Group("/code")
 	code.GET("/gocn/:topic", code2.GoCnRss)
+	code.GET("/nowcoder/discuss/:tag/:type/:order", code2.NowCoderRss)
 
 	// life路由分组
 	life := r.Group("/life")

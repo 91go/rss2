@@ -3,16 +3,21 @@ package helper
 import (
 	"bytes"
 	"fmt"
-	toc "github.com/abhinav/goldmark-toc"
-	"github.com/gogf/gf/os/gfile"
-	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark/parser"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/yuin/goldmark/extension"
+
+	"github.com/yuin/goldmark/renderer/html"
+
+	toc "github.com/abhinav/goldmark-toc"
+	"github.com/gogf/gf/os/gfile"
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/parser"
 
 	"github.com/gogf/gf/os/gtime"
 	"github.com/sirupsen/logrus"
@@ -80,14 +85,24 @@ func Md2HTML(md string) string {
 	}
 	var buf bytes.Buffer
 	markdown := goldmark.New(
-		goldmark.WithParserOptions(parser.WithAutoHeadingID()),
+		goldmark.WithParserOptions(
+			parser.WithAutoHeadingID(),
+		),
 		goldmark.WithExtensions(
 			// TOC拓展
 			&toc.Extender{},
+			extension.GFM,
+			// 删除线
+			extension.Strikethrough,
+			extension.TaskList,
+			extension.Linkify,
+		),
+		goldmark.WithRendererOptions(
+			html.WithHardWraps(),
+			html.WithXHTML(),
 		),
 	)
 	if err := markdown.Convert([]byte(md), &buf); err != nil {
-		// panic(err)
 		return ""
 	}
 
@@ -96,7 +111,7 @@ func Md2HTML(md string) string {
 
 // 随机字符串
 func RandStringRunes(n int) string {
-	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	letterRunes := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 	b := make([]rune, n)
 	for i := range b {
@@ -136,7 +151,6 @@ func GetAllFiles(dir string) ([]string, error) {
 			}
 			files = append(files, subFiles...)
 		} else {
-
 			files = append(files, dir+sep+fi.Name())
 		}
 	}

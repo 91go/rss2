@@ -2,6 +2,8 @@ package localfiles
 
 import (
 	"fmt"
+	"strconv"
+
 	"github.com/91go/rss2/utils/helper"
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
@@ -9,7 +11,6 @@ import (
 	"github.com/gogf/gf/os/gfile"
 	"github.com/gogf/gf/text/gstr"
 	"github.com/gorilla/feeds"
-	"strconv"
 )
 
 const (
@@ -32,7 +33,6 @@ func LocalFileRss(ctx *gin.Context) {
 }
 
 func FileList(host, path string) []rss.Item {
-
 	ret := []rss.Item{}
 	dstPath := fmt.Sprintf("%s%s", RootDir, path)
 

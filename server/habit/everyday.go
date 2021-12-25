@@ -2,6 +2,7 @@ package habit
 
 import (
 	"fmt"
+
 	"github.com/91go/rss2/utils/helper"
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
@@ -19,25 +20,12 @@ type Routine struct {
 	Prefix, Task, Remark, Duration, TimeStub string
 }
 
-const (
-	GetUp = `1. 起床和起立时，动作要慢；避免"直立性低血压"；对身体损伤很大； 
-	2. 每天早上叠被子，清扫床上异物；`
-	Sleep = `1. *不熬夜，早睡早起，保持良好的睡眠* 
-	2. *睡觉前把手机拿远*，从而保证睡觉前和早上起床不玩手机(用音箱做闹铃)`
-	MorningExercise = `1. 晨跑前的睡眠要好，睡足8h，在睡眠和健身之间要选择睡眠；
-	2. 晨跑时间小于40min或者距离小于5km，可以跑完再吃早饭；如果大量运动，则应该饭后歇至少1h再运动；
-	3. 晨练不会导致低血糖；
-	4. 晨练前一定要补水；
-	5. 晨练一定要注意热身，因为睡了一晚之后，动态平衡能力会短暂下降，防止扭伤；
-	6. 晨跑要由慢到快，让心肺功能慢慢提高；`
-)
-
 var routines = map[string][]Routine{
 	// 早起时间最好有条理，两组10min+30min
 	Morning: {
 		{Task: "醒来", TimeStub: "6h50m", Duration: "10min", Remark: "做3*20个提肛运动，想想当天要做的事"},
-		{Task: "起床+放点提气的歌+洗漱+喝杯温水+叠被子+(处理notify)", TimeStub: "7h", Duration: "10min", Remark: GetUp},
-		{Task: "跑步5km，顺便看看feed/代码视频/娱乐视频", TimeStub: "7h10m", Duration: "30min", Remark: MorningExercise},
+		{Task: "起床+放点提气的歌+洗漱+喝杯温水+叠被子+(处理notify)", TimeStub: "7h", Duration: "10min", Remark: ReadMarkdown("everyday", "getup.md")},
+		{Task: "跑步5km，顺便看看feed/代码视频/娱乐视频", TimeStub: "7h10m", Duration: "30min", Remark: ReadMarkdown("everyday", "exercise.md")},
 		{Task: "吃饭+散步", TimeStub: "7h40m", Duration: "10min", Remark: "500ml牛奶+100g花卷/饼子/燕麦"},
 		{Task: "写代码/背面试题", TimeStub: "7h50m", Duration: "30min", Remark: "时间不固定，具体看通勤时间"},
 		{Task: "准备上班：吃水果，穿衣服", TimeStub: "8h20m", Duration: "10min", Remark: "吃水果，每天两个苹果(500g水果)"},
@@ -53,12 +41,11 @@ var routines = map[string][]Routine{
 		{Task: "洗澡", TimeStub: "21h30m", Duration: "30min", Remark: `晚洗澡都要搓澡`},
 		{Task: "泡脚，做当天代码的CR/梳理当天学到的东西/", TimeStub: "22h", Duration: "60min", Remark: "*每天泡脚*，泡脚温度40度，泡脚时间，两组，大概30min；不要饭后泡脚；"},
 		{Task: "蹲坑", TimeStub: "23h", Duration: "10min", Remark: "比较习惯晚上蹲坑"},
-		{Task: "睡觉", TimeStub: "23h", Remark: Sleep},
+		{Task: "睡觉", TimeStub: "23h", Remark: ReadMarkdown("everyday", "sleep.md")},
 	},
 }
 
 func HabitEverydayRss(ctx *gin.Context) {
-
 	res := rss.Rss(&rss.Feed{
 		Title: rss.Title{
 			Prefix: "life",
@@ -76,7 +63,6 @@ func routineFeed() []rss.Item {
 	ret := []rss.Item{}
 
 	for prefix, routine := range routines {
-
 		for _, item := range routine {
 
 			title := ""
@@ -92,7 +78,7 @@ func routineFeed() []rss.Item {
 			if CheckDateTime(item.TimeStub).Before(gtime.Now()) {
 				ret = append(ret, rss.Item{
 					Title:       title,
-					Contents:    helper.Md2HTML(item.Remark),
+					Contents:    item.Remark,
 					UpdatedTime: dateTime.Time,
 					ID:          rss.GenerateDateGUID("habit-routine", item.Task),
 				})

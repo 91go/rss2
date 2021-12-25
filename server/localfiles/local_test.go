@@ -2,10 +2,11 @@ package localfiles
 
 import (
 	"fmt"
-	"github.com/gogf/gf/text/gstr"
 	"net/http"
 	"os"
 	"testing"
+
+	"github.com/gogf/gf/text/gstr"
 )
 
 func TestGetAllFiles(t *testing.T) {

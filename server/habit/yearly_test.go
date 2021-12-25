@@ -21,11 +21,11 @@ func TestHabitTime(t *testing.T) {
 	t.Log(month, month2, year, week)
 
 	// math.IsNaN()
-	var x = 111
+	x := 111
 	fmt.Println("type: ", reflect.TypeOf(x).String())
 	fmt.Println("type: ", reflect.TypeOf(x).Name())
 
-	var xx = 11.11
+	xx := 11.11
 	fmt.Println("type: ", reflect.TypeOf(xx).String())
 }
 
