@@ -3,7 +3,6 @@ package habit
 import (
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/91go/rss2/utils/helper"
 	"github.com/91go/rss2/utils/resp"
@@ -222,20 +221,11 @@ func CheckCron(cronTime string, carbon carbon.Carbon) bool {
 	return false
 }
 
-func GetURL(r *http.Request) (Url string) {
+func GetURL(r *http.Request) (URL string) {
 	scheme := "http://"
 
 	if r.TLS != nil {
 		scheme = "https://"
 	}
-	return strings.Join([]string{scheme, r.Host, r.RequestURI}, "")
-}
-
-func GetBaseURL(r *http.Request) (Url string) {
-	scheme := "http://"
-
-	if r.TLS != nil {
-		scheme = "https://"
-	}
-	return strings.Join([]string{scheme, r.Host}, "")
+	return scheme + r.Host + r.RequestURI
 }

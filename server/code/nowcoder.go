@@ -20,6 +20,22 @@ const (
 	NowCoderDiscussURL = "https://ac.nowcoder.com/discuss/tag/"
 )
 
+var (
+	tagMap = map[string]string{
+		"2656": "golang",
+	}
+	typeMap = map[string]string{
+		"0": "全部",
+		"2": "笔经面经",
+	}
+	orderMap = map[string]string{
+		"0": "最新回复",
+		"3": "最新发表",
+		"1": "最热",
+		"4": "精华",
+	}
+)
+
 // https://ac.nowcoder.com/discuss/tag/2656?type=2&order=3
 // rsshub不支持tag，只有type和order
 func NowCoderRss(ctx *gin.Context) {
@@ -33,8 +49,8 @@ func NowCoderRss(ctx *gin.Context) {
 	res := rss.Rss(&rss.Feed{
 		URL: url,
 		Title: rss.Title{
-			Prefix: "golang",
-			Name:   "牛客网",
+			Prefix: "牛客网",
+			Name:   fmt.Sprintf("%s/%s/%s", tagMap[tag], typeMap[typ], orderMap[order]),
 		},
 		UpdatedTime: helper.GetToday(),
 	}, list)
@@ -66,10 +82,14 @@ func nowCoderList(url string) []rss.Item {
 func parseDetail(url string) (string, time.Time) {
 	doc := gq.FetchHTML(url)
 	postTime := doc.Find(".post-time").Text()
-	ss := strings.Trim(helper.TrimBlank(postTime), "编辑于")
-	toTime := helper.StrToTime(ss, "Y-m-dH:i:s")
-
 	html, _ := doc.Find(".post-topic-main").Find(".post-topic-des").Html()
 
-	return html, toTime
+	if strings.Contains(postTime, "编辑于") {
+		ss := strings.Trim(helper.TrimBlank(postTime), "编辑于")
+		toTime := helper.StrToTime(ss, "Y-m-dH:i:s")
+
+		return html, toTime
+	}
+
+	return html, helper.GetToday()
 }

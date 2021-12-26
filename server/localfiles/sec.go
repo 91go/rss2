@@ -10,7 +10,7 @@ import (
 )
 
 func LocalSecDirFileRss(ctx *gin.Context) {
-	path := fmt.Sprintf("%s/%s", ctx.Param("path"), ctx.Param("sec"))
+	path := fmt.Sprintf("%s/%s", ctx.Param("path"), ctx.Param("sub"))
 	host := ctx.Request.Host
 
 	res := rss.Rss(&rss.Feed{

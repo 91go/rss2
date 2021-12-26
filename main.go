@@ -51,7 +51,7 @@ func setupRouter() *gin.Engine {
 	// localfiles路由
 	localfiles := r.Group("/localfiles")
 	localfiles.GET("/:path", lf2.LocalFileRss)
-	localfiles.GET("/:path/:sec", lf2.LocalSecDirFileRss)
+	localfiles.GET("/:path/:sub", lf2.LocalSecDirFileRss)
 
 	// asmr路由
 	asmr := r.Group("/asmr")

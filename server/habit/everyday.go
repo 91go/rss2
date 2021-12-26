@@ -64,7 +64,6 @@ func routineFeed() []rss.Item {
 
 	for prefix, routine := range routines {
 		for _, item := range routine {
-
 			title := ""
 			dateTime := CheckDateTime(item.TimeStub)
 			formatTime := dateTime.Format("H:i")

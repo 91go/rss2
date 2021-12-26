@@ -9,7 +9,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"time"
@@ -83,7 +82,7 @@ func (dh *DingHook) Fire(entry *logrus.Entry) error {
 	}
 	defer response.Body.Close()
 
-	rb, err := ioutil.ReadAll(response.Body)
+	rb, err := io.ReadAll(response.Body)
 	if err != nil {
 		return errors.New("Read DingTalk response error: " + err.Error())
 	}
@@ -101,8 +100,8 @@ func (dh *DingHook) Fire(entry *logrus.Entry) error {
 	return nil
 }
 
-// AssembleUrl 组装url
-func AssembleUrl() string {
+// AssembleURL 组装url
+func AssembleURL() string {
 	//  把timestamp+"\n"+密钥当做签名字符串，使用HmacSHA256算法计算签名，然后进行Base64 encode，最后再把签名参数再进行urlEncode，得到最终的签名（需要使用UTF-8字符集）。
 	token := config.GetString("dingtalk.token")
 	secret := config.GetString("dingtalk.secret")

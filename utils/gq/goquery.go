@@ -19,6 +19,8 @@ const (
 	LabelA = "a"
 )
 
+// todo 封装支持各种header/path/query参数
+
 // FetchHTML 获取网页
 func FetchHTML(url string) *query.Document {
 	resp, err := ghttp.NewClient().Get(url)

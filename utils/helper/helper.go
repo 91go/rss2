@@ -3,7 +3,6 @@ package helper
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"os"
@@ -137,7 +136,7 @@ func GetContentType(filePath string) string {
 }
 
 func GetAllFiles(dir string) ([]string, error) {
-	dirPath, err := ioutil.ReadDir(dir)
+	dirPath, err := os.ReadDir(dir)
 	if err != nil {
 		return nil, err
 	}

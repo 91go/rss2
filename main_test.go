@@ -23,7 +23,7 @@ import (
 //
 // http://127.0.0.1:8090/porn/ysk/xiuren%E7%A7%80%E4%BA%BA%E7%BD%91
 func TestDingTalkHook(t *testing.T) {
-	dh, err := log.NewDingHook(log.AssembleUrl(), nil)
+	dh, err := log.NewDingHook(log.AssembleURL(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
