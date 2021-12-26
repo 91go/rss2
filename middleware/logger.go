@@ -33,7 +33,7 @@ func Logger() gin.HandlerFunc {
 	// 日志消息输出可以是任意的io.writer类型
 	logrus.SetOutput(rolling(path))
 
-	dh, _ := log.NewDingHook(log.AssembleUrl(), nil)
+	dh, _ := log.NewDingHook(log.AssembleURL(), nil)
 
 	logrus.AddHook(dh)
 
