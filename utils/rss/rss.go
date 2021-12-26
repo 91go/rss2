@@ -183,6 +183,11 @@ func difference(slice1, slice2 []string) []string {
 	return diff
 }
 
-func GenerateDateGUID(tag, link string) string {
+func GenDateID(tag, link string) string {
 	return fmt.Sprintf("tag:%s,%s:%s", tag, gtime.Date(), link)
+}
+
+// 用来处理不会更新的feed
+func GenFixedID(tag, link string) string {
+	return fmt.Sprintf("tag:%s,%s", tag, link)
 }

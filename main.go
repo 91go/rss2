@@ -61,6 +61,9 @@ func setupRouter() *gin.Engine {
 	life := r.Group("/life")
 	life.GET("/iresearch", life2.IResearchRss)
 	life.GET("/weather", life2.WeatherRss)
+	life.GET("/onetab/shared/:page", life2.OneTabSharedRSS)
+	life.GET("/onetab/txt", life2.OneTabTXTRSS)
+
 	// habit
 	life.GET("/habit/yearly", habit.HabitYearlyRss)
 	life.GET("/habit/md", habit.HabitMDRss)

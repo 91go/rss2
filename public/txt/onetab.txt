@@ -1,0 +1,220 @@
+https://liujiacai.net/blog/2018/07/08/mark-sweep/#%E7%A2%8E%E7%89%87%E9%97%AE%E9%A2%98 | 深入浅出垃圾回收（二）Mark-Sweep 详析及其优化 - Keep Coding
+https://liujiacai.net/blog/2018/08/04/incremental-gc/ | 深入浅出垃圾回收（三）增量式 GC - Keep Coding
+https://liujiacai.net/blog/2018/08/18/generational-gc/ | 深入浅出垃圾回收（四）分代式 GC - Keep Coding
+https://mp.weixin.qq.com/s?__biz=Mzg3NTU3OTgxOA==&mid=2247486752&idx=1&sn=2eafb908903e408b85bb9d8a10deb100&source=41#wechat_redirect | golang 混合写屏障原理深入剖析，这篇文章给你梳理的明明白白！！！
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651441072&idx=2&sn=aa825979cca0a18ee3d72f8756decbce | 深度剖析 Golang 的 GC 扫描对象的实现
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651440710&idx=2&sn=3847c6a275fa09f9051fcab250c8b817#tocbar--1dhark4 | 万字长文图解 Go 内存管理分析：工具、分配和回收原理
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651440858&idx=4&sn=0eda54163607db3f71a5000fef6ec27e#tocbar-jki9c5 | golang 垃圾回收 （一）概述篇
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651440873&idx=3&sn=bad0723879e38d593aad1e5e88fb76c4 | golang 垃圾回收（二）屏障技术
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651440903&idx=3&sn=1656162f2b609602f7f35dfda444ed8b | golang 垃圾回收（三）插入写屏障
+https://liqingqiya.github.io/golang/gc/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/2020/06/13/gc4.html | golang 垃圾回收（四）删除写屏障
+https://liqingqiya.github.io/golang/gc/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/%E5%86%99%E5%B1%8F%E9%9A%9C/2020/07/24/gc5.html | golang 垃圾回收（五）混合写屏障
+https://mp.weixin.qq.com/s?__biz=MjM5MDUwNTQwMQ==&mid=2257484062&idx=1&sn=40a8cca15b9c215f8a29e60e6d8a3542&scene=21#tocbar-k8rog8 | Go GC 20 问
+
+https://go-zero.dev/cn/ | 简介 · go-zero document
+https://mp.weixin.qq.com/s?__biz=Mzg2ODU1MTI0OA==&mid=2247484642&idx=1&sn=ce3238b27f49494ead5718c350f36d93 | go-zero 实战之 blog 系统
+https://mp.weixin.qq.com/s?__biz=Mzg2ODU1MTI0OA==&mid=2247484634&idx=1&sn=85674e75ebefe69778758b3f2d428fd2 | 你了解微服务的超时传递吗？
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651449979&idx=2&sn=2c49355de00c14febc22d2a7e600f885 | Go：微服务注册与发现的原理与实现
+https://mp.weixin.qq.com/s?__biz=Mzg2ODU1MTI0OA==&mid=2247484621&idx=1&sn=f7e4fc58386888791136acf86e3e8e89 | 多图详解万星 Restful 框架原理与实现
+https://mp.weixin.qq.com/s?__biz=Mzg2ODU1MTI0OA==&mid=2247484580&idx=1&sn=55a0a089f1e1c2508d98563d1808cb59 | 微服务注册与发现的原理与实现
+https://mp.weixin.qq.com/s?__biz=Mzg2ODU1MTI0OA==&mid=2247484603&idx=1&sn=1721087272eeef41deb1c0d25b610369 | 定制个机器人帮你和Ta聊天
+
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651451271&idx=3&sn=43bcb53845660775f73f03fa359865a6 | 一文了解 etcd watch 实现
+https://mp.weixin.qq.com/s?__biz=MzI4NDM0MzIyMg==&mid=2247489043&idx=2&sn=d2a5bdb76f65df8ad93d18487b17f823 | etcd:从应用场景到实现原理的全方位解读
+https://www.zhihu.com/question/33979489/answer/2200705612 | 从操作系统内存管理来说，malloc申请一块内存的背后原理是什么？ - 知乎
+
+https://github.com/lifei6671/interview-go | lifei6671/interview-go: golang面试题集合
+https://www.yuque.com/chenjun-cqaxh/wppbuo | Golang · 语雀
+https://github.com/wangguanfu/go- | wangguanfu/go-: go 语言学习
+https://www.yuque.com/codebee/xf5gn1#%20%E3%80%8A%E9%9D%A2%E8%AF%95%E9%A2%98%E9%9B%86%E3%80%8B | 面试题集 · 语雀
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651445695&idx=2&sn=284d17f77410265dc2745e2573202822#tocbar-k75a1 | 一份 Go 面经：答案期待一起完善
+
+https://mp.weixin.qq.com/s?__biz=MzI4NDM0MzIyMg==&mid=2247488722&idx=1&sn=44808293bcdce70f73884f3ed94004af | 聊一聊Go中面向包的设计
+https://mp.weixin.qq.com/s?__biz=MzkyMDAzNjQxMg==&mid=2247484349&idx=1&sn=257ae4198fe075ac7475783f5f661129 | 【Golang】单指针实现双链表
+https://xiaomi-info.github.io/2020/03/27/oo-use-template/ | 设计模式基础之——模板模式业务实战 | 小米信息部技术团队
+https://xie.infoq.cn/article/7ed9959f9acaacdbfec73516a | Redis常见问题--哈希冲突 - InfoQ 写作平台
+https://zhuanlan.zhihu.com/p/411224778 | 轻松理解 Docker 网络虚拟化基础之 veth 设备！ - 知乎
+https://studygolang.com/articles/19402 | Go 中的缓存现状 - Go语言中文网 - Golang中文社区
+https://mp.weixin.qq.com/s?__biz=Mzg2ODU1MTI0OA==&mid=2247484318&idx=1&sn=ccbda697f4e44da4a7d71692487c539c | 更简的并发代码，更强的并发控制
+https://blog.huoding.com/2021/09/30/955 | 再谈Golang内存对齐 | 火丁笔记
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247492405&idx=1&sn=e099d3705bea465eae85f20d5c0e2871 | 为什么 Go 语言把类型放在后面？
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247492405&idx=2&sn=ca32f77a4a60136003a98d17683b70b7 | i/o timeout ， 希望你不要踩到这个net/http包的坑
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247492367&idx=2&sn=206636d37ff9c58a7153fd607618d7a2 | 编程模式之 Go 如何实现装饰器
+https://zhuanlan.zhihu.com/p/96898995 | 利用多线程在Go中更快地读取大文件 - 知乎
+https://learnku.com/articles/54948 | 重大翻车现场，记一次线上事故 | Go 技术论坛
+https://mp.weixin.qq.com/s/VjcTUOtQxIG26-OY-PcE0A#tocbar--qe8dsl | Go 并发模式
+
+https://zhuanlan.zhihu.com/p/425747451 | 轻松理解 Docker 网络虚拟化基础之网络 namespace！ - 知乎
+https://mp.weixin.qq.com/s?__biz=MzU3NzEwNjI5OA==&mid=2247484744&idx=1&sn=417168befde46047a23aac23f9b92f30 | Context这三个应用场景，你知吗
+https://darjun.github.io/2018/05/07/bounds-check-elimination/ | 深入理解Go之BCE优化 - 大俊的博客
+https://zhuanlan.zhihu.com/p/46616763 | 超适合小项目的 K8S 部署策略 - 知乎
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247492251&idx=2&sn=126d21d1b71c148559fc47fb82ee5eac | 关于 Go 程序错误处理的一些建议
+https://blog.huoding.com/2021/10/14/964 | 聊一个string和[]byte转换问题 | 火丁笔记
+https://mp.weixin.qq.com/s?__biz=MzI2MzEwNTY3OQ==&mid=2648982905&idx=1&sn=3ad8a9d47beadc2d6ae979e35ab7fc73 | 分析 Go time.After 引起内存暴增 OOM 问题
+https://zhuanlan.zhihu.com/p/421276975 | 深入理解 Linux 上软件实现的“交换机” - Bridge! - 知乎
+https://blog.huoding.com/2021/10/08/958 | 为什么会有atomic.LoadInt32 | 火丁笔记
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247492355&idx=1&sn=0e468b75394ba9778437b5c72e43c3ad | Go 切片导致内存泄露，被坑两次了！
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247492416&idx=2&sn=e20f2ce5a0f886ede4a8b707304d91c0 | Go 五种原子性操作的用法详解
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651450170&idx=1&sn=195d96d6067d5502c13e251872e7b0d5 | Go select 死锁的一个细节
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651450193&idx=3&sn=f3c31e5d2dff36c64a95d132446d8978 | sync Once：不是吧，不到20行源码居然来回改了这么多次
+https://mp.weixin.qq.com/s?__biz=MzA5OTAyNzQ2OA==&mid=2649742374&idx=2&sn=a4f155a8db5fb348348396e1530bd864 | 你还在 Docker 中跑 MySQL？恭喜你，该下岗了！
+https://mp.weixin.qq.com/s?__biz=MzA5OTAyNzQ2OA==&mid=2649742505&idx=1&sn=881493ee05c35c576443710b59385183 | 快速了解 gRPC 框架
+https://mp.weixin.qq.com/s?__biz=MzI4NDM0MzIyMg==&mid=2247488929&idx=1&sn=e276605718529702158624839facea0b | 为什么 Go 语言把类型放在后面？
+https://mp.weixin.qq.com/s?__biz=MzIxNTM3NDE2Nw==&mid=2247487939&idx=1&sn=532cb1287a0f6859fe84815e9d03075e | 每个Wi-Fi都有独一无二的IP地址吗？
+https://mp.weixin.qq.com/s?__biz=Mzg2ODU1MTI0OA==&mid=2247484656&idx=1&sn=b478e0ad17611ce95f34e2f8d5e093e1 | Go + Redis 布隆过滤器原理与实现
+https://mp.weixin.qq.com/s?__biz=MzA5OTAyNzQ2OA==&mid=2649742722&idx=1&sn=0288779f3cf8691f1c9a3001fe3c69e6 | Redis 进阶笔记
+https://mp.weixin.qq.com/s?__biz=MzA5OTAyNzQ2OA==&mid=2649742804&idx=1&sn=469e102bc10ce3e2404cbffad9ed9654 | 一篇文章彻底搞懂 Kafka 的存储架构
+https://mp.weixin.qq.com/s?__biz=MzI4NDM0MzIyMg==&mid=2247489043&idx=1&sn=03d35305573287c547de3dfcca1359a0 | 诱发 Goroutine 挂起的 27 个原因，你知道几个？
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247492814&idx=2&sn=284effb0fb5f8b4b96f1e242e4d93a98 | 一些实用的 Go 编程模式 | Builder模式能用来解决什么问题？
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247492851&idx=2&sn=611ab78261faa4bb7cd4a000129a7063 | Go 如何利用 Linux 内核的负载均衡能力
+https://mp.weixin.qq.com/s?__biz=MjM5Njg5NDgwNA==&mid=2247487146&idx=1&sn=2786cd64da86d3d3c976ec8ddf0cbbf8 | Linux文件系统十问
+https://mp.weixin.qq.com/s?__biz=MzI2ODAwMzUwNA==&mid=2649296623&idx=1&sn=1deb01ea1a3e9249035955d09d23a188 | OCI 与容器镜像构建
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651450750&idx=3&sn=94a5f56ea0eecf74742774fc4e4e32ef | 彻底搞懂channel原理(一)
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651450798&idx=3&sn=6f59d1c66137ee7b785644dfd7fb0679 | Context源码，再度重相逢
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651450811&idx=2&sn=b3648467dc8d2a73a01641810cb53f2d | Go 切片是胖指针
+https://mp.weixin.qq.com/s?__biz=MzI4NDM0MzIyMg==&mid=2247489095&idx=2&sn=17ec47bf02cc5470e4130b8dc9e753be | 如何有效控制 Go 线程数？
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651450283&idx=3&sn=aca349d5f5c79e7c073ad32b24e339d7#tocbar-1evd49 | 使用go-metrics在Go应用中增加度量
+https://www.zhihu.com/question/36431635?sort=created | 有哪些常见的数据库优化方法？ - 知乎
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651450289&idx=2&sn=706e95dc5496311a4c8dfc8b2cb44e0a | Go 泛型 filter 功能实现
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247492869&idx=1&sn=107d55d2dc0e48bcc9e4f17b8ca1b3ab | 为什么 Go 不支持函数重载和缺省参数？
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247492727&idx=1&sn=c47fb5108ac09b980a4bdb878f8bb57d | 为什么 Go 不支持循环引用？
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247492553&idx=2&sn=af2f9ff60c3d89b0088e85437f7a5bae | 一些实用的 Go 编程模式 | Options模式
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247492595&idx=1&sn=4261f73220db5c4575bf564b26376df5 | Go 语言设计失误，缺乏远见？
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247492622&idx=2&sn=27bc293a36e8672e7e596c4be77d23e4 | Go 中如何强制关闭 TCP 连接
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651450350&idx=2&sn=3dd4cf2d90419c0543b66ab951edeb29 | 不要写破坏性的 Go 库
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651450565&idx=3&sn=634a5b095d54de65c87e817837d9205c | Go - 基于逃逸分析来提升程序性能
+
+https://www.flysnow.org/2021/03/29/learn-for-interview.html | 最近面试了不少人，忍不住想聊聊为了面试而学习这件事 | 飞雪无情的博客
+https://www.flysnow.org/2021/04/02/self-intro.html | 最近面试了不少人，忍不住想聊聊几种不合格的自我介绍 | 飞雪无情的博客
+https://mp.weixin.qq.com/s?__biz=MzAwMDU1MTE1OQ==&mid=2653557285&idx=1&sn=6eedd04eac05b1e531b8096ccd6e7cf9 | 如何保证MySQL和Redis的数据一致性？10张图带你搞定！
+https://mp.weixin.qq.com/s?__biz=MzI2ODAwMzUwNA==&mid=2649296644&idx=2&sn=acc740637cac2e624ecbbf48fde78f61 | 【深度】这一次，彻底搞懂 kube-proxy IPVS 模式的工作原理！
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651450895&idx=2&sn=c6f5e576373ee82e9dc812ee997101b4 | Go：多错误管理
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651450903&idx=2&sn=7181b014432d16274cb949d96d38b928 | Go 中常用的四大重构技术
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247492905&idx=2&sn=e5e786b89793dbece7176ba0fe847c55 | 盘点一下结构体标签在 Go 中的应用
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651450929&idx=3&sn=d03a7bdcadc99cb00e1bc901ee025df2 | Go 每日一库之 goth
+https://mp.weixin.qq.com/s?__biz=MzAwMDU1MTE1OQ==&mid=2653557609&idx=1&sn=9ee127addb3d59542d13d92328bef739 | 终于！12年后Golang支持泛型了！（内含10个实例）
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247492975&idx=2&sn=bf0fd795d7291ded1181293cbcbebea8 | 如何保留 Go 程序崩溃现场
+https://mp.weixin.qq.com/s?__biz=MzI4NDM0MzIyMg==&mid=2247489155&idx=1&sn=990623fa055785b1db9c0b6440744118 | Go 语言设计失误，缺乏远见？
+https://mp.weixin.qq.com/s?__biz=MzI2ODAwMzUwNA==&mid=2649296665&idx=2&sn=eec3d0e6d475e00313ac30401cc11eeb | 浅析 Kubelet 驱逐机制
+https://mp.weixin.qq.com/s?__biz=MzI2MzEwNTY3OQ==&mid=2648983302&idx=1&sn=596997b1ee7eb5bf8cd41beb9f895d3b | Go 切片这道题，吵了一个下午！
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651450953&idx=1&sn=dc1f34a4f815d0e60315662353d3c867 | Go1.18 快讯：Module 工作区模式，太棒了
+https://mp.weixin.qq.com/s?__biz=MzI4NDM0MzIyMg==&mid=2247489177&idx=1&sn=633f0d7111ebec602e54177c90d91df5 | 一个Go方法，五种变换
+https://mp.weixin.qq.com/s?__biz=MzI2ODAwMzUwNA==&mid=2649296696&idx=1&sn=4765fe450ec5471136061673bf5960a5 | GitOps 应用实践系列（五）-- Canary （金丝雀）发布/部署
+https://mp.weixin.qq.com/s?__biz=MzA5OTAyNzQ2OA==&mid=2649743627&idx=2&sn=248997a73368fe2f077d2f98b47b961f | Kubernetes中一种细力度控制Pod部署的方案
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651450987&idx=1&sn=4c8a3634708c569eac63599ac0773678 | 一定记住，Go 中不要犯这 5 个错误
+
+https://github.com/CleverBamboo/renting | CleverBamboo/renting: go-micro v3微服务实战-租房项目
+https://github.com/yanue/go-esport-account | yanue/go-esport-account
+https://github.com/yanue/go-esport-common | yanue/go-esport-common
+https://github.com/Junedayday/micro_web_service | Junedayday/micro_web_service: build a micro web service for go users
+https://github.com/xbox1994/go-micro-example | xbox1994/go-micro-example: A micro service architecture example based on go-micro
+https://github.com/sksmith/go-micro-example | sksmith/go-micro-example: A production-ready microservice using Go and a few lightweight libraries
+https://github.com/microhq/examples | microhq/examples: Go Micro examples. Moved to go-micro/examples.
+https://github.com/CleverBamboo/go-micro-examples | CleverBamboo/go-micro-examples: Go Micro v3 项目实战
+https://github.com/wotmshuaisi/gomicroexample | wotmshuaisi/gomicroexample: go-micro example project for starter
+https://mp.weixin.qq.com/s?__biz=MzI4NDM0MzIyMg==&mid=2247489067&idx=1&sn=703a82ca061b04d3ef3e8df05a423585 | Go web和微服务实战教程推荐
+
+https://juejin.cn/book/6844733769996304392 | MySQL 是怎样运行的：从根儿上理解 MySQL - 小孩子4919 - 掘金小册
+
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651451001&idx=1&sn=5ecc3d1f95f50f78b436176057bb2118 | mutex 出问题怎么办？强大的 goroutine 诊断工具
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651451078&idx=3&sn=7181b70345938e2ffaf73f4926656487 | 如何保留 Go 程序崩溃现场
+https://mp.weixin.qq.com/s?__biz=MzI4NDM0MzIyMg==&mid=2247489189&idx=1&sn=398c079f9ba59cc00d5b701aee9a126a | 用手写一个工具的过程讲清楚Go反射的使用方法和应用场景
+https://mp.weixin.qq.com/s?__biz=MzI2ODAwMzUwNA==&mid=2649296734&idx=1&sn=ec98a1fdbd011c5610bd5aa3537d23fb | 彻底搞懂容器技术的基石： cgroup
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651451226&idx=2&sn=f161dfc5282913b36600c230ea91150f | Go: Goroutine 泄漏检查器
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651451226&idx=3&sn=6ca26960188f2e291add17ed19aa9ef9 | 性能优化：Go Ballast 让内存控制更加丝滑
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247493136&idx=2&sn=29d6e162ebd96cb1ae08bbd0c40311e5 | Go的 atomic.Value 为什么不加锁也能保证数据线程安全？
+https://mp.weixin.qq.com/s?__biz=MzI2ODAwMzUwNA==&mid=2649296820&idx=2&sn=66466cf1ae88d5669200a0d86f668b6e | Shell 脚本避坑指南（一）
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247493165&idx=2&sn=4b5086b389a423160ae372e7da84c0e0 | Go 流水线编程模式
+https://mp.weixin.qq.com/s?__biz=MzI4NDM0MzIyMg==&mid=2247489226&idx=1&sn=279a90ebfad666c6754d67ccbe66e824 | Go语言如何操纵Kafka保证无消息丢失
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651451279&idx=2&sn=1531bff9382e9abd38c0eae3f862f93d | 万字长文：Go error 处理最佳实践
+https://mp.weixin.qq.com/s?__biz=MzA5OTAyNzQ2OA==&mid=2649744211&idx=2&sn=e1e4b8bb78c940b8989b6c49112ae5e4 | 如何使用Graylog来收集日志？
+
+https://www.zhihu.com/question/506316955 | 自己做了一线领导后发现，发现真不好干，得哄着下面，还要应付上面，是常态吗？ - 知乎
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651444226&idx=4&sn=77d207daf6cf76ec91923982f645fe5f | 每日一库之如何快速打造一款钉钉 Go sdk
+
+https://mp.weixin.qq.com/s?__biz=MzUzNjE3NzQ3Nw==&mid=2247489926&idx=1&sn=eac357cebcbfd7250828cdda88d9f122 | 全都安排好了，财务自由路上我们需要了解的每一个问题
+https://mp.weixin.qq.com/s?__biz=MzAwMDU1MTE1OQ==&mid=2653557331&idx=1&sn=62ad14dacd62f6a3907116f88bd20f4b | 玩转直播：如何从 0 到 1 构建简单直播系统
+https://wizardforcel.gitbooks.io/daxueba-kali-linux-tutorial/content/1.html | 1.1 什么是安全渗透 | 大学霸 Kali Linux 安全渗透教程
+https://dreamgoing.github.io/linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86.html | linux内存管理
+
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247491983&idx=2&sn=f44e4cc3be04f06414572642415e4154 | 内联函数和编译器对 Go 代码的优化
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651450075&idx=3&sn=975dd50a7fe97cdfd74674a71dbe5a73 | Go单测从零到溜系列—3.接口测试
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651450040&idx=2&sn=5f509ab84a197e2062bb57b25a9d3601 | 图解 Go 常量
+https://mp.weixin.qq.com/s?__biz=MzA5OTAyNzQ2OA==&mid=2649739583&idx=2&sn=a4231ce535a003bbc8cdda14a4d5cf08 | 两个常见的Kubernetes问题以及解决方法
+https://mp.weixin.qq.com/s?__biz=MzAwNTc3OTE5Mg==&mid=2657445584&idx=1&sn=d2fea88dbb92c7512a4e125dad7150f3 | 带你探秘 Go Web 框架
+https://mp.weixin.qq.com/s?__biz=MzI4NDM0MzIyMg==&mid=2247488692&idx=1&sn=7186b2ab1fd9d63f39875dcdf8404ffe | 中秋快乐,布隆过滤器的原理了解一下
+https://mp.weixin.qq.com/s?__biz=MzkyMDAzNjQxMg==&mid=2247484337&idx=1&sn=18f5221c2957337d1a16c0795f48a7f7 | sync.Once化作一道光让我顿悟
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651449964&idx=2&sn=3f1fa4c91ea630e516c2ba9d1feaba67 | Docker 参考架构：设计可扩展、可移植的 Docker 容器网络
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651449964&idx=3&sn=ee3d552e54577d2c24846ce4abd12bb0 | Golang中的for-range趟坑
+https://mp.weixin.qq.com/s?__biz=MzA5OTAyNzQ2OA==&mid=2649739248&idx=1&sn=1f486e97e92b3cd452d1f2050e046416 | 细说Redis分布式锁
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651449936&idx=3&sn=3d544c7946487735e7c88934db82c275 | Go中被闭包捕获的变量何时会被回收
+https://mp.weixin.qq.com/s?__biz=MzA5OTAyNzQ2OA==&mid=2649739177&idx=2&sn=8a349eb3e7459bed592501c80d916399 | Prometheus和Zabbix的对比
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651449923&idx=2&sn=0a8f605b8e620f832bc7f54211d710b3 | Gin 框架绑定 JSON 参数使用 jsoniter
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651449923&idx=3&sn=6e3a04cbcd6504841576f85329244033 | Go语言如何操纵Kafka保证无消息丢失
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247491873&idx=2&sn=2b845fc077547a3790cf6cd6d380fbad | Go语言的IO库那么多，我该怎么选？
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651449912&idx=2&sn=bf836bb8448bf94546f9f48988b125b7 | ORM 还是 非 ORM？
+https://mp.weixin.qq.com/s?__biz=MzI4NDM0MzIyMg==&mid=2247488668&idx=1&sn=85c3100f3cabb3982f340cee2f26906a | gotraining并发编程之Channel篇 文末有彩蛋
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651449873&idx=2&sn=5334e81c18ca6e22e8806847fd1adb4a | Go 内存管理之三：CGO
+https://mp.weixin.qq.com/s?__biz=MzI4NDM0MzIyMg==&mid=2247488606&idx=2&sn=5df1d920587b5ee6c3b648f667494929 | 你知道K8S暴露服务的方式有哪些吗？
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247491855&idx=2&sn=01d5e119904f894357581a94596a1c89 | 你有考虑过 defer Close() 的风险吗
+https://mp.weixin.qq.com/s?__biz=MzI4NDM0MzIyMg==&mid=2247488602&idx=1&sn=b1e43376d056cf682836450b78bd7e4a | 如何保证缓存和数据库的一致性？
+https://qcrao.com/2021/09/09/look-up-go-doc-gracefully/ | 写 Go 时如何优雅地查文档 | qcrao
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651449825&idx=3&sn=3d988ff74abdc9a63096121ed90e5870 | Go 第三方库源码分析：juju/ratelimit
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651449818&idx=3&sn=4f8951d67e43841fc04e76c4286e51ab | Go 实现 ringbuffer
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651449810&idx=3&sn=4a4cd9ac9573c86a52645dc6ebfb9dc0 | Go：说说fanIn和fanOut模式
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247491708&idx=1&sn=172b6fd9a2eab7b6eb00ffa46395f904 | 会诱发 Goroutine 挂起的 27 个原因
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247491708&idx=2&sn=00b3df5dcb06e29a6c54eb8aa3290917 | Go 官方设计了一个信号量库
+https://mp.weixin.qq.com/s?__biz=MzA5OTAyNzQ2OA==&mid=2649738427&idx=1&sn=ce03cf21af69c29bda3fe2608a887972 | 云原生是怎么样让我们失去工作的？
+https://mp.weixin.qq.com/s?__biz=MzI4NDM0MzIyMg==&mid=2247488543&idx=1&sn=d0c293fb9a44fa2038c151ddaf1d9bac | 看看国外的Gopher培训教程是怎样的？
+https://mp.weixin.qq.com/s?__biz=MzA5OTAyNzQ2OA==&mid=2649738347&idx=1&sn=627749fe5c972e1d0a85b2754491fe31 | 深入了解CI/CD：工具、方法、环境、基础架构的全面指南
+https://mp.weixin.qq.com/s?__biz=MzkyMDAzNjQxMg==&mid=2247484309&idx=1&sn=31f7fd3001398cf5333fc054565304c6 | 悄悄地！这是一次还未完成的踩坑目录分享
+
+https://www.kancloud.cn/zhangyi8928/kernel/2165188 | 前言 · Linux kernel脉络和主干总结 · 看云
+https://wizardforcel.gitbooks.io/network-basic/content/0.html | 网络基本功（一）：细说网络传输 | 网络基本功系列
+https://www.kancloud.cn/digest/understandingnginx/202588 | Nginx 内存池管理 · 理解 Nginx 源码 · 看云
+http://skrshop.tech/#/ | 前言
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651449664&idx=3&sn=1e4dc3037af3b08cc0e5487ede56570a | [警惕] 请勿滥用goroutine
+https://draveness.me/golang/ | Go 语言设计与实现 | Go 语言设计与实现
+https://zhuanlan.zhihu.com/p/347562875#tocbar-h0cg63 | 说出来你可能不信，内核这家伙在内存的使用上给自己开了个小灶！ - 知乎
+https://i6448038.github.io/2019/12/01/redis-data-struct/ | 图解redis五种数据结构底层实现(动图哦) - 菜刚RyuGou的博客
+https://mp.weixin.qq.com/s?__biz=MzA4MTc4NTUxNQ==&mid=2650524542&idx=1&sn=dc32eef9e033be79ad122a2ccbe88c2b | 深度长文：从bio到nio到aio，再到响应式编程
+https://mp.weixin.qq.com/s?__biz=MzkyMDAzNjQxMg==&mid=2247484204&idx=1&sn=1bae3e2dbdc14bbe1abd2483705f7cd5 | i/o timeout ， 希望你不要踩到这个net/http包的坑
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651449573&idx=2&sn=5fba1ec413c182fe62c21b874c6506a6 | Go 中的进阶测试模式
+https://lotabout.me/2020/Book-Notes-InnoDB-Engine-2nd-edition/ | 《MySQL技术内幕：InnoDB存储引擎（第2版）》 | 三点水
+https://www.cnblogs.com/sunsky303/p/13848128.html | Linux虚拟地址空间布局 - sunsky303 - 博客园
+https://mp.weixin.qq.com/s?__biz=MzAwNTc3OTE5Mg==&mid=2657444539&idx=1&sn=f2211d7ed33b073ba91f1ccaa50c8e93 | MySQL：好好的索引，为什么要下推？
+https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651967369&idx=1&sn=d639abf6772a72c25cc2537749258163 | 这次终于懂了，InnoDB的七种锁（收藏）
+http://weekly.dockone.io/article/10791 | 警惕分布式常见的这十大坑 - DockOne.io
+https://zhuanlan.zhihu.com/p/27800985 | 如何做Go的性能优化？ - 知乎
+https://colobu.com/2017/01/05/-T-or-T-it-s-a-question/ | []T 还是 []*T, 这是一个问题
+https://www.infoq.cn/article/tbltj8a6pq3x1uqiwlxo | 有赞 GO 项目单测、集成、增量覆盖率统计与分析-InfoQ
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247489727&idx=2&sn=9a1ce9f8835b68fe38352fdc2b16e9cb | 说好 defer 在 return 之后执行，为什么结果却不是？
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&mid=2651448059&idx=2&sn=14744aaa71c7ff3d08fad57d1f7fec65 | GM到GMP，Golang经历了什么？
+https://eddycjy.com/posts/go/go-tips-gmp-p/ | Go 面试官：GMP 模型，为什么要有 P？
+https://www.bookstack.cn/read/qcrao-Go-Questions/README.md | 项目介绍 - 《Go 语言问题集(Go Questions)》 - 书栈网 · BookStack
+
+https://www.codedump.info/post/20200501-system-guide-for-application-programmer/ | 《面向应用开发者的系统指南》导论 - codedump的网络日志
+https://zhuanlan.zhihu.com/p/82368982 | 开发内功修炼CPU篇汇总，值得收藏 - 知乎
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&amp;mid=2651439650&amp;idx=5&amp;sn=12764c4477f850c3f5f627545c45ec40&amp;chksm=80bb1cd0b7cc95c6e3a52819cea3e1e36e17360a05fa5c8912c5299c98a9fa179d1681488487#rd | 硬不硬你说了算！近 40 张图解被问千百遍的 TCP 三次握手和四次挥手面试题
+https://mp.weixin.qq.com/s/E01HoRkgoCv8dLFfW0HTvA#tocbar--8amiiq | 服务器性能优化的正确姿势（好文推荐）
+https://mp.weixin.qq.com/s?__biz=MzkwOTIxNDQ3OA==&mid=2247532291&idx=1&sn=373f2293bb901ce0f8d4a93e98c55ef2&source=41#wechat_redirect | 特辑丨80篇数据库&大数据精华内容全在这里了
+https://www.zhihu.com/column/c_144694924 | 汇编入门 - 知乎
+https://www.qcrao.com/2020/12/27/blogs-written-by-xargin/ | 那些年曹大写过的博客 | qcrao
+https://mp.weixin.qq.com/s?__biz=MzIwNDIzODExOA==&amp;mid=2650167627&amp;idx=1&amp;sn=a4954136e0ff903c947e6d0b7a65816a&amp;chksm=8ec1c502b9b64c147aebe342b0db95fce55a93713daf337224f55c9444453f1dacad5983665a#rd | 调度系统设计精要
+https://luyuhuang.tech/2020/12/09/kcp.html#52-%E6%85%A2%E5%90%AF%E5%8A%A8 | 详解 KCP 协议的原理和实现 - Luyu Huang's Tech Blog
+https://mp.weixin.qq.com/s?__biz=MzAwNTc3OTE5Mg==&mid=2657443920&idx=1&sn=57fe3c9dc3a0f4ef3de2ca00dd8927cc | 码了 2000 多行代码就是为了讲清楚 TLS 握手流程
+https://mp.weixin.qq.com/s/6JNLyVlE6BWU-zScNuaYvQ#tocbar--up5f3g | 图解 | 深入揭秘 epoll 是如何实现 IO 多路复用的！
+https://zhuanlan.zhihu.com/p/373060740 | 图解 Linux 网络包发送过程 - 知乎
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&amp;mid=2651439692&amp;idx=4&amp;sn=8e616cf2e7cca18d1a6639c2111401de&amp;chksm=80bb1cbeb7cc95a804910499dd500385d7b7724177854a6d28e9f6e73ab154d37be5df3c72b9#tocbar-n4p4q8 | 你还在为 TCP 重传、滑动窗口、流量控制、拥塞控制发愁吗？看完图解就不愁了
+https://www.itzhai.com/articles/decrypt-the-threading-model-of-common-server-programs.html | 性能追击：万字长文30+图揭秘8大主流服务器程序线程模型 | Node.js,Apache,Nginx,Netty,Redis,Tomcat,MySQL,Zuul | IT宅-arthinking's blog
+https://mp.weixin.qq.com/s?__biz=MzAwNTc3OTE5Mg==&mid=2657444526&idx=1&sn=efbfc0072521516784cb893da9435016 | 理论结合实践详解 B+ 树存储引擎（PPT）（多图）
+https://mp.weixin.qq.com/s?__biz=MzI2MzEwNTY3OQ==&mid=2648982139&idx=1&sn=42d58c282f5a4f3459bb58bddaf89d1d | 一日一技：为什么Golang新版本不怕死循环
+https://zhuanlan.zhihu.com/p/165304889 | linux内核，三十个相关问题 - 知乎
+
+https://www.cnblogs.com/nyist-xsk/p/11496519.html | golang 中 map 转 struct - xushukui - 博客园
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&amp;mid=2651439253&amp;idx=4&amp;sn=b9933ab5c9f970941ff7fe876283ce69&amp;chksm=80bb1e67b7cc9771cac279e2ed6dff5df553c0cf97173c0e2d20b488286012259e7124e7b16e#tocbar--uutkin | 深挖Go系列之读懂interface的底层设计
+https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247492869&idx=2&sn=4597391d0c710743b4f5a872071a520e | Go interface 原理剖析：类型转换
+https://colobu.com/2021/10/24/go-generic-eliding-interface/ | Go泛型系列：再简化，省略接口
+https://www.cnblogs.com/techflow/p/13474641.html | Golang | 既是接口又是类型，interface是什么神仙用法？ - Coder梁 - 博客园
+https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&amp;mid=2651439330&amp;idx=5&amp;sn=7798c0a3d4e0d01111eef97bed2c2b00&amp;chksm=80bb1e10b7cc9706f64818c5a5dd29f66f7570739b9cc0bf77c3eba7918e11c5881dcf1d5a8f#rd | Golang中interface内部构造与面试真题分析
+https://sanyuesha.com/2017/07/22/how-to-understand-go-interface/ | 理解 Go interface 的 5 个关键点 | 三月沙

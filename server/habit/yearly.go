@@ -151,7 +151,7 @@ func habitFeed() []rss.Item {
 					Title:       title,
 					Contents:    helper.Md2HTML(item.Remark),
 					UpdatedTime: helper.GetToday(),
-					ID:          rss.GenerateDateGUID("habit-notify", item.Task),
+					ID:          rss.GenDateID("habit-notify", item.Task),
 				})
 			}
 		}

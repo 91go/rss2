@@ -79,7 +79,7 @@ func routineFeed() []rss.Item {
 					Title:       title,
 					Contents:    item.Remark,
 					UpdatedTime: dateTime.Time,
-					ID:          rss.GenerateDateGUID("habit-routine", item.Task),
+					ID:          rss.GenDateID("habit-routine", item.Task),
 				})
 			}
 		}
