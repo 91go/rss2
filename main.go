@@ -13,7 +13,6 @@ import (
 
 	"github.com/91go/rss2/middleware"
 
-	asmr2 "github.com/91go/rss2/server/asmr"
 	life2 "github.com/91go/rss2/server/life"
 	lf2 "github.com/91go/rss2/server/localfiles"
 	porn2 "github.com/91go/rss2/server/porn"
@@ -52,10 +51,6 @@ func setupRouter() *gin.Engine {
 	localfiles := r.Group("/localfiles")
 	localfiles.GET("/:path", lf2.LocalFileRss)
 	localfiles.GET("/:path/:sub", lf2.LocalSecDirFileRss)
-
-	// asmr路由
-	asmr := r.Group("/asmr")
-	asmr.GET("/evc", asmr2.EvcRss)
 
 	// code路由
 	code := r.Group("/code")
