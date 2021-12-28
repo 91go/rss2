@@ -72,7 +72,6 @@ func setupRouter() *gin.Engine {
 	porn := r.Group("/porn")
 	porn.GET("/ysk/:tag", porn2.YskRss)
 	porn.GET("/dybz/:novel", porn2.DybzRss)
-	porn.GET("/dybz/search/:novel", porn2.DybzSearchRss)
 	porn.GET("/pornhub/model/:model", porn2.PornhubRss)
 
 	return r
