@@ -2,6 +2,7 @@ package life
 
 import (
 	"fmt"
+	"github.com/91go/rss2/utils/helper"
 	"strings"
 	"time"
 
@@ -10,7 +11,6 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/91go/gofc"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/feeds"
 )
@@ -80,7 +80,7 @@ func crawl(city string) Warm {
 	parts := make(map[string]interface{})
 	weather := getWeather(city)
 	parts["weather"] = weather
-	html := gofc.GenerateHTML(HTML, parts)
+	html := helper.GenerateHTML(HTML, parts)
 
 	return Warm{
 		Code: city,

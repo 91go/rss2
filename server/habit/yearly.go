@@ -117,6 +117,8 @@ var notifications = map[string][]Notification{
 	},
 }
 
+// 每年复购足浴器/每个月清洗足浴器
+
 // 非周期执行项
 // var notificationsOnce = map[string][]Notification{
 // 	ReBuy: {

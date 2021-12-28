@@ -1,4 +1,4 @@
-package life
+package code
 
 import (
 	"fmt"

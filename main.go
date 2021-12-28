@@ -56,13 +56,12 @@ func setupRouter() *gin.Engine {
 	code := r.Group("/code")
 	code.GET("/gocn/:topic", code2.GoCnRss)
 	code.GET("/nowcoder/discuss/:tag/:type/:order", code2.NowCoderRss)
+	code.GET("/onetab/shared/:page", code2.OneTabSharedRSS)
+	code.GET("/onetab/txt", code2.OneTabTXTRSS)
 
 	// life路由分组
 	life := r.Group("/life")
-	life.GET("/iresearch", life2.IResearchRss)
 	life.GET("/weather", life2.WeatherRss)
-	life.GET("/onetab/shared/:page", life2.OneTabSharedRSS)
-	life.GET("/onetab/txt", life2.OneTabTXTRSS)
 
 	// habit
 	life.GET("/habit/yearly", habit.HabitYearlyRss)
@@ -72,7 +71,6 @@ func setupRouter() *gin.Engine {
 	// porn路由分组
 	porn := r.Group("/porn")
 	porn.GET("/ysk/:tag", porn2.YskRss)
-	porn.GET("/jiuse/:author", porn2.JiuSeRss)
 	porn.GET("/dybz/:novel", porn2.DybzRss)
 	porn.GET("/dybz/search/:novel", porn2.DybzSearchRss)
 	porn.GET("/pornhub/model/:model", porn2.PornhubRss)
