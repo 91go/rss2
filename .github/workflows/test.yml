@@ -40,7 +40,7 @@ jobs:
           script_stop: true
           script: |
             whoami
-            cd ~/data/rss2 && git pull && docker-compose prune && docker-compose up -d
+            cd ~/data/rss2 && git pull && docker-compose down && docker-compose up -d
 
 
 
