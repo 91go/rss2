@@ -36,11 +36,11 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           password: ${{ secrets.SERVER_SSH_PWD }}
           port: 22
-          timeout: 2m
-#          script_stop: true
+          timeout: 10m
+          script_stop: true
           script: |
             whoami
-            cd ~/data/rss2 && git pull && docker-compose up -d
+            cd ~/data/rss2 && git pull && docker-compose prune && docker-compose up -d
 
 
 
