@@ -29,6 +29,7 @@ jobs:
 #          token: ${{secrets.CODECOV_TOKEN}}
 #          file: ./coverage.txt
 
+      # 没有发布docker镜像，直接在服务器上构建&部署
       - name: deploy
         uses: appleboy/ssh-action@master
         with:
@@ -40,7 +41,7 @@ jobs:
           script_stop: true
           script: |
             whoami
-            cd ~/data/rss2 && git pull && docker-compose down && docker-compose up -d
+            cd ~/data/rss2 && git pull && docker-compose down && docker-compose up --build -d
 
 
 

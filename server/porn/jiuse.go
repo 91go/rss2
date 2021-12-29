@@ -2,12 +2,12 @@ package porn
 
 import (
 	"fmt"
+	"github.com/gogf/gf/text/gstr"
 	"strings"
 	"time"
 
 	"github.com/91go/rss2/utils/gq"
 	"github.com/91go/rss2/utils/helper/str"
-	"github.com/91go/rss2/utils/helper/xxx"
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
 	query "github.com/PuerkitoBio/goquery"
@@ -39,9 +39,8 @@ func JiuSeRss(ctx *gin.Context) {
 func jsList(url string) []rss.Item {
 	doc := gq.FetchHTML(url)
 
-	total := doc.Find(".colVideoList").Size()
-	size := xxx.If(total >= rss.LimitItem, rss.LimitItem, total).(int)
-	wrap := doc.Find(".colVideoList").Slice(0, size)
+	wrap := doc.Find(".colVideoList")
+
 	ret := []rss.Item{}
 	wrap.Each(func(i int, selection *query.Selection) {
 		title := selection.Find(".video-elem").Find(".title").Text()
@@ -51,6 +50,7 @@ func jsList(url string) []rss.Item {
 		ret = append(ret, rss.Item{
 			Title:       title,
 			URL:         fmt.Sprintf("%s%s", JiuSeBaseURL, patchVideoURL(href)),
+			Contents:    fmt.Sprintf("<iframe src=%s frameborder='0' width='640' height='340' scrolling='no' allowfullscreen></iframe>", gstr.Replace(url, "view", "embed")),
 			UpdatedTime: getCreateTime(text),
 		})
 	})
