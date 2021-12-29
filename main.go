@@ -14,7 +14,6 @@ import (
 	"github.com/91go/rss2/middleware"
 
 	life2 "github.com/91go/rss2/server/life"
-	lf2 "github.com/91go/rss2/server/localfiles"
 	porn2 "github.com/91go/rss2/server/porn"
 	"github.com/gin-gonic/gin"
 )
@@ -43,14 +42,6 @@ func setupRouter() *gin.Engine {
 
 		resp.SendJSON(ctx, "pong")
 	})
-
-	// 挂载yl文件夹
-	r.StaticFS(lf2.RootDir, gin.Dir(lf2.RootDir, true))
-
-	// localfiles路由
-	localfiles := r.Group("/localfiles")
-	localfiles.GET("/:path", lf2.LocalFileRss)
-	localfiles.GET("/:path/:sub", lf2.LocalSecDirFileRss)
 
 	// code路由
 	code := r.Group("/code")
