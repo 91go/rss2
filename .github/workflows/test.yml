@@ -1,0 +1,66 @@
+name: build and test
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint
+    strategy:
+      matrix:
+        go-version: [ 1.16.x, 1.17.x ]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.17.x
+
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Lint Go Code
+        run: |
+        go get github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+        golangci-lint run --fix
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.17.x
+
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Run Unit tests.
+        run: go test ./...
+
+#      - name: Upload Coverage report to CodeCov
+#        uses: codecov/codecov-action@v1.0.0
+#        with:
+#          token: ${{secrets.CODECOV_TOKEN}}
+#          file: ./coverage.txt
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [ lint, test ]
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.17.x
+
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Build
+        run: go build

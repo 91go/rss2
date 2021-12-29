@@ -44,7 +44,7 @@ var CronTime = map[string]string{
 	"@6daily":   "每六天",
 	"@weekly":   "每周",
 	"@saturday": "每周六",
-	"@2weekly":  "每两周",
+	"@2weekly":  "每两周周六",
 	"@3weekly":  "每三周",
 	"@monthly":  "每月",
 	"@2monthly": "每两个月",

@@ -43,14 +43,13 @@ func TestCheckCron(t *testing.T) {
 		{Weekly, args{cronTime: Weekly, carbon: Time2Carbon("2021/12/10")}, true},
 		{Weekly, args{cronTime: Weekly, carbon: Time2Carbon("2021/12/11")}, false},
 
-		{TwoWeekly, args{cronTime: TwoWeekly, carbon: Time2Carbon("2021/12/03")}, false},
-		{TwoWeekly, args{cronTime: TwoWeekly, carbon: Time2Carbon("2021/12/10")}, true},
-		{TwoWeekly, args{cronTime: TwoWeekly, carbon: Time2Carbon("2021/12/17")}, false},
-		{"2021/12/24", args{cronTime: TwoWeekly, carbon: Time2Carbon("2021/12/24")}, true},
-		{"2021/12/31", args{cronTime: TwoWeekly, carbon: Time2Carbon("2021/12/31")}, false}, // 第1周
-		{"2022/1/07", args{cronTime: TwoWeekly, carbon: Time2Carbon("2022/1/07")}, true},    // 第2周
-		{"2022/1/14", args{cronTime: TwoWeekly, carbon: Time2Carbon("2022/1/14")}, false},
-		{"2022/1/21", args{cronTime: TwoWeekly, carbon: Time2Carbon("2022/1/21")}, true},
+		{TwoWeekly, args{cronTime: TwoWeekly, carbon: Time2Carbon("2021/12/04")}, false},
+		{TwoWeekly, args{cronTime: TwoWeekly, carbon: Time2Carbon("2021/12/11")}, true},
+		{TwoWeekly, args{cronTime: TwoWeekly, carbon: Time2Carbon("2021/12/18")}, false},
+		{TwoWeekly, args{cronTime: TwoWeekly, carbon: Time2Carbon("2021/12/25")}, true},
+		{TwoWeekly, args{cronTime: TwoWeekly, carbon: Time2Carbon("2022/1/01")}, false}, // 第2周
+		{TwoWeekly, args{cronTime: TwoWeekly, carbon: Time2Carbon("2022/1/08")}, true},
+		{TwoWeekly, args{cronTime: TwoWeekly, carbon: Time2Carbon("2022/1/15")}, false},
 
 		// {"2021/12/03", args{cronTime: ThreeWeekly, carbon: Time2Carbon("2021/12/03")}, false}, // 第49周
 		// {"2021/12/10", args{cronTime: ThreeWeekly, carbon: Time2Carbon("2021/12/10")}, false}, // true
