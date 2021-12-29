@@ -2,9 +2,10 @@ package porn
 
 import (
 	"fmt"
-	"github.com/gogf/gf/text/gstr"
 	"strings"
 	"time"
+
+	"github.com/gogf/gf/text/gstr"
 
 	"github.com/91go/rss2/utils/gq"
 	"github.com/91go/rss2/utils/helper/str"
@@ -47,10 +48,11 @@ func jsList(url string) []rss.Item {
 		href, _ := selection.Find(".video-elem").Find(".title").Attr("href")
 		text := selection.Find(".text-muted").Eq(1).Text()
 
+		videoURL := fmt.Sprintf("%s%s", JiuSeBaseURL, patchVideoURL(href))
 		ret = append(ret, rss.Item{
 			Title:       title,
-			URL:         fmt.Sprintf("%s%s", JiuSeBaseURL, patchVideoURL(href)),
-			Contents:    fmt.Sprintf("<iframe src=%s frameborder='0' width='640' height='340' scrolling='no' allowfullscreen></iframe>", gstr.Replace(url, "view", "embed")),
+			URL:         videoURL,
+			Contents:    fmt.Sprintf("<iframe src=%s frameborder='0' width='640' height='340' scrolling='no' allowfullscreen></iframe>", gstr.Replace(videoURL, "view", "embed")),
 			UpdatedTime: getCreateTime(text),
 		})
 	})
