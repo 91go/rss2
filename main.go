@@ -73,6 +73,7 @@ func setupRouter() *gin.Engine {
 	porn.GET("/ysk/:tag", porn2.YskRss)
 	porn.GET("/dybz/:novel", porn2.DybzRss)
 	porn.GET("/pornhub/model/:model", porn2.PornhubRss)
+	porn.GET("/jiuse/:author", porn2.JiuSeRss)
 
 	return r
 }
