@@ -15,10 +15,6 @@ import (
 	query "github.com/PuerkitoBio/goquery"
 )
 
-const (
-	LabelA = "a"
-)
-
 // todo 封装支持各种header/path/query参数
 
 // FetchHTML 获取网页

@@ -12,6 +12,7 @@
 2. 添加把webdav资源转rss的功能；
 3. 只保留goframe，踢掉gin；
 4. 把cicd从drone换成github-ci；
+5. 优化docker构建；
 
 
 ## 性能优化

@@ -5,7 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/91go/rss2/utils/helper"
+	"github.com/91go/rss2/utils/helper/str"
+	time2 "github.com/91go/rss2/utils/helper/time"
 
 	"github.com/91go/rss2/utils/gq"
 	"github.com/91go/rss2/utils/resp"
@@ -52,7 +53,7 @@ func NowCoderRss(ctx *gin.Context) {
 			Prefix: "牛客网",
 			Name:   fmt.Sprintf("%s/%s/%s", tagMap[tag], typeMap[typ], orderMap[order]),
 		},
-		UpdatedTime: helper.GetToday(),
+		UpdatedTime: time2.GetToday(),
 	}, list)
 
 	resp.SendXML(ctx, res)
@@ -85,11 +86,11 @@ func parseDetail(url string) (string, time.Time) {
 	html, _ := doc.Find(".post-topic-main").Find(".post-topic-des").Html()
 
 	if strings.Contains(postTime, "编辑于") {
-		ss := strings.Trim(helper.TrimBlank(postTime), "编辑于")
-		toTime := helper.StrToTime(ss, "Y-m-dH:i:s")
+		ss := strings.Trim(str.TrimBlank(postTime), "编辑于")
+		toTime := time2.StrToTime(ss, "Y-m-dH:i:s")
 
 		return html, toTime
 	}
 
-	return html, helper.GetToday()
+	return html, time2.GetToday()
 }

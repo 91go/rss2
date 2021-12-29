@@ -3,7 +3,8 @@ package localfiles
 import (
 	"fmt"
 
-	"github.com/91go/rss2/utils/helper"
+	"github.com/91go/rss2/utils/helper/time"
+
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
 	"github.com/gin-gonic/gin"
@@ -18,7 +19,7 @@ func LocalSecDirFileRss(ctx *gin.Context) {
 			Prefix: "local",
 			Name:   path,
 		},
-		UpdatedTime: helper.GetToday(),
+		UpdatedTime: time.GetToday(),
 	}, FileList(host, path))
 
 	resp.SendXML(ctx, res)

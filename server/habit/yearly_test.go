@@ -2,32 +2,11 @@ package habit
 
 import (
 	"fmt"
-	"reflect"
 	"testing"
 	"time"
 
 	"github.com/golang-module/carbon"
 )
-
-func TestHabitTime(t *testing.T) {
-	month := carbon.Now().DayOfMonth()
-
-	month2 := carbon.Now().Month()
-	year := carbon.Now().MonthOfYear()
-
-	// 奇数周，每两周，1
-	week := carbon.Now().WeekOfYear()
-
-	t.Log(month, month2, year, week)
-
-	// math.IsNaN()
-	x := 111
-	fmt.Println("type: ", reflect.TypeOf(x).String())
-	fmt.Println("type: ", reflect.TypeOf(x).Name())
-
-	xx := 11.11
-	fmt.Println("type: ", reflect.TypeOf(xx).String())
-}
 
 func TestCheckCron(t *testing.T) {
 	type args struct {

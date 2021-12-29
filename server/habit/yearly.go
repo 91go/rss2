@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/91go/rss2/utils/helper"
+	"github.com/91go/rss2/utils/helper/html"
+	"github.com/91go/rss2/utils/helper/time"
+
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
 	"github.com/gin-gonic/gin"
@@ -136,7 +138,7 @@ func HabitYearlyRss(ctx *gin.Context) {
 		},
 		Author:      "lry",
 		URL:         GetURL(ctx.Request),
-		UpdatedTime: helper.GetToday(),
+		UpdatedTime: time.GetToday(),
 	}, habitFeed())
 
 	resp.SendXML(ctx, res)
@@ -151,8 +153,8 @@ func habitFeed() []rss.Item {
 				title := fmt.Sprintf("[%s] - [%s] - [%s] - %s", prefix, gtime.Date(), CronTime[item.Cron], item.Task)
 				ret = append(ret, rss.Item{
 					Title:       title,
-					Contents:    helper.Md2HTML(item.Remark),
-					UpdatedTime: helper.GetToday(),
+					Contents:    html.Md2HTML(item.Remark),
+					UpdatedTime: time.GetToday(),
 					ID:          rss.GenDateID("habit-notify", item.Task),
 				})
 			}
@@ -162,14 +164,14 @@ func habitFeed() []rss.Item {
 	return ret
 }
 
-func CheckCron(cronTime string, carbon carbon.Carbon) bool {
-	isFriday := carbon.IsFriday()
-	isSaturday := carbon.IsSaturday()
-	dayOfYear := carbon.DayOfYear()
-	dayOfMonth := carbon.DayOfMonth()
-	weekOfYear := carbon.WeekOfYear()
-	monthOfYear := carbon.MonthOfYear()
-	isJanuary := carbon.IsJanuary()
+func CheckCron(cronTime string, cb carbon.Carbon) bool {
+	isFriday := cb.IsFriday()
+	isSaturday := cb.IsSaturday()
+	dayOfYear := cb.DayOfYear()
+	dayOfMonth := cb.DayOfMonth()
+	weekOfYear := cb.WeekOfYear()
+	monthOfYear := cb.MonthOfYear()
+	isJanuary := cb.IsJanuary()
 
 	// @2daily
 	if cronTime == TwoDaily && ((dayOfYear-1)%2 == 0 || dayOfYear == 1) {
@@ -223,7 +225,7 @@ func CheckCron(cronTime string, carbon carbon.Carbon) bool {
 	return false
 }
 
-func GetURL(r *http.Request) (URL string) {
+func GetURL(r *http.Request) string {
 	scheme := "http://"
 
 	if r.TLS != nil {

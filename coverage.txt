@@ -1,6 +1,0 @@
-mode: atomic
-github.com/91go/rss2/main.go:19.13,23.39 3 0
-github.com/91go/rss2/main.go:23.39,25.3 1 0
-github.com/91go/rss2/main.go:28.32,32.40 3 0
-github.com/91go/rss2/main.go:45.2,64.10 13 0
-github.com/91go/rss2/main.go:32.40,42.3 2 0

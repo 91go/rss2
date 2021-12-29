@@ -3,22 +3,14 @@ package porn
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/91go/rss2/utils/gq"
-	"github.com/91go/rss2/utils/log"
+	time2 "github.com/91go/rss2/utils/helper/time"
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
 
-	"github.com/sirupsen/logrus"
-
-	"github.com/gogf/gf/text/gstr"
-
-	"github.com/gogf/gf/os/gtime"
-
 	query "github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
-	"github.com/gogf/gf/text/gregex"
 )
 
 const (
@@ -35,9 +27,13 @@ func YskRss(ctx *gin.Context) {
 	list := parseList(url)
 
 	res := rss.Rss(&rss.Feed{
-		URL:    url,
-		Title:  rss.Title{Prefix: "优丝库", Name: tag},
-		Author: tag,
+		URL: url,
+		Title: rss.Title{
+			Prefix: "优丝库",
+			Name:   tag,
+		},
+		Author:      tag,
+		UpdatedTime: time2.GetToday(),
 	}, list)
 
 	resp.SendXML(ctx, res)
@@ -54,13 +50,14 @@ func parseList(url string) []rss.Item {
 	wrap := doc.Find(".post").Slice(0, total)
 	ret := []rss.Item{}
 	wrap.Each(func(i int, selection *query.Selection) {
-		href, _ := selection.Find(".img").Find(gq.LabelA).Attr("href")
-		title, _ := selection.Find(".img").Find(gq.LabelA).Attr("title")
+		href, _ := selection.Find(".img").Find("a").Attr("href")
+		title, _ := selection.Find(".img").Find("a").Attr("title")
 
 		ret = append(ret, rss.Item{
-			URL:      href,
-			Title:    title,
-			Contents: parsePics(href),
+			URL:         href,
+			Title:       title,
+			Contents:    parsePics(href),
+			UpdatedTime: time2.GetToday(),
 		})
 	})
 
@@ -68,22 +65,22 @@ func parseList(url string) []rss.Item {
 }
 
 // 处理时间
-func sanitizeTime(url string) time.Time {
-	cut, err := gregex.MatchString(".*/(.*).", url)
-	if err != nil {
-		logrus.WithFields(log.Text(url, err)).Error("trans time regex failed")
-		return time.Time{}
-	}
-	s := cut[1]
-	ts := gstr.TrimRightStr(s, s[TimeDigit:])
-
-	format, err := gtime.StrToTimeFormat(ts, "Ymd")
-	if err != nil {
-		logrus.WithFields(log.Text(url, err)).Error("trans time failed")
-		return time.Time{}
-	}
-	return format.Time
-}
+// func sanitizeTime(url string) time.Time {
+// 	cut, err := gregex.MatchString(".*/(.*).", url)
+// 	if err != nil {
+// 		logrus.WithFields(log.Text(url, err)).Error("trans time regex failed")
+// 		return time.Time{}
+// 	}
+// 	s := cut[1]
+// 	ts := gstr.TrimRightStr(s, s[TimeDigit:])
+//
+// 	format, err := gtime.StrToTimeFormat(ts, "Ymd")
+// 	if err != nil {
+// 		logrus.WithFields(log.Text(url, err)).Error("trans time failed")
+// 		return time.Time{}
+// 	}
+// 	return format.Time
+// }
 
 // 解析详情页，获取所有图片
 func parsePics(url string) string {
@@ -91,7 +88,7 @@ func parsePics(url string) string {
 	wrap := doc.Find(".gallery-fancy-item")
 	pics := []string{}
 	wrap.Each(func(i int, selection *query.Selection) {
-		pic, _ := selection.Find(gq.LabelA).Attr("href")
+		pic, _ := selection.Find("a").Attr("href")
 		pics = append(pics, pic)
 	})
 

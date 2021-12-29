@@ -2,8 +2,9 @@ package code
 
 import (
 	"fmt"
-	"github.com/91go/rss2/utils/helper"
 	"sync"
+
+	"github.com/91go/rss2/utils/helper/time"
 
 	"github.com/91go/rss2/utils/gq"
 	"github.com/91go/rss2/utils/resp"
@@ -29,7 +30,7 @@ func GoCnRss(ctx *gin.Context) {
 			Name:   "title",
 		},
 		Author:      "gocn",
-		UpdatedTime: helper.GetToday(),
+		UpdatedTime: time.GetToday(),
 	}, gocnList(url))
 
 	resp.SendXML(ctx, res)
@@ -62,10 +63,9 @@ func gocnList(url string) []rss.Item {
 				Title:       title,
 				URL:         itemUrl,
 				Contents:    detailHtml,
-				UpdatedTime: helper.GetToday(),
+				UpdatedTime: time.GetToday(),
 			})
 		}()
-
 	})
 
 	wg.Wait()

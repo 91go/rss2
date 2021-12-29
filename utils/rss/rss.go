@@ -42,7 +42,6 @@ const (
 // Rss 输出rss
 func Rss(fe *Feed, items []Item) string {
 	if len(items) == 0 {
-		// logrus.WithFields(log.Text(feedTitle(fe.Title), errors.New("未输出rss")))
 		feed := feeds.Feed{
 			Title:   feedTitle(fe.Title),
 			Link:    &feeds.Link{Href: fe.URL},
@@ -69,15 +68,22 @@ func rss(fe *Feed, items []Item) string {
 		Updated: fe.UpdatedTime,
 	}
 
-	for _, value := range items {
+	for key := range items {
 		feed.Add(&feeds.Item{
-			Title:       value.Title,
-			Link:        &feeds.Link{Href: value.URL},
-			Description: value.Contents,
-			Author:      &feeds.Author{Name: value.Author},
-			Id:          value.ID,
-			Enclosure:   value.Enclosure,
-			Updated:     value.UpdatedTime,
+			// Title:       value.Title,
+			// Link:        &feeds.Link{Href: value.URL},
+			// Description: value.Contents,
+			// Author:      &feeds.Author{Name: value.Author},
+			// Id:          value.ID,
+			// Enclosure:   value.Enclosure,
+			// Updated:     value.UpdatedTime,
+			Title:       items[key].Title,
+			Link:        &feeds.Link{Href: items[key].URL},
+			Description: items[key].Contents,
+			Author:      &feeds.Author{Name: items[key].Author},
+			Id:          items[key].ID,
+			Enclosure:   items[key].Enclosure,
+			Updated:     items[key].UpdatedTime,
 		})
 	}
 
@@ -99,12 +105,13 @@ func feedTitle(tt Title) string {
 
 // 处理没有提供更新时间的feed
 // 根据item的UpdatedTime判断
+// todo items[i] = item
 func feedWithoutTime(feed *Feed, items []Item) string {
 	clt := redis.NewClient(redis.Conn())
 
 	m := []string{}
-	for _, item := range items {
-		m = append(m, item.URL, gtime.Now().TimestampStr())
+	for key := range items {
+		m = append(m, items[key].URL, gtime.Now().TimestampStr())
 	}
 	// 判断key是否存在，不存在则直接set并返回
 	if clt.Conn.Exists(redis.Ctx, feed.URL).Val() != 1 {
@@ -113,9 +120,8 @@ func feedWithoutTime(feed *Feed, items []Item) string {
 			fmt.Println(err)
 			return ""
 		}
-		for i, item := range items {
-			item.UpdatedTime = gtime.Now().Time
-			items[i] = item
+		for key := range items {
+			items[key].UpdatedTime = gtime.Now().Time
 		}
 		return rss(feed, items)
 	}
@@ -132,12 +138,11 @@ func feedWithoutTime(feed *Feed, items []Item) string {
 
 	// 获取更新item
 	old := clt.Conn.HGetAll(redis.Ctx, feed.URL).Val()
-	for i, item := range items {
-		if search, ok := old[item.URL]; ok {
-			item.UpdatedTime = gtime.NewFromTimeStamp(gconv.Int64(search)).Time
-			items[i] = item
+	for key := range items {
+		if search, ok := old[items[key].URL]; ok {
+			items[key].UpdatedTime = gtime.NewFromTimeStamp(gconv.Int64(search)).Time
 		} else {
-			fmt.Println(item.URL, "key not exist")
+			fmt.Println(items[key].URL, "key not exist")
 		}
 	}
 	return rss(feed, items)
@@ -148,8 +153,8 @@ func checkIsUpdate(clt *redis.Client, feed *Feed, items []Item) []string {
 	old := clt.Conn.HKeys(redis.Ctx, feed.URL).Val()
 
 	neo := []string{}
-	for _, item := range items {
-		neo = append(neo, item.URL)
+	for key := range items {
+		neo = append(neo, items[key].URL)
 	}
 	return difference(old, neo)
 }

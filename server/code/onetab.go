@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/91go/rss2/utils/helper/time"
+
 	"github.com/91go/rss2/utils/gq"
-	"github.com/91go/rss2/utils/helper"
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
 	query "github.com/PuerkitoBio/goquery"
@@ -26,7 +27,7 @@ func OneTabSharedRSS(ctx *gin.Context) {
 			Prefix: "onetab",
 			Name:   page,
 		},
-		UpdatedTime: helper.GetToday(),
+		UpdatedTime: time.GetToday(),
 	}, sharedList(url))
 
 	resp.SendXML(ctx, res)
@@ -42,7 +43,7 @@ func sharedList(url string) []rss.Item {
 				Title:       title,
 				URL:         url,
 				ID:          rss.GenFixedID("onetab-shared", url),
-				UpdatedTime: helper.GetToday(),
+				UpdatedTime: time.GetToday(),
 			})
 		}
 	})
@@ -56,18 +57,17 @@ func OneTabTXTRSS(ctx *gin.Context) {
 			Prefix: "onetab",
 			Name:   "txt",
 		},
-		UpdatedTime: helper.GetToday(),
+		UpdatedTime: time.GetToday(),
 	}, txtList())
 
 	resp.SendXML(ctx, res)
 }
 
-func txtList() []rss.Item {
+func txtList() (ret []rss.Item) {
 	abs, err := filepath.Abs("./public/txt/onetab.txt")
 	if err != nil {
 		return nil
 	}
-	ret := []rss.Item{}
 
 	err = gfile.ReadLines(abs, func(text string) error {
 		if text != "" {
@@ -76,12 +76,16 @@ func txtList() []rss.Item {
 			ret = append(ret, rss.Item{
 				Title:       title,
 				URL:         url,
-				UpdatedTime: helper.GetToday(),
+				UpdatedTime: time.GetToday(),
 				ID:          rss.GenFixedID("onetab-txt", url),
 			})
 		}
 		return nil
 	})
+
+	if err != nil {
+		return ret
+	}
 
 	return ret
 }

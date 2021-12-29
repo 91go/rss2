@@ -2,9 +2,10 @@ package life
 
 import (
 	"fmt"
-	"github.com/91go/rss2/utils/helper"
 	"strings"
 	"time"
+
+	"github.com/91go/rss2/utils/helper/html"
 
 	"github.com/91go/rss2/utils/gq"
 	"github.com/91go/rss2/utils/resp"
@@ -80,13 +81,13 @@ func crawl(city string) Warm {
 	parts := make(map[string]interface{})
 	weather := getWeather(city)
 	parts["weather"] = weather
-	html := helper.GenerateHTML(HTML, parts)
+	generateHTML := html.GenerateHTML(HTML, parts)
 
 	return Warm{
 		Code: city,
 		City: weather.City,
 		URL:  base + city,
-		Ctx:  html,
+		Ctx:  generateHTML,
 		Time: time.Now(),
 	}
 }

@@ -3,7 +3,9 @@ package habit
 import (
 	"fmt"
 
-	"github.com/91go/rss2/utils/helper"
+	"github.com/91go/rss2/utils/helper/html"
+	"github.com/91go/rss2/utils/helper/time"
+
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
 	"github.com/gin-gonic/gin"
@@ -53,7 +55,7 @@ func HabitEverydayRss(ctx *gin.Context) {
 		},
 		Author:      "lry",
 		URL:         GetURL(ctx.Request),
-		UpdatedTime: helper.GetToday(),
+		UpdatedTime: time.GetToday(),
 	}, routineFeed())
 
 	resp.SendXML(ctx, res)
@@ -77,7 +79,7 @@ func routineFeed() []rss.Item {
 			if CheckDateTime(item.TimeStub).Before(gtime.Now()) {
 				ret = append(ret, rss.Item{
 					Title:       title,
-					Contents:    helper.Md2HTML(item.Remark),
+					Contents:    html.Md2HTML(item.Remark),
 					UpdatedTime: dateTime.Time,
 					ID:          rss.GenDateID("habit-routine", item.Task),
 				})
@@ -89,7 +91,7 @@ func routineFeed() []rss.Item {
 
 // 与当前时间对比
 func CheckDateTime(nn string) *gtime.Time {
-	str, err := gtime.NewFromTime(helper.GetToday()).AddStr(nn)
+	str, err := gtime.NewFromTime(time.GetToday()).AddStr(nn)
 	if err != nil {
 		fmt.Println(err)
 		return nil

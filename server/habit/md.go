@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/91go/rss2/utils/helper/html"
+	"github.com/91go/rss2/utils/helper/time"
+
 	"github.com/gogf/gf/os/gtime"
 
-	"github.com/91go/rss2/utils/helper"
 	"github.com/91go/rss2/utils/log"
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
@@ -22,47 +24,34 @@ func HabitMDRss(ctx *gin.Context) {
 			Name:   "生活习惯md",
 		},
 		Author:      "lry",
-		UpdatedTime: helper.GetToday(),
+		UpdatedTime: time.GetToday(),
 	}, DietFeed())
 
 	resp.SendXML(ctx, res)
 }
 
 func DietFeed() (ret []rss.Item) {
-	// todo
-	ret = append(ret, rss.Item{
-		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "生活习惯"),
-		Contents:    ReadMarkdown("", "life.md"),
-		ID:          rss.GenDateID("habit-md", "habit"),
-		UpdatedTime: helper.GetToday(),
-	}, rss.Item{
-		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "一些想法"),
-		Contents:    ReadMarkdown("", "thought.md"),
-		ID:          rss.GenDateID("habit-md", "thought"),
-		UpdatedTime: helper.GetToday(),
-	}, rss.Item{
-		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "thought2"),
-		Contents:    ReadMarkdown("", "thought2.md"),
-		ID:          rss.GenDateID("habit-md", "thought2"),
-		UpdatedTime: helper.GetToday(),
-	}, rss.Item{
-		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), "thought2"),
-		Contents:    ReadMarkdown("", "thought3.md"),
-		ID:          rss.GenDateID("habit-md", "thought2"),
-		UpdatedTime: helper.GetToday(),
-	})
-
+	ret = append(ret, item("life"), item("thought"), item("thought2"), item("thought3"))
 	return
 }
 
+func item(title string) rss.Item {
+	return rss.Item{
+		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), title),
+		Contents:    ReadMarkdown(fmt.Sprintf("%s.md", title)),
+		ID:          rss.GenDateID("habit-md", title),
+		UpdatedTime: time.GetToday(),
+	}
+}
+
 // 读取md
-func ReadMarkdown(filename, path string) string {
-	abs, err := filepath.Abs(fmt.Sprintf("%s%s%s", "./public/md/", path, filename))
+func ReadMarkdown(path string) string {
+	abs, err := filepath.Abs(fmt.Sprintf("%s%s", "./public/md/", path))
 	if err != nil {
 		logrus.WithFields(log.Text("", err)).Warn("md file not found")
 		return ""
 	}
 	contents := gfile.GetContents(abs)
 
-	return helper.Md2HTML(contents)
+	return html.Md2HTML(contents)
 }

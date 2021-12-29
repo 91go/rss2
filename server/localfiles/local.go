@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/91go/rss2/utils/helper"
+	"github.com/91go/rss2/utils/helper/file"
+	"github.com/91go/rss2/utils/helper/time"
+
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
 	"github.com/gin-gonic/gin"
@@ -26,7 +28,7 @@ func LocalFileRss(ctx *gin.Context) {
 			Prefix: "local",
 			Name:   path,
 		},
-		UpdatedTime: helper.GetToday(),
+		UpdatedTime: time.GetToday(),
 	}, FileList(host, path))
 
 	resp.SendXML(ctx, res)
@@ -36,7 +38,7 @@ func FileList(host, path string) []rss.Item {
 	ret := []rss.Item{}
 	dstPath := fmt.Sprintf("%s%s", RootDir, path)
 
-	files, err := helper.GetAllFiles(dstPath)
+	files, err := file.GetAllFiles(dstPath)
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -52,7 +54,7 @@ func FileList(host, path string) []rss.Item {
 		size := fileInfo.Size()
 
 		tfUrl := fmt.Sprintf("https://%s%s%s", host, RootDir, str)
-		filetype := helper.GetContentType(filepath)
+		filetype := file.GetContentType(filepath)
 		ret = append(ret, rss.Item{
 			Title:    title,
 			URL:      tfUrl,
@@ -62,7 +64,7 @@ func FileList(host, path string) []rss.Item {
 				Length: strconv.FormatInt(size, 10),
 				Type:   filetype,
 			},
-			UpdatedTime: helper.GetToday(),
+			UpdatedTime: time.GetToday(),
 			// 如果不设置，gorilla会自动设置一个带日期的ID；该rss除非资源位置变更，否则不更新，所以手动设置ID
 			ID: fmt.Sprintf("tag:%s", filepath),
 		})
@@ -74,7 +76,7 @@ func FileList(host, path string) []rss.Item {
 // DealContents 根据文件类型，判断是否返回iframe
 func DealContents(filetype, tfUrl string) string {
 	if gstr.Contains(filetype, "video") {
-		return fmt.Sprintf(`<iframe src="%s" frameborder="0" width="640" height="390" scrolling="no" frameborder="0" border="0" framespacing="0" allowfullscreen></iframe><br><br>`, tfUrl)
+		return fmt.Sprintf(`<iframe src="%q" frameborder="0" width="640" height="390" scrolling="no" frameborder="0" border="0" framespacing="0" allowfullscreen></iframe><br><br>`, tfUrl)
 	}
 	return ""
 }

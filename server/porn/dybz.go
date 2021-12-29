@@ -52,7 +52,7 @@ func dybzList(url string) (feed rss.Feed, feeds []rss.Item) {
 
 func dybzInfo(url string, doc *query.Document) rss.Feed {
 	novelName := doc.Find(".cataloginfo").Find("h3").Text()
-	author := doc.Find(".infotype").Find("p").Find(gq.LabelA).Text()
+	author := doc.Find(".infotype").Find("p").Find("a").Text()
 	return rss.Feed{
 		URL: url,
 		Title: rss.Title{

@@ -16,7 +16,6 @@ linters:
     - gocyclo # 用来检查函数的复杂度
     - gofmt # 检测代码是否都已经格式化, 默认情况下使用 -s 来检查代码是否简化
     - goimports # 做所有 gofmt 做的事. 此外还检查未使用的导入
-    - gomnd
     - goprintffuncname
     - gosec
     - gosimple # 用来检测代码是否还有可以简化的地方
@@ -36,11 +35,13 @@ linters:
     - unused # 检查未使用的常量，变量，函数和类型
     - varcheck # 查找未使用的全局变量和常量
     - whitespace
+    - gomnd
     - revive # 打印出 go 代码的格式错误，WARN [runner] The linter 'golint' is deprecated (since v1.41.0) due to: The repository of the linter has been archived by the owner.  Replaced by revive. # 检查是否有死锁的静态检测工具
 #    - gochecknoglobals # 检查 go 代码中是否存在全局变量
 #    - exhaustivestruct # 检查struct的字段是否都已初始化
 #    - gochecknoinits # 检查init函数
 #    - noctx # [sonatard/noctx: noctx finds sending http request without context.Context.](https://github.com/sonatard/noctx)
+
 
   # don't enable:
   # - asciicheck
@@ -94,9 +95,10 @@ linters-settings:
       - whyNoLint
       - wrapperFunc
   gocyclo:
-    min-complexity: 15
+    min-complexity: 40
   goimports:
     local-prefixes: github.com/golangci/golangci-lint
+
   gomnd:
     settings:
       mnd:
@@ -104,9 +106,9 @@ linters-settings:
         # argument会检查函数参数大小，以及是否使用magic number，去掉
         # condition也会检查是否使用magic number
         checks: [case,return]
-        # ignored-numbers: 1000
-        # ignored-files: magic_.*.go
-        # ignored-functions: math.*
+        ignored-numbers: 0,1,2,3,4,5,6,7,8,9,10,1000
+        ignored-files: magic_.*.go
+        ignored-functions: math.*
 
   govet: # 对于linter govet，我们手动开启了它的某些扫描规则
     check-shadowing: true
@@ -128,7 +130,7 @@ linters-settings:
     disable-all: false
 
   lll:
-    line-length: 140
+    line-length: 300
   maligned:
     suggest-new: true
   misspell:
@@ -162,9 +164,9 @@ linters-settings:
       - name: add-constant
         severity: warning
         arguments:
-          - maxLitCount: "3"
-            allowStrs: '""'
-            allowInts: "0,1,2"
+          - maxLitCount: "5"
+            allowStrs: '""," ","0","1","2","3","4","5","6","7","8","9","10","a","text"'
+            allowInts: "0,1,2,3,4,5,6,7,8,9,10,11,100,1000,512,1024"
             allowFloats: "0.0,0.,1.0,1.,2.0,2."
   # [securego/gosec: Golang security checker](https://github.com/securego/gosec)
   gosec:
@@ -185,19 +187,6 @@ issues:
       text: "SA1019: errCfg.Exclude is deprecated: use ExcludeFunctions instead"
     - path: pkg/commands/run.go
       text: "SA1019: lsc.Errcheck.Exclude is deprecated: use ExcludeFunctions instead"
-
-    # TODO must be removed after the release of the next version (v1.41.0)
-    - path: pkg/commands/run.go
-      linters:
-        - gomnd
-    # TODO must be removed after the release of the next version (v1.41.0)
-    - path: pkg/golinters/nolintlint/nolintlint.go
-      linters:
-        - gomnd
-    # TODO must be removed after the release of the next version (v1.41.0)
-    - path: pkg/printers/tab.go
-      linters:
-        - gomnd
 
 
 run:
