@@ -33,12 +33,15 @@ jobs:
           login-server: https://registry.cn-hangzhou.aliyuncs.com
           username: "${{ secrets.ACR_USERNAME }}"
           password: "${{ secrets.ACR_PASSWORD }}"
-      - name: Build and push image
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
         env:
           IMAGE_TAG: latest
-        run: |
-          docker build -t registry.cn-hangzhou.aliyuncs.com/myrepo/demo:$IMAGE_TAG .
-          docker push registry.cn-hangzhou.aliyuncs.com/myrepo/demo:$IMAGE_TAG
+        with:
+          context: .
+          push: true
+          tags: registry.cn-hangzhou.aliyuncs.com/91go/rss2:$IMAGE_TAG
       - name: deploy
         uses: appleboy/ssh-action@master
         with:
@@ -56,7 +59,12 @@ jobs:
 # 当镜像有更新时，会重新创建容器
 # 只有在image有更新的情况下，直接`docker-dompose up`才会重新创建容器；但是我们通过dockerfile创建镜像，所以需要
 
-
+#      - name: Build and push image
+#        env:
+#          IMAGE_TAG: latest
+#        run: |
+#          docker build -t registry.cn-hangzhou.aliyuncs.com/myrepo/demo:$IMAGE_TAG .
+#          docker push registry.cn-hangzhou.aliyuncs.com/myrepo/demo:$IMAGE_TAG
 
 
 #            cd ~/data/rss2 && git pull && docker-compose rm -sf rss2-service && docker rmi rss2_rss2 && docker-compose up -d rss2
