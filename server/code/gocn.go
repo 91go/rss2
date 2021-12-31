@@ -2,7 +2,11 @@ package code
 
 import (
 	"fmt"
+	"regexp"
+	"strings"
 	"sync"
+
+	"github.com/gogf/gf/os/gtime"
 
 	"github.com/91go/rss2/utils/helper/time"
 
@@ -26,8 +30,8 @@ func GoCnRss(ctx *gin.Context) {
 	res := rss.Rss(&rss.Feed{
 		URL: url,
 		Title: rss.Title{
-			Prefix: "gocn",
-			Name:   "title",
+			Prefix: "GopherChina",
+			Name:   topic,
 		},
 		Author:      "gocn",
 		UpdatedTime: time.GetToday(),
@@ -50,7 +54,15 @@ func gocnList(url string) []rss.Item {
 		go func() {
 			defer wg.Done()
 
-			ta := sel.Find(".infos").Find(".title").Find("a")
+			defer func() {
+				err := recover()
+				if err != nil {
+					fmt.Println("panic error.")
+				}
+			}()
+
+			infos := sel.Find(".infos")
+			ta := infos.Find(".title").Find("a")
 			title, _ := ta.Attr("title")
 			itemUrl, _ := ta.Attr("href")
 
@@ -58,12 +70,17 @@ func gocnList(url string) []rss.Item {
 			itemUrl = fmt.Sprintf("%s%s", GoCnBaseUrl, itemUrl)
 			detail := gq.FetchHTML(itemUrl)
 			detailHtml, _ := detail.Find(".topic-detail").Html()
+			// 处理时间
+			timeago := detail.Find(".media-body").Find(".info").Find(".timeago").First().Text()
+			re := regexp.MustCompile(`\d+`)
+			formatTime := strings.Join(re.FindAllString(timeago, -1), "-")
+			strToTimeFormat, _ := gtime.StrToTimeFormat(formatTime, "Y-m-d")
 
 			ret = append(ret, rss.Item{
 				Title:       title,
 				URL:         itemUrl,
 				Contents:    detailHtml,
-				UpdatedTime: time.GetToday(),
+				UpdatedTime: strToTimeFormat.Time,
 			})
 		}()
 	})
@@ -72,10 +89,3 @@ func gocnList(url string) []rss.Item {
 
 	return ret
 }
-
-// func goCnInfo(url string, doc *query.Document) rss.Feed {
-// 	title := doc.Find(".sub-navbar").Find(".container").Find(".summary").Find("p").Text()
-// 	return rss.Feed{
-//
-// 	}
-// }

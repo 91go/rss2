@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  rss2.service:
+  rss2:
     build: .
     container_name: rss2-service
     ports:

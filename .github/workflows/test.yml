@@ -11,16 +11,17 @@ jobs:
     name: Test
     strategy:
       matrix:
-        platform: [ubuntu-latest]
-    runs-on: ${{ matrix.platform }}
+        go-version: [1.16.x, 1.17.x]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Set up Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.17.x
-      - name: Check out code
-        uses: actions/checkout@v1
-      - name: Run Unit tests.
+          go-version: ${{ matrix.go-version }}
+      - name: checkout code
+        uses: actions/checkout@v2
+      - name: unit test
         run: go test ./...
 
 #      - name: Upload Coverage report to CodeCov
@@ -40,8 +41,9 @@ jobs:
           timeout: 10m
           script_stop: true
           script: |
-            whoami
-            cd ~/data/rss2 && git pull && docker-compose down && docker-compose up --build -d
+#            cd ~/data/rss2 && git pull && docker-compose down && docker-compose up --build -d
+#            cd ~/data/rss2 && git pull && docker-compose up -d --force-recreate rss2-service
+            cd ~/data/rss2 && git pull && docker-compose rm -sf rss2 && docker rmi rss2_rss2 && docker-compose up -d rss2
 
 
 

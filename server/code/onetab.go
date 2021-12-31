@@ -3,6 +3,7 @@ package code
 import (
 	"fmt"
 	"path/filepath"
+	"sync"
 
 	"github.com/91go/rss2/utils/helper/time"
 
@@ -36,17 +37,38 @@ func OneTabSharedRSS(ctx *gin.Context) {
 func sharedList(url string) []rss.Item {
 	doc := gq.FetchHTML(url)
 	ret := []rss.Item{}
+
+	var wg sync.WaitGroup
+
 	doc.Find("body").Find("div").Slice(7, -1).Each(func(i int, sel *query.Selection) {
-		title := sel.Find("a").Text()
-		if url, exists := sel.Find("a").Attr("href"); exists {
-			ret = append(ret, rss.Item{
-				Title:       title,
-				URL:         url,
-				ID:          rss.GenFixedID("onetab-shared", url),
-				UpdatedTime: time.GetToday(),
-			})
-		}
+		wg.Add(1)
+
+		go func() {
+			defer wg.Done()
+			defer func() {
+				err := recover()
+				if err != nil {
+					fmt.Println("panic error.")
+				}
+			}()
+
+			title := sel.Find("a").Text()
+			if url, exists := sel.Find("a").Attr("href"); exists {
+				// 获取文章内容
+				detail, _ := gq.FetchHTML(url).Find("body").Html()
+				ret = append(ret, rss.Item{
+					Title:       title,
+					URL:         url,
+					ID:          rss.GenFixedID("onetab-shared", url),
+					Contents:    detail,
+					UpdatedTime: time.GetToday(),
+				})
+			}
+		}()
 	})
+
+	wg.Wait()
+
 	return ret
 }
 
