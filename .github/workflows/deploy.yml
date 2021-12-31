@@ -1,10 +1,14 @@
-name: test && deploy
+name: test and deploy
 on:
   push:
+    tags:
+      - v*
     branches:
       - master
       - main
   pull_request:
+permissions:
+  contents: read
 
 jobs:
   test:
@@ -23,14 +27,6 @@ jobs:
         uses: actions/checkout@v2
       - name: unit test
         run: go test ./...
-
-#      - name: Upload Coverage report to CodeCov
-#        uses: codecov/codecov-action@v1.0.0
-#        with:
-#          token: ${{secrets.CODECOV_TOKEN}}
-#          file: ./coverage.txt
-
-      # 没有发布docker镜像，直接在服务器上构建&部署
       - name: deploy
         uses: appleboy/ssh-action@master
         with:
@@ -41,11 +37,17 @@ jobs:
           timeout: 10m
           script_stop: true
           script: |
-#            cd ~/data/rss2 && git pull && docker-compose down && docker-compose up --build -d
-#            cd ~/data/rss2 && git pull && docker-compose up -d --force-recreate rss2-service
+            whoami
             cd ~/data/rss2 && git pull && docker-compose rm -sf rss2 && docker rmi rss2_rss2 && docker-compose up -d rss2
 
+#            cd ~/data/rss2 && git pull && docker-compose down && docker-compose up --build -d
+#            cd ~/data/rss2 && git pull && docker-compose up -d --force-recreate rss2-service
 
+#      - name: Upload Coverage report to CodeCov
+#        uses: codecov/codecov-action@v1.0.0
+#        with:
+#          token: ${{secrets.CODECOV_TOKEN}}
+#          file: ./coverage.txt
 
 
 
