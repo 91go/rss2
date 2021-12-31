@@ -2,7 +2,7 @@ version: '3'
 
 services:
   rss2:
-    build: .
+    image: registry.cn-hangzhou.aliyuncs.com/91go/rss2:latest
     container_name: rss2-service
     ports:
       - 8090:8090

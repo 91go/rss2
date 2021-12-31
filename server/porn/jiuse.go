@@ -52,7 +52,7 @@ func jsList(url string) []rss.Item {
 		ret = append(ret, rss.Item{
 			Title:       title,
 			URL:         videoURL,
-			Contents:    fmt.Sprintf("<iframe src=%s frameborder='0' width='640' height='340' scrolling='no' allowfullscreen></iframe>", gstr.Replace(videoURL, "view", "embed")),
+			Contents:    str.GetIframe(gstr.Replace(videoURL, "view", "embed"), ""),
 			UpdatedTime: getCreateTime(text),
 		})
 	})
