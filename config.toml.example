@@ -1,8 +1,0 @@
-[dingtalk]
-    DING_TOKEN=
-    DING_SECRET=
-
-[redis]
-    Addr="rss2_redis:6379"
-    Password="root"
-    DB=1
