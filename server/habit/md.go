@@ -3,19 +3,22 @@ package habit
 import (
 	"fmt"
 	"path/filepath"
+	"strings"
+
+	"github.com/91go/rss2/utils/helper/file"
 
 	"github.com/91go/rss2/utils/helper/html"
 	"github.com/91go/rss2/utils/helper/time"
 
 	"github.com/gogf/gf/os/gtime"
 
-	"github.com/91go/rss2/utils/log"
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
 	"github.com/gin-gonic/gin"
 	"github.com/gogf/gf/os/gfile"
-	"github.com/sirupsen/logrus"
 )
+
+var MdFilepath, _ = filepath.Abs("./public/md/")
 
 func HabitMDRss(ctx *gin.Context) {
 	res := rss.Rss(&rss.Feed{
@@ -31,27 +34,31 @@ func HabitMDRss(ctx *gin.Context) {
 }
 
 func DietFeed() (ret []rss.Item) {
-	ret = append(ret, item("life"), item("thought"), item("thought2"), item("thought3"))
+	files, err := file.GetAllFiles(MdFilepath)
+	if err != nil {
+		fmt.Println("")
+		return nil
+	}
+	for _, filename := range files {
+		ret = append(ret, item(filename))
+	}
 	return
 }
 
-func item(title string) rss.Item {
+func item(fp string) rss.Item {
+	filename := strings.TrimPrefix(fp, MdFilepath)
+
 	return rss.Item{
-		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), title),
-		Contents:    ReadMarkdown(fmt.Sprintf("%s.md", title)),
-		ID:          rss.GenDateID("habit-md", title),
+		Title:       fmt.Sprintf("[%s] - %s", gtime.Date(), filename),
+		Contents:    ReadMarkdown(fp),
+		ID:          rss.GenDateID("habit-md", filename),
 		UpdatedTime: time.GetToday(),
 	}
 }
 
 // 读取md
-func ReadMarkdown(path string) string {
-	abs, err := filepath.Abs(fmt.Sprintf("%s%s", "./public/md/", path))
-	if err != nil {
-		logrus.WithFields(log.Text("", err)).Warn("md file not found")
-		return ""
-	}
-	contents := gfile.GetContents(abs)
+func ReadMarkdown(fp string) string {
+	contents := gfile.GetContents(fp)
 
 	return html.Md2HTML(contents)
 }
