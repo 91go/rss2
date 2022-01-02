@@ -25,16 +25,15 @@ type Routine struct {
 var routines = map[string][]Routine{
 	// 早起时间最好有条理，两组10min+30min
 	Morning: {
-		{Task: "醒来", TimeStub: "6h50m", Duration: "10min", Remark: "做3*20个提肛运动，想想当天要做的事"},
-		{Task: "起床+放点提气的歌+洗漱+喝杯温水+叠被子+(处理notify)", TimeStub: "7h", Duration: "10min"},
-		{Task: "跑步5km，顺便看看feed/代码视频/娱乐视频", TimeStub: "7h10m", Duration: "30min"},
-		{Task: "吃饭+散步", TimeStub: "7h40m", Duration: "10min", Remark: "500ml牛奶+100g花卷/饼子/燕麦"},
-		{Task: "写代码/背面试题", TimeStub: "7h50m", Duration: "30min", Remark: "时间不固定，具体看通勤时间"},
-		{Task: "准备上班：吃水果，穿衣服", TimeStub: "8h20m", Duration: "10min", Remark: "吃水果，每天两个苹果(500g水果)"},
+		{Task: "起床+下床+放点提气的歌+洗漱+喝杯温水+叠被子+(处理notify)", TimeStub: "7h", Duration: "30min", Remark: "做3*20个提肛运动，想想当天要做的事"},
+		// {Task: "跑步5km，顺便看看feed/代码视频/娱乐视频", TimeStub: "7h10m", Duration: "30min"},
+		{Task: "吃饭+散步", TimeStub: "7h30m", Duration: "30min", Remark: "500ml牛奶+100g花卷/饼子/燕麦"},
+		{Task: "写代码/背面试题", TimeStub: "8h", Duration: "30min", Remark: "时间不固定，具体看通勤时间"},
+		{Task: "准备上班：吃水果，穿衣服", TimeStub: "8h30m", Duration: "10min", Remark: "吃水果，每天两个苹果(500g水果)"},
 	},
 	Day: {
 		{Task: "出门", TimeStub: "8h30m", Remark: "如果要坐地铁的话，最好避开早高峰，需要调整时间，把时间往前调"},
-		{Task: "吃午饭", TimeStub: "12h", Remark: "300g蔬菜+100g肉+100g荞麦面(拇指粗)/杂粮饭(半碗)"},
+		// {Task: "吃午饭", TimeStub: "12h", Remark: "300g蔬菜+100g肉+100g荞麦面(拇指粗)/杂粮饭(半碗)"},
 	},
 	Night: {
 		{Task: "吃晚饭", TimeStub: "19h", Duration: "30min", Remark: "50g燕麦// 100g花卷/饼子"},

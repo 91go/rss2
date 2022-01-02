@@ -17,9 +17,9 @@ import (
 
 const (
 	LifeHabit = "生活习惯"
-	Clean     = "清洗/清洁"
+	Clean     = "清洁"
 	Renew     = "更换"
-	ReBuy     = "复购/更新"
+	ReBuy     = "复购"
 	FoodBuy   = "食物采购"
 )
 
@@ -59,7 +59,7 @@ const (
     2. *两边的头发不要太短，把鬓角推掉就可以了，其他地方不用管*，推太短了头皮露出来不好看
     3. *后面的头发，在看不到的情况下，很难处理，所以就不要弄了*，习惯习惯就好了
     4. 理完之后，站定看看齐不齐，换角度看看
-	5. 先用24mm卡尺过一遍，两边和后面用12mm卡尺，用剃须刀把须清理掉，其他地方不要刮青了`
+	5. 先用24mm卡尺过一遍，两边和后面用12mm卡尺，用剃须刀把鬓角刮掉，其他地方不要刮青了`
 )
 
 type Notification struct {
@@ -71,14 +71,12 @@ type Notification struct {
 var notifications = map[string][]Notification{
 	// 日常习惯
 	LifeHabit: {
-		{Task: "每周六：刮胡子", Cron: Saturday},
-		{Task: "每周六：理发", Cron: Saturday, Remark: HairCut},
-		{Task: "每周六：剪手指甲", Cron: Saturday},
-		{Task: "每周六：写周报，评估是否完成habit", Cron: Saturday},
+		{Task: "每周六：剪手指甲、刮胡子、理发", Cron: Saturday, Remark: HairCut},
+		{Task: "每周六：写周报", Cron: Saturday, Remark: "评估是否完成habit"},
 		{Task: "每两周：换牙刷", Cron: TwoWeekly},
-		{Task: "每两周：打飞机，晚上洗澡的时候顺便", Cron: TwoWeekly},
 		{Task: "每月：剪脚趾甲", Cron: Monthly},
-		{Task: "每两个月：换洗脸仪刷头", Cron: TwoMonthly},
+		// {Task: "每两周：打飞机，晚上洗澡的时候顺便", Cron: TwoWeekly},
+		// {Task: "每两个月：换洗脸仪刷头", Cron: TwoMonthly},
 	},
 	// 购买食物
 	FoodBuy: {
@@ -86,9 +84,8 @@ var notifications = map[string][]Notification{
 		{Task: "每三天：苹果，买一袋(4个)", Cron: ThreeDaily},
 		{Task: "每六天：燕麦，买一袋500g(平均每天100g左右)", Cron: SixDaily},
 		// 近期在家购买项
-		{Task: "每三天：蔬菜，买三袋", Cron: ThreeDaily, Remark: "莲藕、西芹、四季豆、西兰花、香菇、豌豆、春笋"},
+		{Task: "每三天：蔬菜，买三袋(总计1000-1500g)", Cron: ThreeDaily},
 		{Task: "每三天：肉类，买一袋300g(平均每天100g)", Cron: ThreeDaily},
-		{Task: "每六天：鸡蛋，买一盒(6个装)", Cron: SixDaily},
 	},
 	// 更换
 	Renew: {
@@ -103,18 +100,19 @@ var notifications = map[string][]Notification{
 	},
 	// 复购
 	ReBuy: {
-		{Task: "每2周：牙刷", Cron: TwoWeekly},
-		{Task: "每2月：抽纸(4包)、牙膏(黑人牙膏190g)、洗面奶(uno-130g)", Cron: TwoMonthly},
-		{Task: "每2月：牙线(屈臣氏50支*2)、擦镜纸(100片)", Cron: TwoMonthly, Remark: "平均每天2支/2片，所以每两个月复购一次"},
-		{Task: "每3月：毛巾(三利*2)", Cron: ThreeMonthly},
-		{Task: "每3月：湿巾(gatsby-42片*2)", Cron: ThreeMonthly, Remark: "平均每天一片"},
+		{Task: "每月：牙刷(2只)", Cron: Monthly},
+		{Task: "每三月：抽纸(4包)，牙膏(150-200g)，洗面奶(uno-130g)", Cron: ThreeMonthly},
+		{Task: "每三月：牙线(50支*2)", Cron: ThreeMonthly, Remark: "平均每天1支，所以每三个月复购一次"},
+		{Task: "每三月：擦镜纸(150-200片)", Cron: TwoMonthly, Remark: "平均每天2片，所以每三个月复购一次"},
+		{Task: "每三月：毛巾(2条)", Cron: ThreeMonthly},
+		// {Task: "每三月：湿巾(gatsby-42片*2)", Cron: ThreeMonthly, Remark: "平均每天一片"},
 		{Task: "每半年：跑鞋", Cron: SixMonthly},
 		{Task: "每半年：洗衣液(500g)", Cron: SixMonthly},
 		{Task: "每半年：洗发水(900g)", Cron: SixMonthly, Remark: "用洗发水代替沐浴露、洗手液、洗洁精"},
 		{Task: "每年：内裤(4条)", Cron: Yearly},
-		{Task: "每年：床笠、枕套", Cron: Yearly},
-		{Task: "每年：搓澡巾(单只)、鼻通(6支)", Cron: Yearly},
-		{Task: "每年：垃圾袋(100只)", Cron: Yearly, Remark: "平均每周两袋垃圾，一年正好用100只垃圾袋"},
+		{Task: "每年：床笠，枕套", Cron: Yearly},
+		{Task: "每年：搓澡巾(1只)，鼻通(6支)", Cron: Yearly},
+		{Task: "每年：垃圾袋(100只)", Cron: Yearly, Remark: "平均每周两袋垃圾，一年大约100只垃圾袋"},
 		{Task: "每年：新年给父母¥1000", Cron: Yearly},
 	},
 }
