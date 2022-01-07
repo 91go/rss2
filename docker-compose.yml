@@ -19,6 +19,10 @@ services:
       - REDIS.ADDR=rss2-redis:6379
       - REDIS.PWD=root
       - REDIS.DB=1
+      - WEBDAV.ALIYUN.URL=https://file.wrss.top
+      - WEBDAV.ALIYUN.USER=uweeD8Ah
+      - WEBDAV.ALIYUN.PWD=hoh1Noo6
+
 
   redis:
     image: redis:alpine

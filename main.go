@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	webdav2 "github.com/91go/rss2/server/webdav"
 
 	"github.com/91go/rss2/server/habit"
 
@@ -65,6 +66,11 @@ func setupRouter() *gin.Engine {
 	porn.GET("/dybz/:novel", porn2.DybzRss)
 	porn.GET("/pornhub/model/:model", porn2.PornhubRss)
 	porn.GET("/jiuse/:author", porn2.JiuSeRss)
+
+	// webdav
+	webdav := r.Group("/webdav")
+	webdav.GET("/localfiles", webdav2.LocalFileRss)
+	webdav.GET("/aliyun", webdav2.WebdavRss)
 
 	return r
 }
