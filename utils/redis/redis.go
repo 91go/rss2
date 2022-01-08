@@ -23,13 +23,17 @@ func NewClient(conn *redis.Client) *Client {
 }
 
 func Conn() *redis.Client {
-	fmt.Println("addr===", config.GetString("redis.addr"), "===")
-	fmt.Println("pwd===", config.GetString("redis.pwd"), "===")
+	redisAddr := config.GetString("REDIS.ADDR")
+	redisPWD := config.GetString("REDIS.PASSWORD")
+	redisDB := config.GetInt("REDIS.DB")
+
+	fmt.Println("addr===", redisAddr, "===")
+	fmt.Println("pwd===", redisPWD, "===")
 
 	conn := redis.NewClient(&redis.Options{
-		Addr:     config.GetString("redis.Addr"),
-		Password: config.GetString("redis.Password"),
-		DB:       config.GetInt("redis.DB"),
+		Addr:     redisAddr,
+		Password: redisPWD,
+		DB:       redisDB,
 	})
 
 	if _, err := conn.Ping(Ctx).Result(); err != nil {
