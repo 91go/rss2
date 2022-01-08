@@ -2,7 +2,8 @@ version: '3'
 
 services:
   rss2:
-    image: registry.cn-hangzhou.aliyuncs.com/91go/rss2:latest
+#    image: registry.cn-hangzhou.aliyuncs.com/91go/rss2:latest
+    build: .
     container_name: rss2-service
     ports:
       - 8090:8090
@@ -19,9 +20,9 @@ services:
       - REDIS.ADDR=rss2-redis:6379
       - REDIS.PWD=root
       - REDIS.DB=1
-      - WEBDAV.ALIYUN.URL=https://file.wrss.top
-      - WEBDAV.ALIYUN.USER=uweeD8Ah
-      - WEBDAV.ALIYUN.PWD=hoh1Noo6
+      - WEBDAV.URL=https://file.wrss.top
+      - WEBDAV.USER=uweeD8Ah
+      - WEBDAV.PWD=hoh1Noo6
 
 
   redis:

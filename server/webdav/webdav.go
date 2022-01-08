@@ -36,9 +36,9 @@ func WebdavRss(ctx *gin.Context) {
 }
 
 func WebdavList(path string) []rss.Item {
-	webdavURL := config.GetString("webdav.url")
-	user := config.GetString("webdav.user")
-	pwd := config.GetString("webdav.pwd")
+	webdavURL := config.GetString("WEBDAV.URL")
+	user := config.GetString("WEBDAV.USER")
+	pwd := config.GetString("WEBDAV.PWD")
 
 	ret := []rss.Item{}
 
