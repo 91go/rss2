@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+
+	"github.com/gogf/gf/text/gstr"
 )
 
 // 生成html
@@ -29,4 +31,12 @@ func GenerateHTML(html string, datas map[string]interface{}) string {
 		}
 	}
 	return html
+}
+
+// DealContents 根据文件类型，判断是否返回iframe
+func GetIframe(filetype, tfUrl string) string {
+	if gstr.Contains(filetype, "video") {
+		return fmt.Sprintf(`<iframe src="%q" frameborder="0" width="640" height="390" scrolling="no" frameborder="0" border="0" framespacing="0" allowfullscreen></iframe><br><br>`, tfUrl)
+	}
+	return ""
 }

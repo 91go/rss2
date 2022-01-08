@@ -14,6 +14,8 @@ func GetContentType(filePath string) string {
 	if err != nil {
 		return "audio/mpeg"
 	}
+	defer file.Close()
+
 	buffer := make([]byte, 512)
 
 	_, err = file.Read(buffer)

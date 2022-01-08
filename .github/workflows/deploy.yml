@@ -1,4 +1,4 @@
-name: test and deploy
+name: deploy
 on:
   push:
     tags:

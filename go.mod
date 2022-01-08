@@ -30,6 +30,7 @@ require (
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/golang-module/carbon v1.5.5
 	github.com/mmcdole/gofeed v1.1.3
+	github.com/studio-b12/gowebdav v0.0.0-20211109083228-3f8721cd4b6f
 	github.com/yuin/goldmark v1.3.5
 )
 
