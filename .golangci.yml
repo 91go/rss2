@@ -9,7 +9,7 @@ linters:
     - dupl # 代码克隆监测工具
     - errcheck # 用于检查有error返回的函数，却没有做判断检查
     - exportloopref # 查看变量作用域，WARN [runner] The linter 'scopelint' is deprecated (since v1.39.0) due to: The repository of the linter has been deprecated by the owner.  Replaced by exportloopref.
-    - exhaustive # 检查枚举switch语句的覆盖率
+#    - exhaustive # 检查枚举switch语句的覆盖率
     - funlen # 检查长函数的linter，用来检查行数，默认限制60行和40个statement
     - goconst # 查找重复的字符串，这些字符串可以抽取成常量
     - gocritic
