@@ -2,6 +2,8 @@ package webdav
 
 import (
 	"fmt"
+	"strconv"
+
 	"github.com/91go/rss2/utils/config"
 	"github.com/91go/rss2/utils/helper/html"
 	"github.com/91go/rss2/utils/helper/time"
@@ -10,8 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/feeds"
 	"github.com/studio-b12/gowebdav"
-	"net/http"
-	"strconv"
 )
 
 const (
@@ -48,11 +48,9 @@ func WebdavList(path string) []rss.Item {
 		return ret
 	}
 	for _, file := range dir {
-
 		resourceURL := fmt.Sprintf("%s/%s/%s", WebdavURL, path, file.Name())
 
-		buffer := make([]byte, 512)
-		filetype := http.DetectContentType(buffer)
+		filetype := "audio/mpeg"
 		ret = append(ret, rss.Item{
 			Title:    file.Name(),
 			URL:      resourceURL,
