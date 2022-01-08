@@ -50,6 +50,7 @@ func WebdavList(path string) []rss.Item {
 	for _, file := range dir {
 		resourceURL := fmt.Sprintf("%s/%s/%s", WebdavURL, path, file.Name())
 
+		// todo
 		filetype := "audio/mpeg"
 		ret = append(ret, rss.Item{
 			Title:    file.Name(),
