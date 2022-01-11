@@ -15,8 +15,7 @@ import (
 
 const (
 	// 优丝库tag的url
-	YskURL    = "https://yskhd.com/archives/tag/"
-	TimeDigit = 8
+	YskURL = "https://yskhd.com/archives/tag/"
 )
 
 // YskRss 优丝库rss [优丝库HD - 提供高清美女写真|丝袜美腿|美女私房|cosplay|美女街拍|4K写真，一站式浏览](https://yskhd.com/)
@@ -43,11 +42,7 @@ func YskRss(ctx *gin.Context) {
 func parseList(url string) []rss.Item {
 	doc := gq.FetchHTML(url)
 
-	total := doc.Find(".post").Size()
-	if total >= rss.LimitItem {
-		total = rss.LimitItem
-	}
-	wrap := doc.Find(".post").Slice(0, total)
+	wrap := doc.Find(".post")
 	ret := []rss.Item{}
 	wrap.Each(func(i int, selection *query.Selection) {
 		href, _ := selection.Find(".img").Find("a").Attr("href")
@@ -58,6 +53,7 @@ func parseList(url string) []rss.Item {
 			Title:       title,
 			Contents:    parsePics(href),
 			UpdatedTime: time2.GetToday(),
+			ID:          rss.GenFixedID("ysk", href),
 		})
 	})
 

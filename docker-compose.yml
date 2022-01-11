@@ -2,8 +2,8 @@ version: '3'
 
 services:
   rss2:
-#    image: registry.cn-hangzhou.aliyuncs.com/91go/rss2:latest
-    build: .
+    image: registry.cn-hangzhou.aliyuncs.com/91go/rss2:latest
+#    build: .
     container_name: rss2-service
     ports:
       - 8090:8090
@@ -26,7 +26,7 @@ services:
 
 
   redis:
-    image: redis:alpine
+    image: redis:latest
     container_name: rss2-redis
     volumes:
       - ~/docker/rss2/redis/:/redis/data

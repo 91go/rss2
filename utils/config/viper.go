@@ -1,6 +1,8 @@
 package config
 
 import (
+	"fmt"
+
 	"github.com/91go/rss2/utils/helper/xxx"
 	"github.com/spf13/cast"
 	viperlib "github.com/spf13/viper" // 自定义包名，避免与内置 viper 实例冲突
@@ -16,8 +18,14 @@ type ConfigFunc func() map[string]interface{}
 var ConfigFuncs map[string]ConfigFunc
 
 func init() {
-	// 1. 初始化 Viper 库
 	viper = viperlib.New()
+	viper.SetConfigFile("config.toml")
+	viper.AddConfigPath(".")
+	err := viper.ReadInConfig()
+	if err != nil {
+		fmt.Println("load local config.toml error")
+	}
+	// 从docker-compose读取配置
 	viper.AutomaticEnv()
 	ConfigFuncs = make(map[string]ConfigFunc)
 }
