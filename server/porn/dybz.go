@@ -37,11 +37,14 @@ func dybzList(url string) (feed rss.Feed, feeds []rss.Item) {
 	ret := []rss.Item{}
 	wrap.Each(func(i int, selection *query.Selection) {
 		title := selection.Find("a").Text()
-		novelUrl, _ := selection.Find("a").Attr("href")
+		novelURL, _ := selection.Find("a").Attr("href")
 
+		// feedURL := sanitizeURL(novelURL)
 		ret = append(ret, rss.Item{
 			Title: title,
-			URL:   novelUrl,
+			URL:   novelURL,
+			// 每个feed只有一个id，不会根据生成时间产生新的
+			ID: rss.GenFixedID("dybz", novelURL),
 		})
 	})
 
@@ -62,3 +65,11 @@ func dybzInfo(url string, doc *query.Document) rss.Feed {
 		Author: author,
 	}
 }
+
+// 处理`javascript:readbook('85','85867','9251661');`这类通过js跳转的URL
+// func sanitizeURL(feedURL string) string {
+// 	if !strings.Contains(feedURL, "javascript") {
+// 		return feedURL
+// 	}
+// 	return ""
+// }

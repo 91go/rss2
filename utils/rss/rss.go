@@ -35,10 +35,6 @@ type Item struct {
 	Enclosure                        *feeds.Enclosure
 }
 
-const (
-	LimitItem = 3
-)
-
 // Rss 输出rss
 func Rss(fe *Feed, items []Item) string {
 	if len(items) == 0 {

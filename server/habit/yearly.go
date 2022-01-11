@@ -82,7 +82,7 @@ var notifications = map[string][]Notification{
 	FoodBuy: {
 		{Task: "每三天：脱脂奶，买一桶1.4L(平均每天500ml)", Cron: ThreeDaily},
 		{Task: "每三天：苹果，买一袋(4个)", Cron: ThreeDaily},
-		{Task: "每三天：花卷/饼子，买300g(平均每天100g，早晚各50g)", Cron: SixDaily},
+		{Task: "每三天：花卷/饼子，买300g(平均每天100g，早晚各50g)", Cron: ThreeDaily},
 		// 近期在家购买项
 		{Task: "每三天：蔬菜，买1000-1500g(平均每天300-500g)", Cron: ThreeDaily},
 		{Task: "每三天：肉类，买一袋300g(平均每天100g)", Cron: ThreeDaily},
@@ -104,6 +104,7 @@ var notifications = map[string][]Notification{
 		{Task: "每三月：抽纸(4包)，牙膏(150-200g)，洗面奶(uno-130g)", Cron: ThreeMonthly},
 		{Task: "每三月：牙线(50支*2)", Cron: ThreeMonthly, Remark: "平均每天1支，所以每三个月复购一次"},
 		{Task: "每三月：擦镜纸(150-200片)", Cron: TwoMonthly, Remark: "平均每天2片，所以每三个月复购一次"},
+		{Task: "每三月：湿巾(gatsby-42片*2)", Cron: ThreeMonthly, Remark: "平均每天一片"},
 		{Task: "每半年：毛巾(2条)", Cron: SixMonthly},
 		{Task: "每半年：洗衣液(500g)", Cron: SixMonthly},
 		{Task: "每半年：洗发水(900g)", Cron: SixMonthly, Remark: "用洗发水代替沐浴露、洗手液、洗洁精"},
@@ -113,7 +114,6 @@ var notifications = map[string][]Notification{
 		{Task: "每年：搓澡巾(1只)，鼻通(6支)", Cron: Yearly},
 		{Task: "每年：垃圾袋(100只)", Cron: Yearly, Remark: "平均每周两袋垃圾，一年大约100只垃圾袋"},
 		{Task: "每年：新年给父母¥1000", Cron: Yearly},
-		// {Task: "每三月：湿巾(gatsby-42片*2)", Cron: ThreeMonthly, Remark: "平均每天一片"},
 	},
 }
 
