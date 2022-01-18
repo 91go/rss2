@@ -2,7 +2,11 @@ package webdav
 
 import (
 	"fmt"
+	"os"
 	"strconv"
+	"sync"
+
+	file2 "github.com/91go/rss2/utils/helper/file"
 
 	"github.com/91go/rss2/utils/config"
 	"github.com/91go/rss2/utils/helper/html"
@@ -40,6 +44,8 @@ func WebdavList(path string) []rss.Item {
 	user := config.GetString("WEBDAV.USER")
 	pwd := config.GetString("WEBDAV.PWD")
 
+	var wg sync.WaitGroup
+
 	ret := []rss.Item{}
 
 	client := gowebdav.NewClient(webdavURL, user, pwd)
@@ -48,23 +54,27 @@ func WebdavList(path string) []rss.Item {
 		return ret
 	}
 	for _, file := range dir {
-		resourceURL := fmt.Sprintf("%s/%s/%s", WebdavURL, path, file.Name())
+		wg.Add(1)
+		go func(file os.FileInfo) {
+			defer wg.Done()
 
-		// todo
-		filetype := "audio/mpeg"
-		ret = append(ret, rss.Item{
-			Title:    file.Name(),
-			URL:      resourceURL,
-			Contents: html.GetIframe(filetype, resourceURL),
-			Enclosure: &feeds.Enclosure{
-				Url:    resourceURL,
-				Length: strconv.FormatInt(file.Size(), 10),
-				Type:   filetype,
-			},
-			UpdatedTime: time.GetToday(),
-			ID:          fmt.Sprintf("tag:%s", resourceURL),
-		})
+			resourceURL := fmt.Sprintf("%s/%s/%s", WebdavURL, path, file.Name())
+
+			filetype := file2.GetRemoteFileMIMEType(resourceURL, user, pwd)
+			ret = append(ret, rss.Item{
+				Title:    file.Name(),
+				URL:      resourceURL,
+				Contents: html.GetIframe(filetype, resourceURL),
+				Enclosure: &feeds.Enclosure{
+					Url:    resourceURL,
+					Length: strconv.FormatInt(file.Size(), 10),
+					Type:   filetype,
+				},
+				UpdatedTime: time.GetToday(),
+				ID:          fmt.Sprintf("tag:%s", resourceURL),
+			})
+		}(file)
 	}
-
+	wg.Wait()
 	return ret
 }

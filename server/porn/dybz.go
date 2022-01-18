@@ -39,7 +39,6 @@ func dybzList(url string) (feed rss.Feed, feeds []rss.Item) {
 		title := selection.Find("a").Text()
 		novelURL, _ := selection.Find("a").Attr("href")
 
-		// feedURL := sanitizeURL(novelURL)
 		ret = append(ret, rss.Item{
 			Title: title,
 			URL:   novelURL,

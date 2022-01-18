@@ -80,7 +80,7 @@ var notifications = map[string][]Notification{
 	},
 	// 购买食物
 	FoodBuy: {
-		{Task: "每三天：脱脂奶，买一桶1.4L(平均每天500ml)", Cron: ThreeDaily},
+		// {Task: "每三天：脱脂奶，买一桶1.4L(平均每天500ml)", Cron: ThreeDaily},
 		{Task: "每三天：苹果，买一袋(4个)", Cron: ThreeDaily},
 		{Task: "每三天：花卷/饼子，买300g(平均每天100g，早晚各50g)", Cron: ThreeDaily},
 		// 近期在家购买项

@@ -56,7 +56,7 @@ func FileList(host, path string) []rss.Item {
 		size := fileInfo.Size()
 
 		tfUrl := fmt.Sprintf("https://%s%s%s", host, RootDir, str)
-		filetype := file.GetContentType(filepath)
+		filetype := file.GetLocalFileMimeType(filepath)
 		ret = append(ret, rss.Item{
 			Title:    title,
 			URL:      tfUrl,
