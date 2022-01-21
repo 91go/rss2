@@ -54,6 +54,7 @@ func gocnList(url string) []rss.Item {
 		go func() {
 			defer wg.Done()
 
+			// 爬取失败会直接panic，需要recover起来
 			defer func() {
 				err := recover()
 				if err != nil {

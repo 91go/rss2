@@ -84,8 +84,9 @@ var notifications = map[string][]Notification{
 		{Task: "每三天：苹果，买一袋(4个)", Cron: ThreeDaily},
 		{Task: "每三天：花卷/饼子，买300g(平均每天100g，早晚各50g)", Cron: ThreeDaily},
 		// 近期在家购买项
-		{Task: "每三天：蔬菜，买1000-1500g(平均每天300-500g)", Cron: ThreeDaily},
+		{Task: "每三天：蔬菜，买1000g左右(平均每天300g)", Cron: ThreeDaily},
 		{Task: "每三天：肉类，买一袋300g(平均每天100g)", Cron: ThreeDaily},
+		{Task: "每三天: 面条，买300-500g(平均每天150g左右)", Cron: ThreeDaily},
 	},
 	// 更换
 	Renew: {
