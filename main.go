@@ -55,6 +55,7 @@ func setupRouter() *gin.Engine {
 	// life路由分组
 	life := r.Group("/life")
 	life.GET("/weather", life2.WeatherRss)
+	life.GET("/yan", life2.YanRSS)
 
 	// habit
 	life.GET("/habit/yearly", habit.HabitYearlyRss)
