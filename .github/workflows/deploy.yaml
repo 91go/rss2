@@ -50,7 +50,7 @@ jobs:
           timeout: 10m
           script_stop: true
           script: |
-            cd ~/data/rss2 && docker-compose pull && docker-compose up --build -d
+            cd ~/vps-deploy/www/rss2 && docker-compose pull && docker-compose up --build -d
 
 
 

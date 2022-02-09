@@ -83,11 +83,8 @@ var notifications = map[string][]Notification{
 	FoodBuy: {
 		// {Task: "每三天：脱脂奶，买一桶1.4L(平均每天500ml)", Cron: ThreeDaily},
 		{Task: "每四天：苹果，买一袋(4个)", Cron: FourDaily},
-		{Task: "每四天：花卷/饼子，买300g(平均每天100g，早晚各50g)", Cron: FourDaily},
-		// 近期在家购买项
-		{Task: "每四天：蔬菜，买1000-1200g左右(平均每天300g)", Cron: FourDaily},
-		{Task: "每四天：肉类，买600g(平均每天100g)", Cron: FourDaily},
-		{Task: "每四天: 面条，买600g(平均每天150g左右)", Cron: FourDaily},
+		{Task: "每两天: 采购早饭，包括花卷/饼子200-300g", Cron: TwoDaily},
+		{Task: "每两天: 采购午饭，包括蔬菜500-600g，肉类300g，面条300g，汤料100g)", Cron: TwoDaily, Remark: "近期在家购买项"},
 	},
 	// 更换
 	Renew: {
@@ -116,6 +113,7 @@ var notifications = map[string][]Notification{
 		{Task: "每年：搓澡巾(1只)，鼻通(6支)", Cron: Yearly},
 		{Task: "每年：垃圾袋(100只)", Cron: Yearly, Remark: "平均每周两袋垃圾，一年大约100只垃圾袋"},
 		{Task: "每年：新年给父母¥1000", Cron: Yearly},
+		{Task: "每年：准备过年需要物品(红包封)", Cron: Yearly},
 	},
 }
 

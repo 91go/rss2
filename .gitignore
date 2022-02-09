@@ -4,5 +4,6 @@
 config.toml
 **/.DS_Store
 *.log
-
 coverage.txt
+coverage.out
+slim.report.json
