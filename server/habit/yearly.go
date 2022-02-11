@@ -78,13 +78,15 @@ var notifications = map[string][]Notification{
 		{Task: "每两周：打飞机，晚上洗澡的时候顺便", Cron: TwoWeekly},
 		{Task: "每月：剪脚趾甲", Cron: Monthly},
 		{Task: "每两个月：换洗脸仪刷头", Cron: TwoMonthly},
+		// 键鼠充电
+		// 掏耳朵，换掏耳勺；
 	},
 	// 购买食物
 	FoodBuy: {
 		// {Task: "每三天：脱脂奶，买一桶1.4L(平均每天500ml)", Cron: ThreeDaily},
 		{Task: "每四天：苹果，买一袋(4个)", Cron: FourDaily},
-		{Task: "每两天: 采购早饭，包括花卷/饼子200-300g", Cron: TwoDaily},
-		{Task: "每两天: 采购午饭，包括蔬菜500-600g，肉类300g，面条300g，汤料100g)", Cron: TwoDaily, Remark: "近期在家购买项"},
+		{Task: "每四天: 采购早饭，包括花卷/饼子200-300g", Cron: FourDaily},
+		{Task: "每四天: 采购午饭，包括蔬菜500-600g，肉类300g，面条300g，汤料100g)", Cron: FourDaily, Remark: "近期在家购买项"},
 	},
 	// 更换
 	Renew: {

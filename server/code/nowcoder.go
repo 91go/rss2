@@ -75,6 +75,7 @@ func nowCoderList(url string) []rss.Item {
 			URL:         fullDetailURL,
 			UpdatedTime: updatedTime,
 			Contents:    contents,
+			ID:          rss.GenFixedID("nowcoder", fullDetailURL),
 		})
 	})
 	return ret
