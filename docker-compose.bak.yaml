@@ -15,14 +15,11 @@ services:
       - rss2
     environment:
       - TZ=Asia/Shanghai
-      - DINGTALK.TOKEN=38eeb8495dff05be270f3737ba48d3b7efa7215b548e380920b9f00352102596
-      - DINGTALK.SECRET=SECa32bcc1ab984fd188e7b7718c2aa9da980b3b2261ac251c713d0ce78e1ff830a
+      - DINGTALK.TOKEN=
+      - DINGTALK.SECRET=
       - REDIS.ADDR=rss2-redis:6379
       - REDIS.PWD=root
       - REDIS.DB=1
-      - WEBDAV.URL=https://file.wrss.top
-      - WEBDAV.USER=uweeD8Ah
-      - WEBDAV.PWD=hoh1Noo6
 
 
   redis:

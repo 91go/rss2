@@ -7,3 +7,4 @@ config.toml
 coverage.txt
 coverage.out
 slim.report.json
+docker-compose.yaml

@@ -54,15 +54,6 @@ var CronTime = map[string]string{
 	"@yearly":   "每年",
 }
 
-const (
-	HairCut = `1. 自己理发有什么要注意的？
-    1. *头发长度保持24mm，每周理发一次，打理起来很方便*
-    2. *两边的头发不要太短，把鬓角推掉就可以了，其他地方不用管*，推太短了头皮露出来不好看
-    3. *后面的头发，在看不到的情况下，很难处理，所以就不要弄了*，习惯习惯就好了
-    4. 理完之后，站定看看齐不齐，换角度看看
-	5. 先用24mm卡尺过一遍，两边和后面用12mm卡尺，用剃须刀把鬓角刮掉，其他地方不要刮青了`
-)
-
 type Notification struct {
 	Task   string // 任务
 	Cron   string // 执行时间
@@ -72,7 +63,7 @@ type Notification struct {
 var notifications = map[string][]Notification{
 	// 日常习惯
 	LifeHabit: {
-		{Task: "每周六：剪手指甲、刮胡子、理发", Cron: Saturday, Remark: HairCut},
+		{Task: "每周六：剪手指甲、刮胡子、理发", Cron: Saturday},
 		{Task: "每周六：写周报", Cron: Saturday, Remark: "评估是否完成habit"},
 		{Task: "每两周：换牙刷", Cron: TwoWeekly},
 		{Task: "每两周：打飞机，晚上洗澡的时候顺便", Cron: TwoWeekly},

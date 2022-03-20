@@ -2,7 +2,6 @@ package code
 
 import (
 	"fmt"
-	"path/filepath"
 	"sync"
 
 	"github.com/91go/rss2/utils/helper/time"
@@ -12,8 +11,6 @@ import (
 	"github.com/91go/rss2/utils/rss"
 	query "github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
-	"github.com/gogf/gf/os/gfile"
-	"github.com/gogf/gf/text/gstr"
 )
 
 const OneTabBaseURL = "https://www.one-tab.com/page/"
@@ -68,46 +65,6 @@ func sharedList(url string) []rss.Item {
 	})
 
 	wg.Wait()
-
-	return ret
-}
-
-func OneTabTXTRSS(ctx *gin.Context) {
-	res := rss.Rss(&rss.Feed{
-		URL: "",
-		Title: rss.Title{
-			Prefix: "onetab",
-			Name:   "txt",
-		},
-		UpdatedTime: time.GetToday(),
-	}, txtList())
-
-	resp.SendXML(ctx, res)
-}
-
-func txtList() (ret []rss.Item) {
-	abs, err := filepath.Abs("./public/txt/onetab.txt")
-	if err != nil {
-		return nil
-	}
-
-	err = gfile.ReadLines(abs, func(text string) error {
-		if text != "" {
-			explode := gstr.Explode("|", text)
-			url, title := explode[0], explode[1]
-			ret = append(ret, rss.Item{
-				Title:       title,
-				URL:         url,
-				UpdatedTime: time.GetToday(),
-				ID:          rss.GenFixedID("onetab-txt", url),
-			})
-		}
-		return nil
-	})
-
-	if err != nil {
-		return ret
-	}
 
 	return ret
 }

@@ -50,7 +50,6 @@ func setupRouter() *gin.Engine {
 	code.GET("/gocn/:topic", code2.GoCnRss)
 	code.GET("/nowcoder/discuss/:tag/:type/:order", code2.NowCoderRss)
 	code.GET("/onetab/shared/:page", code2.OneTabSharedRSS)
-	code.GET("/onetab/txt", code2.OneTabTXTRSS)
 
 	// life路由分组
 	life := r.Group("/life")
@@ -58,7 +57,6 @@ func setupRouter() *gin.Engine {
 
 	// habit
 	life.GET("/habit/yearly", habit.HabitYearlyRss)
-	life.GET("/habit/md", habit.HabitMDRss)
 	life.GET("/habit/everyday", habit.HabitEverydayRss)
 
 	// porn路由分组
