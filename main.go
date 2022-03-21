@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 
-	"github.com/91go/rss2/server/habit"
-
 	code2 "github.com/91go/rss2/server/code"
 
 	"github.com/91go/rss2/utils/resp"
@@ -52,10 +50,6 @@ func setupRouter() *gin.Engine {
 	// life路由分组
 	life := r.Group("/life")
 	life.GET("/weather", life2.WeatherRss)
-
-	// habit
-	life.GET("/habit/yearly", habit.HabitYearlyRss)
-	life.GET("/habit/everyday", habit.HabitEverydayRss)
 
 	// porn路由分组
 	porn := r.Group("/porn")
