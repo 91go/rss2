@@ -43,7 +43,7 @@ func setupRouter() *gin.Engine {
 
 	// code路由
 	code := r.Group("/code")
-	code.GET("/gocn/:topic", code2.GoCnRss)
+	code.GET("/gocn/:grade", code2.GoCnRss)
 	code.GET("/nowcoder/discuss/:tag/:type/:order", code2.NowCoderRss)
 	code.GET("/onetab/shared/:page", code2.OneTabSharedRSS)
 	code.GET("/codersway", code2.CodersWayRes)
