@@ -4,8 +4,6 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/go-resty/resty/v2"
-
 	"github.com/91go/rss2/utils/log"
 
 	"github.com/gogf/gf/net/ghttp"
@@ -45,21 +43,6 @@ func PostHTML(url string, m map[string]interface{}) *query.Document {
 	}(resp.Response.Body)
 
 	return DocQuery(resp.Response)
-}
-
-func RestyFetchHTML(url string) *query.Document {
-	client := resty.New()
-	resp, err := client.R().Get(url)
-	if err != nil {
-		logrus.WithFields(log.Text(url, nil)).Error("http request failed")
-		return &query.Document{}
-	}
-	if err != nil {
-		logrus.WithFields(log.Text(url, nil)).Error("http request failed")
-		return &query.Document{}
-	}
-
-	return DocQuery(resp.RawResponse)
 }
 
 // 请求goquery

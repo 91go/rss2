@@ -19,7 +19,7 @@ require (
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/viper v1.8.1
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
-	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
+	golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
@@ -27,8 +27,8 @@ require (
 
 require (
 	github.com/abhinav/goldmark-toc v0.2.1
-	github.com/go-resty/resty/v2 v2.7.0
 	github.com/mmcdole/gofeed v1.1.3
+	github.com/tidwall/gjson v1.14.0
 	github.com/yuin/goldmark v1.3.5
 )
 
@@ -59,6 +59,8 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
+	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	go.opentelemetry.io/otel v1.0.0-RC2 // indirect
 	go.opentelemetry.io/otel/trace v1.0.0-RC2 // indirect

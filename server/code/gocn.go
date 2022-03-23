@@ -2,91 +2,75 @@ package code
 
 import (
 	"fmt"
-	"regexp"
-	"strings"
 	"sync"
 
-	"github.com/gogf/gf/os/gtime"
-
 	"github.com/91go/rss2/utils/helper/time"
-
-	"github.com/91go/rss2/utils/gq"
+	"github.com/91go/rss2/utils/req"
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
-	query "github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
+	"github.com/gogf/gf/container/gmap"
+	"github.com/tidwall/gjson"
 )
 
 const (
-	GoCnBaseUrl = "https://gocn.vip"
-	GoCnUrl     = "https://gocn.vip/topics/"
+	GoCnBaseURL        = "https://gocn.vip/topics?grade="
+	GoCNIndexAPI       = "https://gocn.vip/apiv3/topic/list?currentPage=1&cate2Id=0&grade="
+	GoCNArticleAPI     = "https://gocn.vip/apiv3/topic/%s/info"
+	GoCNArticleBaseURL = "https://gocn.vip/topics/"
 )
 
-func GoCnRss(ctx *gin.Context) {
-	topic := ctx.Param("topic")
+var GradeMap = map[string]string{
+	"excellent": "精华",
+	"hot":       "最热",
+	"new":       "最新",
+}
 
-	url := fmt.Sprintf("%s%s", GoCnUrl, topic)
+func GoCnRss(ctx *gin.Context) {
+	grade := ctx.Param("grade")
+	if !gmap.NewStrStrMapFrom(GradeMap).Contains(grade) {
+		return
+	}
+	url := fmt.Sprintf("%s%s", GoCNIndexAPI, grade)
 
 	res := rss.Rss(&rss.Feed{
-		URL: url,
+		URL: fmt.Sprintf("%s%s", GoCnBaseURL, grade),
 		Title: rss.Title{
-			Prefix: "GopherChina",
-			Name:   topic,
+			Prefix: "GoCN",
+			Name:   GradeMap[grade],
 		},
-		Author:      "gocn",
+		Author:      "GoCN",
 		UpdatedTime: time.GetToday(),
-	}, gocnList(url))
+	}, articleList(url))
 
 	resp.SendXML(ctx, res)
 }
 
-func gocnList(url string) []rss.Item {
-	doc := gq.FetchHTML(url)
-
-	wrap := doc.Find(".item-list").Find(".topic")
+func articleList(url string) []rss.Item {
+	res, _ := req.Get(url)
+	lists := gjson.Get(res, "data.list").Array()
 	var wg sync.WaitGroup
-
 	ret := []rss.Item{}
 
-	wrap.Each(func(i int, sel *query.Selection) {
+	for _, list := range lists {
 		wg.Add(1)
 
-		go func() {
+		go func(list gjson.Result) {
 			defer wg.Done()
 
-			// 爬取失败会直接panic，需要recover起来
-			defer func() {
-				err := recover()
-				if err != nil {
-					fmt.Println("panic error.")
-				}
-			}()
-
-			infos := sel.Find(".infos")
-			ta := infos.Find(".title").Find("a")
-			title, _ := ta.Attr("title")
-			itemUrl, _ := ta.Attr("href")
-
-			// 内容
-			itemUrl = fmt.Sprintf("%s%s", GoCnBaseUrl, itemUrl)
-			detail := gq.FetchHTML(itemUrl)
-			detailHtml, _ := detail.Find(".topic-detail").Html()
-			// 处理时间
-			timeago := detail.Find(".media-body").Find(".info").Find(".timeago").First().Text()
-			re := regexp.MustCompile(`\d+`)
-			formatTime := strings.Join(re.FindAllString(timeago, -1), "-")
-			strToTimeFormat, _ := gtime.StrToTimeFormat(formatTime, "Y-m-d")
-
+			guid := list.Get("guid").String()
+			title := list.Get("title").String()
+			detailRes, _ := req.Get(fmt.Sprintf(GoCNArticleAPI, guid))
+			zw := gjson.Get(detailRes, "data.topic.contentHtml").String()
+			articleURL := fmt.Sprintf("%s%s", GoCNArticleBaseURL, guid)
 			ret = append(ret, rss.Item{
-				Title:       title,
-				URL:         itemUrl,
-				Contents:    detailHtml,
-				UpdatedTime: strToTimeFormat.Time,
+				Title:    title,
+				URL:      articleURL,
+				Contents: zw,
+				ID:       rss.GenFixedID("GoCN", articleURL),
 			})
-		}()
-	})
-
+		}(list)
+	}
 	wg.Wait()
-
 	return ret
 }
