@@ -2,6 +2,9 @@ package code
 
 import (
 	"fmt"
+	"sync"
+
+	"github.com/gogf/gf/text/gstr"
 
 	"github.com/91go/rss2/utils/gq"
 	"github.com/91go/rss2/utils/helper/time"
@@ -10,7 +13,6 @@ import (
 	query "github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
 	"github.com/gogf/gf/container/garray"
-	"github.com/gogf/gf/text/gstr"
 )
 
 type CodersWayCourse struct {
@@ -44,6 +46,7 @@ var (
 const (
 	CodersWayBaseURL = "https://www.jtthink.com"
 	CodersWayURL     = "https://www.jtthink.com/course"
+	FreeCourse       = "试听"
 )
 
 func CodersWayRes(ctx *gin.Context) {
@@ -63,6 +66,8 @@ func courseList() []rss.Item {
 	doc := gq.FetchHTML(CodersWayURL)
 	ret := []rss.Item{}
 
+	var wg sync.WaitGroup
+
 	cates := []CourseCate{}
 	// 获取所有课程分类
 	doc.Find(".page-header").Find("a").Each(func(i int, sel *query.Selection) {
@@ -78,42 +83,66 @@ func courseList() []rss.Item {
 	// 分页获取课程分类下的课程以及章节
 	for _, cate := range cates {
 		gq.FetchHTML(cate.CateURL).Find(".row").Eq(1).Find(".col-md-4").Find(".thumbnail").Find(".caption").Each(func(i int, sel *query.Selection) {
-			courseName, _ := sel.Find("h4").Find("a").Attr("title")
-			courseURL, _ := sel.Find("h4").Find("a").Attr("href")
-			remark := sel.Find("p").Text()
-			isUpdating := gstr.Contains(remark, "更新中")
+			wg.Add(1)
 
-			chapters := parseCourseDetail(courseURL)
-			// 剔除所有的已完结课程，只展示更新中的课程
-			if isUpdating {
-				for _, chapter := range chapters {
-					title := fmt.Sprintf("[%s] - %s", courseName, chapter.Title)
-					ret = append(ret, rss.Item{
-						URL:      chapter.URL,
-						Title:    title,
-						Contents: chapter.Intro,
-						ID:       rss.GenFixedID("coders-way", chapter.URL),
-					})
+			go func() {
+				defer wg.Done()
+				defer func() {
+					err := recover()
+					if err != nil {
+						fmt.Println("panic error.")
+					}
+				}()
+
+				courseName, _ := sel.Find("h4").Find("a").Attr("title")
+				courseURL, _ := sel.Find("h4").Find("a").Attr("href")
+				remark := sel.Find("p").Text()
+				isUpdating := gstr.Contains(remark, "更新中")
+
+				chapters := parseCourseDetail(courseURL)
+				// 剔除所有的已完结课程，只展示更新中的课程
+				if isUpdating {
+					for _, chapter := range chapters {
+						title := fmt.Sprintf("[%s] - %s", courseName, chapter.Title)
+						ret = append(ret, rss.Item{
+							URL:      chapter.URL,
+							Title:    title,
+							Contents: chapter.Intro,
+							ID:       rss.GenFixedID("coders-way", chapter.URL),
+						})
+					}
 				}
-			}
+			}()
 		})
 	}
+
+	wg.Wait()
 
 	return ret
 }
 
 // 课程详情
+// https://www.jtthink.com/course/170
 func parseCourseDetail(url string) (chapters []ChapterInfo) {
-	// https://www.jtthink.com/course/170
-	gq.FetchHTML(url).Find(".list-group").Each(func(i int, sel *query.Selection) {
-		courseURL, _ := sel.Find(".coursetitle").Find("a").Attr("href")
-		title := sel.Find(".coursetitle").Find("a").First().Text()
-		intro := sel.Find(".courseintr").Find("p").Text()
+	doc := gq.FetchHTML(url).Find(".list-group.course")
+	length := doc.Length()
+
+	doc.Slice(0, length-1).Each(func(i int, sel *query.Selection) {
+		courseURL, _ := sel.Find(".list-group-item.coursetitle.white").Find("a").Attr("href")
+		title := sel.Find(".list-group-item.coursetitle.white").Find("a").First().Text()
+		intro := sel.Find(".list-group-item.courseintr.white").Find("p").Text()
+		// 判断是否为试听课
+		isFree := sel.Find(".list-group-item.coursetitle.white").Find("span").Text()
+		if isFree == FreeCourse {
+			courseURL, _ = sel.Find(".list-group-item.coursetitle.white").Find("a").Eq(1).Attr("href")
+			title = sel.Find(".list-group-item.coursetitle.white").Find("a").Eq(1).Text()
+		}
 		chapters = append(chapters, ChapterInfo{
 			URL:   courseURL,
 			Title: title,
 			Intro: intro,
 		})
 	})
+
 	return chapters
 }
