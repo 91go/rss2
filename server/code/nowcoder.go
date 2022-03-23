@@ -3,6 +3,7 @@ package code
 import (
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/91go/rss2/utils/helper/str"
@@ -38,13 +39,13 @@ var (
 )
 
 // https://ac.nowcoder.com/discuss/tag/2656?type=2&order=3
-// rsshub不支持tag，只有type和order
+// rsshub的牛客网feed不支持tag，只有type和order
 func NowCoderRss(ctx *gin.Context) {
 	tag := ctx.Param("tag")
 	typ := ctx.Param("type")
 	order := ctx.Param("order")
 
-	url := fmt.Sprintf("%s%s?type=%s?order=%s", NowCoderDiscussURL, tag, typ, order)
+	url := fmt.Sprintf("%s%s?type=%s&order=%s", NowCoderDiscussURL, tag, typ, order)
 
 	list := nowCoderList(url)
 	res := rss.Rss(&rss.Feed{
@@ -61,23 +62,37 @@ func NowCoderRss(ctx *gin.Context) {
 
 func nowCoderList(url string) []rss.Item {
 	doc := gq.FetchHTML(url)
-	wrap := doc.Find(".common-list").Find(".discuss-detail").Find(".discuss-main").Slice(0, 3)
 
 	ret := []rss.Item{}
-	wrap.Each(func(i int, sel *query.Selection) {
-		detailURL, _ := sel.Find("a").First().Attr("href")
-		title := sel.Find("a").First().Text()
+	var wg sync.WaitGroup
 
-		fullDetailURL := fmt.Sprintf("%s%s", NowCoderBaseURL, detailURL)
-		contents, updatedTime := parseDetail(fullDetailURL)
-		ret = append(ret, rss.Item{
-			Title:       title,
-			URL:         fullDetailURL,
-			UpdatedTime: updatedTime,
-			Contents:    contents,
-			ID:          rss.GenFixedID("nowcoder", fullDetailURL),
-		})
+	doc.Find(".common-list").Find(".discuss-detail").Find(".discuss-main").Each(func(i int, sel *query.Selection) {
+		wg.Add(1)
+
+		go func() {
+			defer wg.Done()
+			defer func() {
+				err := recover()
+				if err != nil {
+					fmt.Println("panic error.")
+				}
+			}()
+
+			detailURL, _ := sel.Find("a").First().Attr("href")
+			title := sel.Find("a").First().Text()
+
+			fullDetailURL := fmt.Sprintf("%s%s", NowCoderBaseURL, detailURL)
+			contents, updatedTime := parseDetail(fullDetailURL)
+			ret = append(ret, rss.Item{
+				Title:       title,
+				URL:         fullDetailURL,
+				UpdatedTime: updatedTime,
+				Contents:    contents,
+				ID:          rss.GenFixedID("nowcoder", fullDetailURL),
+			})
+		}()
 	})
+	wg.Wait()
 	return ret
 }
 
