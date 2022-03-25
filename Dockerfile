@@ -2,14 +2,16 @@ FROM golang:alpine AS builder
 
 # 为我们的镜像设置必要的环境变量
 ENV GO111MODULE=on \
-    CGO_ENABLED=0 \
+    CGO_ENABLED=1 \
     GOOS=linux \
     GOARCH=amd64
 
 WORKDIR /build
 
 # 安装ca-certificates，发送HTTPS请求，否则会报错"x509: certificate signed by unknown authority"
-RUN apk update && apk upgrade && apk add --no-cache ca-certificates
+RUN apk update && apk upgrade
+RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache build-base=0.5-r2
 RUN update-ca-certificates
 
 # 编译项目
@@ -19,7 +21,7 @@ COPY go.sum .
 #COPY config.toml .
 RUN go mod download
 COPY . .
-RUN go build -o rss2 .
+RUN GOOS=linux CGO_ENABLE=1 GOARCH=amd64 go build -ldflags="-s -w" -installsuffix cgo -o rss2 .
 
 # 二阶段编译
 FROM alpine AS releaser
