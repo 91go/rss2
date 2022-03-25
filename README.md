@@ -5,5 +5,3 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/91go/rss2)](https://goreportcard.com/report/github.com/91go/rss2)
 
 Another rsshub, an rss generator that provides my required sites, as a complementary project to rsshub
-
-
