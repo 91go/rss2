@@ -2,6 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
+
+	"github.com/91go/rss2/model"
+	"github.com/91go/rss2/server/habit"
 
 	code2 "github.com/91go/rss2/server/code"
 
@@ -19,6 +23,11 @@ import (
 func main() {
 	r := setupRouter()
 	gin.SetMode(gin.DebugMode)
+
+	_, err := model.InitDB()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	if err := r.Run(":8090"); err != nil {
 		fmt.Printf("startup service failed, err:%v \n", err)
@@ -51,6 +60,10 @@ func setupRouter() *gin.Engine {
 	// life路由分组
 	life := r.Group("/life")
 	life.GET("/weather", life2.WeatherRss)
+
+	// habit
+	life.GET("/habit/yearly", habit.HabitYearlyRss)
+	life.GET("/habit/everyday", habit.HabitEverydayRss)
 
 	// porn路由分组
 	porn := r.Group("/porn")

@@ -8,3 +8,4 @@ coverage.txt
 coverage.out
 slim.report.json
 docker-compose.yaml
+/rss2.db
