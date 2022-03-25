@@ -100,7 +100,6 @@ func TestCheckCron(t *testing.T) {
 }
 
 func Time2Carbon(str string) carbon.Carbon {
-
 	return carbon.Time2Carbon(TransTimeN(str))
 }
 
