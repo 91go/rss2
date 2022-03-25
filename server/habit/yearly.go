@@ -66,14 +66,14 @@ func CheckCron(cronTime string, cb carbon.Carbon) bool {
 
 	isSaturday := cb.IsSaturday()
 	isJanuary := cb.IsJanuary()
-	isHit, number := ExtractTimeNumber(cronTime)
+	isMatched, number := ExtractTimeNumber(cronTime)
 
 	// 判断daily
 	if gstr.Contains(cronTime, "daily") && ((dayOfYear-1)%number == 0 || dayOfYear == 1) {
 		return true
 	}
 	// 判断weekly
-	if gstr.Contains(cronTime, "weekly") && isSaturday && (weekOfYear%number != 0 || !isHit) {
+	if gstr.Contains(cronTime, "weekly") && isSaturday && (weekOfYear%number != 0 || !isMatched) {
 		return true
 	}
 	// 判断monthly
@@ -100,13 +100,13 @@ func GetURL(r *http.Request) string {
 }
 
 // ExtractTimeNumber 正则提取数字
-func ExtractTimeNumber(t string) (bool, int) {
-	isMatched := numberReg.MatchString(t)
+func ExtractTimeNumber(t string) (isMatched bool, number int) {
+	isMatched = numberReg.MatchString(t)
 	if !isMatched {
-		return false, 1
+		return isMatched, 1
 	}
-	res, _ := strconv.Atoi(numberReg.FindString(t))
-	return true, res
+	number, _ = strconv.Atoi(numberReg.FindString(t))
+	return isMatched, number
 }
 
 // GetMonths 间隔取值
