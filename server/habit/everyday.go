@@ -22,12 +22,12 @@ func HabitEverydayRss(ctx *gin.Context) {
 		Author:      "lry",
 		URL:         GetURL(ctx.Request),
 		UpdatedTime: time.GetToday(),
-	}, routineFeed())
+	}, everyday())
 
 	resp.SendXML(ctx, res)
 }
 
-func routineFeed() []rss.Item {
+func everyday() []rss.Item {
 	ret := []rss.Item{}
 	m := model.Everyday{}
 	items, _ := m.FindAll()

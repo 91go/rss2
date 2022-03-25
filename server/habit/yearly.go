@@ -3,6 +3,12 @@ package habit
 import (
 	"fmt"
 	"net/http"
+	"regexp"
+	"strconv"
+
+	"github.com/91go/rss2/utils/helper/iter"
+	"github.com/gogf/gf/container/garray"
+	"github.com/gogf/gf/text/gstr"
 
 	"github.com/91go/rss2/model"
 
@@ -12,25 +18,11 @@ import (
 	"github.com/91go/rss2/utils/resp"
 	"github.com/91go/rss2/utils/rss"
 	"github.com/gin-gonic/gin"
-	"github.com/gogf/gf/container/garray"
 	"github.com/gogf/gf/os/gtime"
 	"github.com/golang-module/carbon"
 )
 
-const (
-	TwoDaily     = "@2daily"
-	ThreeDaily   = "@3daily"
-	FourDaily    = "@4daily"
-	SixDaily     = "@6daily"
-	Weekly       = "@weekly"
-	TwoWeekly    = "@2weekly"
-	ThreeWeekly  = "@3weekly"
-	Monthly      = "@monthly"
-	TwoMonthly   = "@2monthly"
-	ThreeMonthly = "@3monthly"
-	SixMonthly   = "@6monthly"
-	Yearly       = "@yearly"
-)
+var numberReg = regexp.MustCompile(`\d+`)
 
 func HabitYearlyRss(ctx *gin.Context) {
 	res := rss.Rss(&rss.Feed{
@@ -41,12 +33,12 @@ func HabitYearlyRss(ctx *gin.Context) {
 		Author:      "lry",
 		URL:         GetURL(ctx.Request),
 		UpdatedTime: time.GetToday(),
-	}, habitFeed())
+	}, yearly())
 
 	resp.SendXML(ctx, res)
 }
 
-func habitFeed() []rss.Item {
+func yearly() []rss.Item {
 	ret := []rss.Item{}
 	m := model.Yearly{}
 	items, _ := m.FindAll()
@@ -67,58 +59,31 @@ func habitFeed() []rss.Item {
 }
 
 func CheckCron(cronTime string, cb carbon.Carbon) bool {
-	isSaturday := cb.IsSaturday()
 	dayOfYear := cb.DayOfYear()
 	dayOfMonth := cb.DayOfMonth()
 	weekOfYear := cb.WeekOfYear()
 	monthOfYear := cb.MonthOfYear()
-	isJanuary := cb.IsJanuary()
 
-	// @2daily
-	if cronTime == TwoDaily && ((dayOfYear-1)%2 == 0 || dayOfYear == 1) {
+	isSaturday := cb.IsSaturday()
+	isJanuary := cb.IsJanuary()
+	isHit, number := ExtractTimeNumber(cronTime)
+
+	// 判断daily
+	if gstr.Contains(cronTime, "daily") && ((dayOfYear-1)%number == 0 || dayOfYear == 1) {
 		return true
 	}
-	// @3daily
-	if cronTime == ThreeDaily && ((dayOfYear-1)%3 == 0 || dayOfYear == 1) {
+	// 判断weekly
+	if gstr.Contains(cronTime, "weekly") && isSaturday && (weekOfYear%number != 0 || !isHit) {
 		return true
 	}
-	if cronTime == FourDaily && ((dayOfYear-1)%4 == 0 || dayOfYear == 1) {
-		return true
-	}
-	// @6daily
-	if cronTime == SixDaily && ((dayOfYear-1)%6 == 0 || dayOfYear == 1) {
-		return true
-	}
-	// @weekly
-	if cronTime == Weekly && isSaturday {
-		return true
-	}
-	// @2weekly
-	if cronTime == TwoWeekly && weekOfYear%2 != 0 && isSaturday {
-		return true
-	}
-	// @3weekly
-	if cronTime == ThreeWeekly && weekOfYear%3 != 0 && isSaturday {
-		return true
-	}
-	// @monthly 每月1号
-	if cronTime == Monthly && dayOfMonth == 1 {
-		return true
-	}
-	// @2monthly
-	if cronTime == TwoMonthly && garray.NewIntArrayFrom([]int{1, 3, 5, 7, 9, 11}).Contains(monthOfYear) && dayOfMonth == 1 {
-		return true
-	}
-	// @3monthly
-	if cronTime == ThreeMonthly && garray.NewIntArrayFrom([]int{1, 4, 7, 10}).Contains(monthOfYear) && dayOfMonth == 1 {
-		return true
-	}
-	// @6monthly
-	if cronTime == SixMonthly && garray.NewIntArrayFrom([]int{1, 7}).Contains(monthOfYear) && dayOfMonth == 1 {
+	// 判断monthly
+	months := GetMonths(number)
+	isContains := garray.NewIntArrayFrom(months).Contains(monthOfYear)
+	if gstr.Contains(cronTime, "monthly") && dayOfMonth == 1 && isContains {
 		return true
 	}
 	// @yearly
-	if cronTime == Yearly && isJanuary && dayOfMonth == 1 {
+	if gstr.Contains(cronTime, "yearly") && isJanuary && dayOfMonth == 1 {
 		return true
 	}
 
@@ -132,4 +97,22 @@ func GetURL(r *http.Request) string {
 		scheme = "https://"
 	}
 	return scheme + r.Host + r.RequestURI
+}
+
+// ExtractTimeNumber 正则提取数字
+func ExtractTimeNumber(t string) (bool, int) {
+	isMatched := numberReg.MatchString(t)
+	if !isMatched {
+		return false, 1
+	}
+	res, _ := strconv.Atoi(numberReg.FindString(t))
+	return true, res
+}
+
+// GetMonths 间隔取值
+func GetMonths(step int) (res []int) {
+	for v := range iter.N(1, carbon.MonthsPerYear+1, step) {
+		res = append(res, v)
+	}
+	return
 }
