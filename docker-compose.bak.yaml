@@ -20,7 +20,8 @@ services:
       - REDIS.ADDR=rss2-redis:6379
       - REDIS.PWD=root
       - REDIS.DB=1
-
+    volumes:
+      - ./rss2.db:/rss2.db
 
   redis:
     image: redis:latest
