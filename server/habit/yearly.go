@@ -106,7 +106,7 @@ func ExtractTimeNumber(t string) (isMatched bool, number int) {
 		return isMatched, 1
 	}
 	number, _ = strconv.Atoi(numberReg.FindString(t))
-	return isMatched, number
+	return
 }
 
 // GetMonths 间隔取值

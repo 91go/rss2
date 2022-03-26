@@ -15,7 +15,6 @@ test:
 	@go test -race ./...
 
 # 通过benchstat对比测试数据
-# TODO
 benchstat:
 	@go test -run=NONE -benchmem -bench=Rss -count=20 | tee -a xxx.txt
 	benchstat old.txt new.txt
@@ -29,16 +28,23 @@ cover:
 cross-build:
 	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 @go build -a -o ./build/$(BINARY) -v ./
 
-
 clean:
 	@if [ -f $(BINARY) ] ; then rm $(BINARY) ; fi
 
 mod/why:
 	@go mod why $(package)
 
-pprof:
+## Run data race detector
+race:
+	@go test -race -short
 
+## Generate global code coverage report
+coverage:
+	sh ./coverage.sh;
 
+## Generate global code coverage report in HTML
+coverhtml:
+	sh ./coverage.sh html;
 
 help:
 	@echo "make tidy 执行linter"

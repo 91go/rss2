@@ -31,7 +31,7 @@ func FetchHTML(url string) *query.Document {
 }
 
 // PostHTML 发送表单请求
-func PostHTML(url string, m map[string]interface{}) *query.Document {
+func PostHTML(url string, m map[string]any) *query.Document {
 	resp, err := ghttp.NewClient().Post(url, m)
 	if err != nil {
 		return nil

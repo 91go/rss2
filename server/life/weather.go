@@ -78,7 +78,7 @@ func WeatherRss(ctx *gin.Context) {
 }
 
 func crawl(city string) Warm {
-	parts := make(map[string]interface{})
+	parts := make(map[string]any)
 	weather := getWeather(city)
 	parts["weather"] = weather
 	generateHTML := html.GenerateHTML(HTML, parts)

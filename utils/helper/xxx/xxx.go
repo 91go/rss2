@@ -2,7 +2,7 @@ package xxx
 
 import "reflect"
 
-func If(condition bool, trueVal, falseVal interface{}) interface{} {
+func If(condition bool, trueVal, falseVal any) any {
 	if condition {
 		return trueVal
 	}
@@ -10,7 +10,7 @@ func If(condition bool, trueVal, falseVal interface{}) interface{} {
 }
 
 // Empty 类似于 PHP 的 empty() 函数
-func Empty(val interface{}) bool {
+func Empty(val any) bool {
 	if val == nil {
 		return true
 	}

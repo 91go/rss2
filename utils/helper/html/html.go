@@ -9,7 +9,7 @@ import (
 )
 
 // 生成html
-func GenerateHTML(html string, datas map[string]interface{}) string {
+func GenerateHTML(html string, datas map[string]any) string {
 	for key, data := range datas {
 		rDataKey := reflect.TypeOf(data)
 		rDataVal := reflect.ValueOf(data)
