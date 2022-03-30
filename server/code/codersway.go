@@ -64,8 +64,7 @@ func CodersWayRes(ctx *gin.Context) {
 
 func courseList() []rss.Item {
 	doc := gq.FetchHTML(CodersWayURL)
-	ret := []rss.Item{}
-
+	var ret []rss.Item
 	var wg sync.WaitGroup
 
 	cates := []CourseCate{}
@@ -115,9 +114,7 @@ func courseList() []rss.Item {
 			}()
 		})
 	}
-
 	wg.Wait()
-
 	return ret
 }
 
@@ -144,5 +141,5 @@ func parseCourseDetail(url string) (chapters []ChapterInfo) {
 		})
 	})
 
-	return chapters
+	return
 }

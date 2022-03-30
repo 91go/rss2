@@ -1,4 +1,4 @@
-package porn
+package mz
 
 import (
 	"fmt"

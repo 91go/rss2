@@ -20,8 +20,8 @@ import (
 
 // Feed 通用Feed
 type Feed struct {
-	URL, Author, Contents    string
-	CreatedTime, UpdatedTime time.Time
+	URL, Author string
+	UpdatedTime time.Time
 	Title
 }
 
@@ -32,9 +32,9 @@ type Title struct {
 
 //
 type Item struct {
-	URL, Title, Author, Contents, ID string
-	CreatedTime, UpdatedTime         time.Time
-	Enclosure                        *feeds.Enclosure
+	URL, Title, Contents, ID string
+	UpdatedTime              time.Time
+	Enclosure                *feeds.Enclosure
 }
 
 // Rss 输出rss
@@ -58,7 +58,6 @@ func Rss(fe *Feed, items []Item) string {
 }
 
 func rss(fe *Feed, items []Item) string {
-	// todo 添加favicon
 	feed := feeds.Feed{
 		Title:   feedTitle(fe.Title),
 		Link:    &feeds.Link{Href: fe.URL},
@@ -68,20 +67,13 @@ func rss(fe *Feed, items []Item) string {
 
 	for key := range items {
 		feed.Add(&feeds.Item{
-			// Title:       value.Title,
-			// Link:        &feeds.Link{Href: value.URL},
-			// Description: value.Contents,
-			// Author:      &feeds.Author{Name: value.Author},
-			// Id:          value.ID,
-			// Enclosure:   value.Enclosure,
-			// Updated:     value.UpdatedTime,
 			Title:       items[key].Title,
 			Link:        &feeds.Link{Href: items[key].URL},
 			Description: items[key].Contents,
-			Author:      &feeds.Author{Name: items[key].Author},
-			Id:          items[key].ID,
-			Enclosure:   items[key].Enclosure,
-			Updated:     items[key].UpdatedTime,
+			// Author:      &feeds.Author{Name: items[key].Author},
+			Id:        items[key].ID,
+			Enclosure: items[key].Enclosure,
+			Updated:   items[key].UpdatedTime,
 		})
 	}
 

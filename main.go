@@ -16,7 +16,7 @@ import (
 	"github.com/91go/rss2/middleware"
 
 	life2 "github.com/91go/rss2/server/life"
-	porn2 "github.com/91go/rss2/server/porn"
+	porn2 "github.com/91go/rss2/server/mz"
 	"github.com/gin-gonic/gin"
 )
 
@@ -66,7 +66,7 @@ func setupRouter() *gin.Engine {
 	life.GET("/habit/everyday", habit.HabitEverydayRss)
 
 	// porn路由分组
-	porn := r.Group("/porn")
+	porn := r.Group("/mz")
 	porn.GET("/ysk/:tag", porn2.YskRss)
 	porn.GET("/dybz/:novel", porn2.DybzRss)
 	porn.GET("/pornhub/model/:model", porn2.PornhubRss)

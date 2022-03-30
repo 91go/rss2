@@ -1,4 +1,4 @@
-package porn
+package mz
 
 import (
 	"fmt"
@@ -42,8 +42,7 @@ func dybzList(url string) (feed rss.Feed, feeds []rss.Item) {
 		ret = append(ret, rss.Item{
 			Title: title,
 			URL:   novelURL,
-			// 每个feed只有一个id，不会根据生成时间产生新的
-			ID: rss.GenFixedID("dybz", novelURL),
+			ID:    rss.GenFixedID("dybz", novelURL),
 		})
 	})
 
