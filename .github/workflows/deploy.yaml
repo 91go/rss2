@@ -49,8 +49,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
-          file: server/Dockerfile
           push: true
           tags: |
             registry.cn-hangzhou.aliyuncs.com/91go/rss2:${{ github.event.inputs.tags }}
