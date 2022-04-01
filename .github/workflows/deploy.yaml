@@ -1,13 +1,19 @@
 name: deploy
 on:
-  push:
-    tags:
-      - v*
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main # 当pr被合并到main分支时
+  #  push:
+  #    tags:
+  #      - v*
+  #    branches:
+  #      - main
+  #  pull_request:
+  #    branches:
+  #      - main # 当pr被合并到main分支时
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Test scenario tags'
+        required: true
+        type: string
 permissions:
   contents: read
 
@@ -35,14 +41,20 @@ jobs:
           username: "${{ secrets.ACR_USERNAME }}"
           password: "${{ secrets.ACR_PASSWORD }}"
       - name: Start build docker image
-        run: echo ${{ github.ref_name }}
+        run: |
+          echo ${{ github.ref_name }}
+          echo ${{ github.event.inputs.tags }}
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: .
+          platforms: linux/amd64,linux/arm64
+          file: server/Dockerfile
           push: true
-          tags: registry.cn-hangzhou.aliyuncs.com/91go/rss2:${{ github.ref_name }},registry.cn-hangzhou.aliyuncs.com/91go/rss2:latest
+          tags: |
+            registry.cn-hangzhou.aliyuncs.com/91go/rss2:${{ github.event.inputs.tags }}
+            registry.cn-hangzhou.aliyuncs.com/91go/rss2:latest
       - name: deploy
         uses: appleboy/ssh-action@master
         with:
