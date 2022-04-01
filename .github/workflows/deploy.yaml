@@ -16,8 +16,8 @@ jobs:
     name: Test
     strategy:
       matrix:
-        go-version: [1.18.x]
-        os: [ubuntu-latest]
+        go-version: [ 1.18.x ]
+        os: [ ubuntu-latest ]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Set up Go
@@ -34,13 +34,17 @@ jobs:
           login-server: https://registry.cn-hangzhou.aliyuncs.com
           username: "${{ secrets.ACR_USERNAME }}"
           password: "${{ secrets.ACR_PASSWORD }}"
+      - name: Start build docker image
+        run: echo ${{ github.event.inputs.versionTag }}
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: .
-          push: true
-          tags: registry.cn-hangzhou.aliyuncs.com/91go/rss2:latest
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: registry.cn-hangzhou.aliyuncs.com/91go/rss2:${{ github.event.inputs.versionTag }}
+      #          build-args: |
+      #            BASE_IMAGE=registry.cn-hangzhou.aliyuncs.com/91go/rss2:${{ github.sha }}
       - name: deploy
         uses: appleboy/ssh-action@master
         with:
