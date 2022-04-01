@@ -35,16 +35,14 @@ jobs:
           username: "${{ secrets.ACR_USERNAME }}"
           password: "${{ secrets.ACR_PASSWORD }}"
       - name: Start build docker image
-        run: echo ${{ github.event.inputs.versionTag }}
+        run: echo ${{ github.ref_name }}
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: .
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: registry.cn-hangzhou.aliyuncs.com/91go/rss2:${{ github.event.inputs.versionTag }}
-      #          build-args: |
-      #            BASE_IMAGE=registry.cn-hangzhou.aliyuncs.com/91go/rss2:${{ github.sha }}
+          push: true
+          tags: registry.cn-hangzhou.aliyuncs.com/91go/rss2:${{ github.ref_name }},registry.cn-hangzhou.aliyuncs.com/91go/rss2:latest
       - name: deploy
         uses: appleboy/ssh-action@master
         with:
@@ -58,6 +56,34 @@ jobs:
             cd ~/vps-deploy/www/rss2 && docker-compose pull && docker-compose up --build -d
 
 
+
+
+#      - name: Set output variables
+#        id: vars
+#        run: |
+#          # 拼接镜像 id，这个镜像 id 就是在使用 docker 镜像时 pull 后面的名字。
+#          IMAGE_ID=libra146/$IMAGE_NAME
+#          # 将所有的大写字母转为小写
+#          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+#          # 从 GitHub.ref 中取出版本
+#          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+#          # 从 tag 名字中替换 v 字符
+#          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+#          # Use Docker `latest` tag convention
+#          [ "$VERSION" == "master" ] && VERSION=latest
+#          echo IMAGE_ID=$IMAGE_ID
+#          echo VERSION=$VERSION
+#
+#          if [ ${{ github.ref }} = "refs/heads/master" ]; then
+#            echo ::set-output name=TAG::${VERSION}-SNAPSHOT
+#          elif [[ ${{ github.ref }} =~ ^refs/heads/v.*-branch$ ]]; then
+#            echo ::set-output name=TAG::${VERSION}
+#          else
+#            echo ::set-output name=TAG::${VERSION}-${{ github.sha }}
+#          fi
+#
+#          echo ::set-output name=BRANCH::${{ github.ref }}
+#          echo ::set-output name=COMMIT::${{ github.sha }}
 
 # 当镜像有更新时，会重新创建容器
 # 只有在image有更新的情况下，直接`docker-dompose up`才会重新创建容器；但是我们通过dockerfile创建镜像，所以需要
