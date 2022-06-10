@@ -1,13 +1,13 @@
 name: deploy
 on:
-  #  push:
-  #    tags:
-  #      - v*
-  #    branches:
-  #      - main
-  #  pull_request:
-  #    branches:
-  #      - main # 当pr被合并到main分支时
+  push:
+    tags:
+      - v*
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main # 当pr被合并到main分支时
   workflow_dispatch:
     inputs:
       tags:
