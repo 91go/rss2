@@ -3,12 +3,10 @@ package rss
 import (
 	"errors"
 	"fmt"
+	"rss2/utils/helper/slice"
+	"rss2/utils/log"
+	"rss2/utils/redis"
 	"time"
-
-	"github.com/91go/rss2/utils/helper/slice"
-
-	"github.com/91go/rss2/utils/log"
-	"github.com/91go/rss2/utils/redis"
 
 	"github.com/gogf/gf/os/gtime"
 	"github.com/gogf/gf/util/gconv"
@@ -32,9 +30,9 @@ type Title struct {
 
 //
 type Item struct {
-	URL, Title, Contents, ID string
-	UpdatedTime              time.Time
-	Enclosure                *feeds.Enclosure
+	URL, Title, Contents, ID, Author string
+	UpdatedTime                      time.Time
+	Enclosure                        *feeds.Enclosure
 }
 
 // Rss 输出rss
@@ -70,10 +68,10 @@ func rss(fe *Feed, items []Item) string {
 			Title:       items[key].Title,
 			Link:        &feeds.Link{Href: items[key].URL},
 			Description: items[key].Contents,
-			// Author:      &feeds.Author{Name: items[key].Author},
-			Id:        items[key].ID,
-			Enclosure: items[key].Enclosure,
-			Updated:   items[key].UpdatedTime,
+			Author:      &feeds.Author{Name: items[key].Author},
+			Id:          items[key].ID,
+			Enclosure:   items[key].Enclosure,
+			Updated:     items[key].UpdatedTime,
 		})
 	}
 

@@ -3,8 +3,7 @@ package gq
 import (
 	"io"
 	"net/http"
-
-	"github.com/91go/rss2/utils/log"
+	"rss2/utils/log"
 
 	"github.com/gogf/gf/net/ghttp"
 

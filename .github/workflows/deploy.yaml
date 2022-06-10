@@ -79,7 +79,7 @@ jobs:
           timeout: 10m
           script_stop: true
           script: |
-            cd ~/vps/rss2 && docker-compose pull && docker-compose up --build -d
+            cd ~/vps/rss2 && docker compose pull && docker compose up --build -d
 
 
 #      - name: Set output variables

@@ -1,9 +1,8 @@
 package main
 
 import (
+	"rss2/utils/log"
 	"testing"
-
-	"github.com/91go/rss2/utils/log"
 
 	"github.com/sirupsen/logrus"
 )

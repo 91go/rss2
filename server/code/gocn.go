@@ -2,12 +2,12 @@ package code
 
 import (
 	"fmt"
+	"rss2/utils/helper/time"
+	"rss2/utils/req"
+	"rss2/utils/resp"
+	"rss2/utils/rss"
 	"sync"
 
-	"github.com/91go/rss2/utils/helper/time"
-	"github.com/91go/rss2/utils/req"
-	"github.com/91go/rss2/utils/resp"
-	"github.com/91go/rss2/utils/rss"
 	"github.com/gin-gonic/gin"
 	"github.com/gogf/gf/container/gmap"
 	"github.com/tidwall/gjson"

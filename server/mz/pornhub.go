@@ -3,12 +3,12 @@ package mz
 import (
 	"errors"
 	"fmt"
+	"rss2/utils/helper/str"
+	"rss2/utils/helper/time"
+	"rss2/utils/log"
+	"rss2/utils/resp"
+	"rss2/utils/rss"
 
-	"github.com/91go/rss2/utils/helper/str"
-
-	"github.com/91go/rss2/utils/log"
-	"github.com/91go/rss2/utils/resp"
-	"github.com/91go/rss2/utils/rss"
 	"github.com/gogf/gf/text/gstr"
 	"github.com/mmcdole/gofeed"
 	"github.com/sirupsen/logrus"
@@ -33,10 +33,12 @@ func PornhubRss(ctx *gin.Context) {
 		link := item.Link
 		viewKey := gstr.SubStr(link, gstr.Pos(link, "=")+1)
 		ret = append(ret, rss.Item{
-			Title:    item.Title,
-			Contents: str.GetIframe("https://www.pornhub.com/embed/"+viewKey, item.Description),
-			URL:      link,
-			ID:       item.GUID,
+			Title:       item.Title,
+			Contents:    str.GetIframe("https://www.pornhub.com/embed/"+viewKey, item.Description),
+			URL:         link,
+			ID:          item.GUID,
+			UpdatedTime: time.GetToday(),
+			Author:      model,
 		})
 	}
 

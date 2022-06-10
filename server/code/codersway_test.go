@@ -2,9 +2,9 @@ package code
 
 import (
 	"fmt"
+	"rss2/utils/gq"
 	"testing"
 
-	"github.com/91go/rss2/utils/gq"
 	query "github.com/PuerkitoBio/goquery"
 )
 

@@ -2,10 +2,9 @@ package mz
 
 import (
 	"fmt"
-
-	"github.com/91go/rss2/utils/gq"
-	"github.com/91go/rss2/utils/resp"
-	"github.com/91go/rss2/utils/rss"
+	"rss2/utils/gq"
+	"rss2/utils/resp"
+	"rss2/utils/rss"
 
 	query "github.com/PuerkitoBio/goquery"
 

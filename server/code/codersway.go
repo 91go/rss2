@@ -2,14 +2,14 @@ package code
 
 import (
 	"fmt"
+	"rss2/utils/gq"
+	"rss2/utils/helper/time"
+	"rss2/utils/resp"
+	"rss2/utils/rss"
 	"sync"
 
 	"github.com/gogf/gf/text/gstr"
 
-	"github.com/91go/rss2/utils/gq"
-	"github.com/91go/rss2/utils/helper/time"
-	"github.com/91go/rss2/utils/resp"
-	"github.com/91go/rss2/utils/rss"
 	query "github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
 	"github.com/gogf/gf/container/garray"

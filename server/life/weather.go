@@ -2,13 +2,11 @@ package life
 
 import (
 	"fmt"
+	"rss2/utils/gq"
+	"rss2/utils/helper/html"
+	"rss2/utils/resp"
 	"strings"
 	"time"
-
-	"github.com/91go/rss2/utils/helper/html"
-
-	"github.com/91go/rss2/utils/gq"
-	"github.com/91go/rss2/utils/resp"
 
 	"github.com/sirupsen/logrus"
 

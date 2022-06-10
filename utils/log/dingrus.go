@@ -11,9 +11,8 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"rss2/utils/config"
 	"time"
-
-	"github.com/91go/rss2/utils/config"
 
 	"github.com/sirupsen/logrus"
 )

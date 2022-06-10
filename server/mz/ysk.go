@@ -2,12 +2,12 @@ package mz
 
 import (
 	"fmt"
+	"rss2/utils/gq"
+	"rss2/utils/resp"
+	"rss2/utils/rss"
 	"strings"
 
-	"github.com/91go/rss2/utils/gq"
-	time2 "github.com/91go/rss2/utils/helper/time"
-	"github.com/91go/rss2/utils/resp"
-	"github.com/91go/rss2/utils/rss"
+	time2 "rss2/utils/helper/time"
 
 	query "github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"

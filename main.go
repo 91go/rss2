@@ -2,17 +2,16 @@ package main
 
 import (
 	"fmt"
+	"rss2/middleware"
+	"rss2/utils/resp"
 
-	code2 "github.com/91go/rss2/server/code"
-
-	"github.com/91go/rss2/utils/resp"
+	code2 "rss2/server/code"
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/91go/rss2/middleware"
+	life2 "rss2/server/life"
+	porn2 "rss2/server/mz"
 
-	life2 "github.com/91go/rss2/server/life"
-	porn2 "github.com/91go/rss2/server/mz"
 	"github.com/gin-gonic/gin"
 )
 

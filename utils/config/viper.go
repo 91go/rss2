@@ -2,8 +2,8 @@ package config
 
 import (
 	"fmt"
+	"rss2/utils/helper/xxx"
 
-	"github.com/91go/rss2/utils/helper/xxx"
 	"github.com/spf13/cast"
 	viperlib "github.com/spf13/viper" // 自定义包名，避免与内置 viper 实例冲突
 )

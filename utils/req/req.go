@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"rss2/utils/log"
 
-	"github.com/91go/rss2/utils/log"
 	"github.com/gogf/gf/net/ghttp"
 	"github.com/sirupsen/logrus"
 )

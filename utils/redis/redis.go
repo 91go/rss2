@@ -4,8 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
-
-	"github.com/91go/rss2/utils/config"
+	"rss2/utils/config"
 
 	"github.com/go-redis/redis/v8"
 )

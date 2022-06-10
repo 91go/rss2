@@ -1,4 +1,4 @@
-module github.com/91go/rss2
+module rss2
 
 go 1.18
 

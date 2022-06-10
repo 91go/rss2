@@ -3,9 +3,8 @@ package middleware
 import (
 	"io"
 	"os"
+	"rss2/utils/log"
 	"time"
-
-	"github.com/91go/rss2/utils/log"
 
 	"github.com/natefinch/lumberjack"
 	"github.com/sirupsen/logrus"
