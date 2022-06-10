@@ -1,19 +1,19 @@
 name: deploy
 on:
   push:
-    tags:
-      - v*
+#    tags:
+#      - v*
     branches:
       - main
   pull_request:
     branches:
       - main # 当pr被合并到main分支时
-  workflow_dispatch:
-    inputs:
-      tags:
-        description: 'Test scenario tags'
-        required: true
-        type: string
+#  workflow_dispatch:
+#    inputs:
+#      tags:
+#        description: 'Test scenario tags'
+#        required: true
+#        type: string
 permissions:
   contents: read
 
@@ -67,7 +67,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            luckyhacking/rss2:${{ github.event.inputs.tags }}
+#            luckyhacking/rss2:${{ github.event.inputs.tags }}
             luckyhacking/rss2:latest
       - name: deploy
         uses: appleboy/ssh-action@master
