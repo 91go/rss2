@@ -66,9 +66,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: |
-#            luckyhacking/rss2:${{ github.event.inputs.tags }}
-            luckyhacking/rss2:latest
+          tags: luckyhacking/rss2:latest
       - name: deploy
         uses: appleboy/ssh-action@master
         with:
