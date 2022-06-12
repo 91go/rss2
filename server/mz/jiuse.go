@@ -26,7 +26,7 @@ func JiuSeRss(ctx *gin.Context) {
 	author := ctx.Param("author")
 	url := fmt.Sprintf("%s%s", JiuSeAuthorURL, author)
 
-	list := jsList(url)
+	list := jsList(url, author)
 	res := rss.Rss(&rss.Feed{
 		URL:         url,
 		Title:       rss.Title{Prefix: "91porn", Name: author},
@@ -37,7 +37,7 @@ func JiuSeRss(ctx *gin.Context) {
 	resp.SendXML(ctx, res)
 }
 
-func jsList(url string) []rss.Item {
+func jsList(url, author string) []rss.Item {
 	doc := gq.FetchHTML(url)
 
 	wrap := doc.Find(".colVideoList")
@@ -54,6 +54,7 @@ func jsList(url string) []rss.Item {
 			URL:         videoURL,
 			Contents:    str.GetIframe(gstr.Replace(videoURL, "view", "embed"), ""),
 			UpdatedTime: getCreateTime(text),
+			Author:      author,
 		})
 	})
 	return ret
