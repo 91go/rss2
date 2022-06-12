@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"rss2/utils/helper/str"
-	"rss2/utils/helper/time"
 	"rss2/utils/log"
 	"rss2/utils/resp"
 	"rss2/utils/rss"
@@ -36,8 +35,8 @@ func PornhubRss(ctx *gin.Context) {
 			Title:       item.Title,
 			Contents:    str.GetIframe("https://www.pornhub.com/embed/"+viewKey, item.Description),
 			URL:         link,
-			ID:          item.GUID,
-			UpdatedTime: time.GetToday(),
+			ID:          viewKey,
+			UpdatedTime: *feed.UpdatedParsed,
 			Author:      model,
 		})
 	}
