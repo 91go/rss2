@@ -11,7 +11,8 @@ WORKDIR /build
 # 安装ca-certificates，发送HTTPS请求，否则会报错"x509: certificate signed by unknown authority"
 RUN apk update && apk upgrade
 RUN apk add --no-cache ca-certificates
-RUN apk add --no-cache build-base=0.5-r2
+RUN #apk add --no-cache build-base=0.5-r2
+RUN apk add --no-cache build-base
 RUN update-ca-certificates
 
 # 编译项目
