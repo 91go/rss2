@@ -4,9 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"rss2/utils/helper/str"
+	"rss2/utils/helper/time"
 	"rss2/utils/log"
 	"rss2/utils/resp"
 	"rss2/utils/rss"
+
+	"github.com/gogf/gf/text/gregex"
 
 	"github.com/gogf/gf/text/gstr"
 	"github.com/mmcdole/gofeed"
@@ -31,12 +34,16 @@ func PornhubRss(ctx *gin.Context) {
 	for _, item := range feed.Items {
 		link := item.Link
 		viewKey := gstr.SubStr(link, gstr.Pos(link, "=")+1)
+		// TODO
+		updatedTimeArr, _ := gregex.MatchString(`videos\/(.*)\/(original|thumbs_.*)`, item.Description)
+		ss, _ := gregex.MatchString(`(.*)\/(.*)\/`, updatedTimeArr[1])
+		updatedTime := time.StrToTime(fmt.Sprintf("%s/%s", ss[1], ss[2]), "Ym/d")
 		ret = append(ret, rss.Item{
 			Title:       item.Title,
 			Contents:    str.GetIframe("https://www.pornhub.com/embed/"+viewKey, item.Description),
 			URL:         link,
 			ID:          viewKey,
-			UpdatedTime: *feed.UpdatedParsed,
+			UpdatedTime: updatedTime,
 			Author:      model,
 		})
 	}
