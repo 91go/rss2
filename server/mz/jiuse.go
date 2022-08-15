@@ -17,12 +17,13 @@ import (
 )
 
 const (
-	JiuSeBaseURL   = "https://jiuse911.com"
-	JiuSeAuthorURL = "https://jiuse911.com/author/"
+	JiuSeBaseURL     = "https://jiuse911.com"
+	JiuSeAuthorURL   = "https://jiuse911.com/author/"
+	JiuSeKeywordsURL = "https://jiuse911.com/search?keywords="
 )
 
-// JiuSeRss 91porny输出rss
-func JiuSeRss(ctx *gin.Context) {
+// JiuSeAuthorRss 91porny输出rss
+func JiuSeAuthorRss(ctx *gin.Context) {
 	author := ctx.Param("author")
 	url := fmt.Sprintf("%s%s", JiuSeAuthorURL, author)
 
@@ -31,6 +32,22 @@ func JiuSeRss(ctx *gin.Context) {
 		URL:         url,
 		Title:       rss.Title{Prefix: "91porn", Name: author},
 		Author:      author,
+		UpdatedTime: gtime.Now().Time,
+	}, list)
+
+	resp.SendXML(ctx, res)
+}
+
+// JiuSeKeywordsRss 91porny输出rss
+func JiuSeKeywordsRss(ctx *gin.Context) {
+	keywords := ctx.Param("keywords")
+	url := fmt.Sprintf("%s%s", JiuSeKeywordsURL, keywords)
+
+	list := jsList(url, keywords)
+	res := rss.Rss(&rss.Feed{
+		URL:         url,
+		Title:       rss.Title{Prefix: "91porn", Name: keywords},
+		Author:      keywords,
 		UpdatedTime: gtime.Now().Time,
 	}, list)
 
