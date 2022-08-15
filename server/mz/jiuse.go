@@ -46,7 +46,7 @@ func JiuSeKeywordsRss(ctx *gin.Context) {
 	list := jsList(url, keywords)
 	res := rss.Rss(&rss.Feed{
 		URL:         url,
-		Title:       rss.Title{Prefix: "91porn", Name: keywords},
+		Title:       rss.Title{Prefix: "91porn - search", Name: keywords},
 		Author:      keywords,
 		UpdatedTime: gtime.Now().Time,
 	}, list)
