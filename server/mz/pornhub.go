@@ -34,7 +34,7 @@ func PornhubRss(ctx *gin.Context) {
 	for _, item := range feed.Items {
 		link := item.Link
 		viewKey := gstr.SubStr(link, gstr.Pos(link, "=")+1)
-		// TODO
+		// TODO 优化这里"获取时间"的代码
 		updatedTimeArr, _ := gregex.MatchString(`videos\/(.*)\/(original|thumbs_.*)`, item.Description)
 		ss, _ := gregex.MatchString(`(.*)\/(.*)\/`, updatedTimeArr[1])
 		updatedTime := time.StrToTime(fmt.Sprintf("%s/%s", ss[1], ss[2]), "Ym/d")

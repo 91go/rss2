@@ -28,7 +28,7 @@ type Title struct {
 	Name   string
 }
 
-//
+// Item feed的item
 type Item struct {
 	URL, Title, Contents, ID, Author string
 	UpdatedTime                      time.Time
