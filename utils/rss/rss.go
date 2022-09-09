@@ -60,7 +60,7 @@ func rss(fe *Feed, items []Item) string {
 		Title:   feedTitle(fe.Title),
 		Link:    &feeds.Link{Href: fe.URL},
 		Author:  &feeds.Author{Name: fe.Author},
-		Updated: fe.UpdatedTime,
+		Updated: items[0].UpdatedTime, // 直接使用最新item的时间戳
 	}
 
 	for key := range items {
