@@ -20,6 +20,7 @@ const (
 	JiuSeBaseURL     = "https://jiuse911.com"
 	JiuSeAuthorURL   = "https://jiuse911.com/author/"
 	JiuSeKeywordsURL = "https://jiuse911.com/search?keywords="
+	DefaultNum       = 5
 )
 
 // JiuSeAuthorRss 91porny输出rss
@@ -60,7 +61,7 @@ func jsList(url, author string) []rss.Item {
 	wrap := doc.Find(".colVideoList")
 
 	ret := []rss.Item{}
-	wrap.Each(func(i int, selection *query.Selection) {
+	wrap.Slice(0, DefaultNum).Each(func(i int, selection *query.Selection) {
 		title := selection.Find(".video-elem").Find(".title").Text()
 		href, _ := selection.Find(".video-elem").Find(".title").Attr("href")
 		text := selection.Find(".text-muted").Eq(1).Text()
