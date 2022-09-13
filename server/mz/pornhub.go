@@ -31,7 +31,7 @@ func PornhubRss(ctx *gin.Context) {
 	}
 
 	ret := []rss.Item{}
-	for _, item := range feed.Items {
+	for _, item := range feed.Items[0:DefaultNum] {
 		link := item.Link
 		viewKey := gstr.SubStr(link, gstr.Pos(link, "=")+1)
 		// TODO 优化这里"获取时间"的代码

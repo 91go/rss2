@@ -20,7 +20,7 @@ const (
 	JiuSeBaseURL     = "https://jiuse911.com"
 	JiuSeAuthorURL   = "https://jiuse911.com/author/"
 	JiuSeKeywordsURL = "https://jiuse911.com/search?keywords="
-	DefaultNum       = 5
+	DefaultNum       = 5 // 默认截取5个
 )
 
 // JiuSeAuthorRss 91porny输出rss
