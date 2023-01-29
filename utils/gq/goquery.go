@@ -14,7 +14,8 @@ import (
 
 // FetchHTML 获取网页
 func FetchHTML(url string) *query.Document {
-	resp, err := ghttp.NewClient().Get(url)
+	// resp, err := ghttp.NewClient().Get(url)
+	resp, err := http.Get(url)
 	if err != nil {
 		logrus.WithFields(log.Text(url, nil)).Error("http request failed")
 		return &query.Document{}
@@ -26,7 +27,7 @@ func FetchHTML(url string) *query.Document {
 		}
 	}(resp.Body)
 
-	return DocQuery(resp.Response)
+	return DocQuery(resp)
 }
 
 // PostHTML 发送表单请求
