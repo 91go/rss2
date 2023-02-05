@@ -22,40 +22,6 @@ func Pornhub2Rss(ctx *gin.Context) {
 	model := ctx.Param("model")
 	url := fmt.Sprintf(PornhubHomepage+"/model/%s/videos?o=mr", model)
 
-	// fp := gofeed.NewParser()
-	// feed, err := fp.ParseURL(url)
-	// if err != nil {
-	// 	logrus.WithFields(log.Text("", errors.New("feed parser failed")))
-	// 	return
-	// }
-	//
-	// ret := []rss.Item{}
-	// for _, item := range feed.Items[0:DefaultNum] {
-	// 	link := item.Link
-	// 	viewKey := gstr.SubStr(link, gstr.Pos(link, "=")+1)
-	// 	// TODO 优化这里"获取时间"的代码
-	// 	updatedTimeArr, _ := gregex.MatchString(`videos\/(.*)\/(original|thumbs_.*)`, item.Description)
-	// 	ss, _ := gregex.MatchString(`(.*)\/(.*)\/`, updatedTimeArr[1])
-	// 	updatedTime := time.StrToTime(fmt.Sprintf("%s/%s", ss[1], ss[2]), "Ym/d")
-	// 	ret = append(ret, rss.Item{
-	// 		Title:       item.Title,
-	// 		Contents:    str.GetIframe("https://www.pornhub.com/embed/"+viewKey, item.Description),
-	// 		URL:         link,
-	// 		ID:          viewKey,
-	// 		UpdatedTime: updatedTime,
-	// 		Author:      model,
-	// 	})
-	// }
-	//
-	// res := rss.Rss(&rss.Feed{
-	// 	URL:         feed.Link,
-	// 	Title:       rss.Title{Prefix: "pornhub", Name: model},
-	// 	Author:      model,
-	// 	UpdatedTime: *feed.UpdatedParsed,
-	// }, ret)
-	//
-	// resp.SendXML(ctx, res)
-
 	list := parseModelList(url)
 
 	res := rss.Rss(&rss.Feed{
@@ -79,10 +45,6 @@ func parseModelList(url string) []rss.Item {
 	ret := []rss.Item{}
 	wrap.Each(func(i int, selection *query.Selection) {
 		vkey, _ := selection.Attr("data-video-vkey")
-		// href, _ := selection.Find("div").Find(".phimage").Find("a").Attr("href")
-		// title, _ := selection.Find("div").Find(".phimage").Find("a").Attr("data-title")
-		// des, _ := selection.Find("div").Find(".phimage").Find("a").Find("img").Html()
-		// dateStr, _ := selection.Find("div").Find(".phimage").Find("a").Find("img").Attr("src")
 		base := selection.Find("span.title a")
 		href, _ := base.Attr("href")
 		title := base.Text()

@@ -56,12 +56,19 @@ func JiuSeKeywordsRss(ctx *gin.Context) {
 }
 
 func jsList(url, author string) []rss.Item {
-	doc := gq.FetchHTML(url)
+	doc := gq.FetchHTMLByGF(url)
 
 	wrap := doc.Find(".colVideoList")
 
-	ret := []rss.Item{}
-	wrap.Slice(0, DefaultNum).Each(func(i int, selection *query.Selection) {
+	var ret []rss.Item
+	var num int
+	if wrap.Length() >= DefaultNum {
+		num = DefaultNum
+	} else {
+		num = wrap.Length()
+	}
+
+	wrap.Slice(0, num).Each(func(i int, selection *query.Selection) {
 		title := selection.Find(".video-elem").Find(".title").Text()
 		href, _ := selection.Find(".video-elem").Find(".title").Attr("href")
 		text := selection.Find(".text-muted").Eq(1).Text()
