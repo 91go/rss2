@@ -17,9 +17,9 @@ import (
 )
 
 const (
-	JiuSeBaseURL     = "https://jiuse911.com"
-	JiuSeAuthorURL   = "https://jiuse911.com/author/"
-	JiuSeKeywordsURL = "https://jiuse911.com/search?keywords="
+	JiuSeBaseURL     = "https://91porny.com/"
+	JiuSeAuthorURL   = "https://91porny.com/author/"
+	JiuSeKeywordsURL = "https://91porny.com/search?keywords="
 	DefaultNum       = 5 // 默认截取5个
 )
 
