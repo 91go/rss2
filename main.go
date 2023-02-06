@@ -58,7 +58,7 @@ func setupRouter() *gin.Engine {
 	porn.GET("/pornhub/model/:model", porn2.Pornhub2Rss)
 
 	porn.GET("/jiuse/:author", porn2.JiuSeAuthorRss)
-	porn.GET("/jiuse/keywords/:keywords", porn2.JiuSeKeywordsRss)
+	porn.GET("/jiuse/search/:keywords", porn2.JiuSeKeywordsRss)
 
 	return r
 }

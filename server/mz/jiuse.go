@@ -56,7 +56,7 @@ func JiuSeKeywordsRss(ctx *gin.Context) {
 }
 
 func jsList(url, author string) []rss.Item {
-	doc := gq.FetchHTMLByGF(url)
+	doc := gq.FetchHTML(url)
 
 	wrap := doc.Find(".colVideoList")
 

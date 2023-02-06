@@ -10,3 +10,4 @@ slim.report.json
 docker-compose.yaml
 /rss2.db
 /coverage.html
+/access_log.*
