@@ -9,7 +9,6 @@ repos:
     rev: v1.44.2
     hooks:
       - id: golangci-lint
-
   # [dnephin/pre-commit-golang: Golang hooks for pre-commit](https://github.com/dnephin/pre-commit-golang)
   - repo: 'https://github.com/dnephin/pre-commit-golang'
     rev: v0.5.0
