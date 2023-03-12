@@ -6,14 +6,10 @@
 
 Another rsshub, an rss generator that provides my required sites, as a complementary project to rsshub
 
-[//]: # (TODO test)
+[//]: # (TODO check bracket?)
 
-[//]: # (TODO test111)
+[//]: # (FIXME check bracket?)
 
-[//]: # (TODO testxxx)
+[//]: # "TODO check quotes"
 
-[//]: # "TODO test quote's error is fix? "
-
-[//]: # (TODO xxx)
-
-[//]: # (FIXME check fixme lable is ok?)
+[//]: # "FIXME check quotes"
