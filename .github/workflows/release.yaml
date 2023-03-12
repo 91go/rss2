@@ -1,25 +1,31 @@
 name: Release
 on:
-  create:
-    tags:
-      - v*
-
+  push:
+    tags: [v*]
+permissions:
+  contents: write
 jobs:
-  release:
-    name: Release on GitHub
+  changelog:
+    name: changelog
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v1
-
-      - name: Validates GO releaser config
-        uses: docker://goreleaser/goreleaser:latest
+      - uses: actions/checkout@v3
         with:
-          args: check
-
-      - name: Create release on GitHub
-        uses: docker://goreleaser/goreleaser:latest
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
         with:
-          args: release
+          node-version: 16.x
+      - run: npx changelogithub
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true

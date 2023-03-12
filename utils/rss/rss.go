@@ -93,7 +93,7 @@ func feedTitle(tt Title) string {
 
 // 处理没有提供更新时间的feed
 // 根据item的UpdatedTime判断
-// todo items[i] = item
+// TODO items[i] = item
 func feedWithoutTime(feed *Feed, items []Item) string {
 	clt := redis.NewClient(redis.Conn())
 
