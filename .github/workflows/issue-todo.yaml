@@ -1,17 +1,23 @@
 name: TODO workflow
-on: [push, pull_request, workflow_dispatch]
+#on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      MANUAL_COMMIT_REF:
+        description: "The SHA of the commit to get the diff for"
+        required: true
+      MANUAL_BASE_REF:
+        description: "By default, the commit entered above is compared to the one directly before it; to go back further, enter an earlier SHA here"
+        required: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-#      - name: Run tdg-github-action
-#        uses: 91go/todo-issue-ghac@main
-#        with:
-#          TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          REPO: ${{ github.repository }}
-#          SHA: ${{ github.sha }}
-#          REF: ${{ github.ref }}
-#          Label: "TODO COMMENT FIXME"
       - name: "TODO to Issue"
         uses: "Coolnz/todo-to-issue-action@master"
+        env:
+          MANUAL_COMMIT_REF: ${{ inputs.MANUAL_COMMIT_REF }}
+          MANUAL_BASE_REF: ${{ inputs.MANUAL_BASE_REF }}
