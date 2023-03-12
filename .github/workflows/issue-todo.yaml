@@ -14,4 +14,4 @@ jobs:
 #          REF: ${{ github.ref }}
 #          Label: "TODO COMMENT FIXME"
       - name: "TODO to Issue"
-        uses: "alstr/todo-to-issue-action@v4"
+        uses: "Coolnz/todo-to-issue-action@master"
