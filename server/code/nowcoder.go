@@ -38,6 +38,7 @@ var (
 	}
 )
 
+// FIXME 目前无法使用
 // https://ac.nowcoder.com/discuss/tag/2656?type=2&order=3
 // rsshub的牛客网feed不支持tag，只有type和order
 func NowCoderRss(ctx *gin.Context) {

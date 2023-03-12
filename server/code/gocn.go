@@ -26,6 +26,9 @@ var GradeMap = map[string]string{
 	"new":       "最新",
 }
 
+// FIXME GoCN改版了，需要重写
+
+// GoCnRss GoCN RSS
 func GoCnRss(ctx *gin.Context) {
 	grade := ctx.Param("grade")
 	if !gmap.NewStrStrMapFrom(GradeMap).Contains(grade) {
