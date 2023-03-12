@@ -22,6 +22,8 @@ type DingResponse struct {
 	ErrMsg  string `json:"errmsg"`
 }
 
+// TODO 日志库改为zap
+
 type DingHook struct {
 	Webhook *url.URL // 钉钉机器人的 Webhook URL
 	client  *http.Client
